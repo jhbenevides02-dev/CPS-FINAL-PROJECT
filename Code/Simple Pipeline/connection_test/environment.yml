@@ -1,0 +1,15 @@
+# Conda environment for the CPS connection test.
+# Create:  conda env create -f environment.yml
+# Update:  conda env update -f environment.yml --prune
+name: cps
+channels:
+  - defaults
+dependencies:
+  - python=3.11      # pinned: a Python version MediaPipe ships wheels for
+  - pip
+  - pip:
+      # Installed with pip because these are published on PyPI.
+      - mediapipe==1.1.1     # hand landmarks (Tasks API)
+      - python-osc==1.9.3    # OSC send/receive (import name: pythonosc)
+      - pyserial==3.5        # serial port (import name: serial)
+      # NEVER add the package called "serial": it clashes with pyserial.
