@@ -8,11 +8,13 @@ Usage (PyCharm: Run > Edit Configurations > Parameters):
 """
 import argparse
 import math
+import time
 from pathlib import Path
 
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+from pythonosc.udp_client import SimpleUDPClient
 
 # ---- Settings (change here, not in the code below) ----
 DEFAULT_HOST = "127.0.0.1"   # this computer; Wekinator runs here too
@@ -34,6 +36,7 @@ def parse_args():
     parser.add_argument("--host", default=DEFAULT_HOST, help="OSC destination IP")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="OSC destination port")
     parser.add_argument("--rate", type=float, default=DEFAULT_RATE, help="messages per second")
+    parser.add_argument("--print-values", action="store_true", help="print the 63 values once, then keep sending")
     return parser.parse_args()
 
 
@@ -59,7 +62,9 @@ def detect_landmarks(detector, image_path):
 
 
 def normalise(landmarks):
-    """TODO (you write this): return a flat list of 63 floats, independent of position and size."""
+    """Return 63 floats,one per landmark."""
+    """Wrist as the origin,and each landmark normalised to ruler"""
+
     landmarksWeki = []
     wrist_x, wrist_y, wrist_z = landmarks[WRIST]  # Unpack Wrist
     palmBase_x, palmBase_y, palmBase_z = landmarks[MIDDLE_MPB] # Unpack Middle finger base
@@ -86,13 +91,43 @@ def normalise(landmarks):
 
     return landmarksWeki
 
-if __name__ == "__main__":
+def build_message(landmarks):
+    """Return exactly 63 floats: the normalised hand, or 63 zeros if no hand was found."""
+    if landmarks is None:
+        return [0.0] * NUM_VALUES
+    return normalise(landmarks)
+
+
+def main():
     args = parse_args()
     detector = create_detector()
+
+    # The image never changes, so detect once and re-send the same message.
     landmarks = detect_landmarks(detector, args.image)
-    print("hand found:", landmarks is not None)
-    if landmarks is not None:
-        values = normalise(landmarks)
-        print(len(values))
-        print(values[:3])
-        print(math.sqrt(values[27]**2 + values[28]**2 + values[29]**2))
+    hand_found = landmarks is not None
+    values = build_message(landmarks)
+    if args.print_values:
+        print(f"{len(values)} values:")
+        print(values)
+
+    client = SimpleUDPClient(args.host, args.port)   # UDP: no connection, no reply
+    interval = 1.0 / args.rate                       # seconds between messages
+    print(f"Sending {OSC_ADDRESS} to {args.host}:{args.port} at {args.rate} Hz. Stop with Ctrl+C.")
+
+    sent = 0
+    last_status = 0.0
+    try:
+        while True:
+            client.send_message(OSC_ADDRESS, values)
+            sent += 1
+            # Status line about once a second (not every message, to keep the console readable).
+            if time.time() - last_status >= 1.0:
+                print(f"hand found: {'yes' if hand_found else 'no'} | messages sent: {sent}")
+                last_status = time.time()
+            time.sleep(interval)
+    except KeyboardInterrupt:   # Ctrl+C or PyCharm's Stop button
+        print(f"\nStopped after {sent} messages.")
+
+
+if __name__ == "__main__":
+    main()
