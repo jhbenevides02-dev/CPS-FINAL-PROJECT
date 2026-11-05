@@ -42,14 +42,14 @@ struct ActorSetup {
   uint8_t homePin;   // home switch to GND, active LOW (INPUT_PULLUP)
 };
 
-const ActorSetup CATRINA_SETUP = {
+const ActorSetup CATRINA_SETUP = { // dir +1 starts on the lefit, dir -1 starts from the right
   // name,     min, max,  dir, speed, accel, homePin   TODO
   "catrina",   0,   2048, +1,  500,   200,   2
 };
 
 const ActorSetup MARIACHI_SETUP = {
   // name,     min, max,  dir, speed, accel, homePin   TODO
-  "actor1",    0,   2048, -1,  500,   200,   3
+  "mariachi",    0,   2048, -1,  500,   200,   3
 };
 
 // ---------------------------------------------------------------- Actor state (changes while running)
@@ -95,15 +95,23 @@ void setState(const ActorSetup &setup, ActorState &actor, State newState) {
   Serial.println(STATE_NAMES[newState]);
 }
 
-// From here leave prototypes.
 
-// ---------------------------------------------------------------- State machine
+
+// *********************************************************
+// ******************** State machine **********************
+// *********************************************************
 // Starts the homing: slow speed, move away from the scene until the home switch is pressed. Goes to HOMING.
-void startHoming(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper);
+void startHoming(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper){
+
+  stepper.setMaxSpeed(HOMING_SPEED);// use a slow speed while homing
+  stepper.moveTo(-setup.direction * (setup.maxSteps + HOMING_MARGIN)); // Check directions when fully build
+  setState(setup, actor, HOMING);
+}
 
 // Starts a show: reset count, heartCast, heartGesture and startEvent, move to pos 2. Goes to MOVE_12.
 void startShowing(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper);
 
+//**************************************Let it Cook***************************************
 // Runs ONE step of the state machine for one actor (called every loop, never blocks, no delay()).
 //   IDLE    : first time -> start homing (one actor at a time); startEvent -> wait T_IDLE_WAIT -> startShowing()
 //   HOMING  : home switch pressed -> zero position, restore speed, firstTime = false -> IDLE.
@@ -113,7 +121,36 @@ void startShowing(const ActorSetup &setup, ActorState &actor, AccelStepper &step
 //   HOLD    : heartGesture and count == 2 -> DANCE; HOLD_MS elapsed -> move to pos 2 -> MOVE_12
 //   DANCE   : wiggle DANCE_REPEATS times around pos 1 -> MOVE_21
 //   EXIT    : print "done <name>" -> IDLE
-void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper);
+void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper){
+  
+  switch (actor.state) {
+  case IDLE:
+    if (actor.firstTime && !anyHoming()) startHoming(setup, actor, stepper);
+    //checks if it is the firs power up and any other actor is homming
+    break;
+  case HOMING:
+    if (homeSwitchPressed(setup)) {
+      
+      stepper.setCurrentPosition (0);// Set current position as zero home
+      stepper.setMaxSpeed(setup.speed); // Set normal max speed
+      stepper. moveTo(pos1(setup)); // uses the helper pos1
+
+      actor.firstTime = false; //end homing
+      setState(setup, actor, IDLE); // update state
+
+    }
+
+    else if (stepper.distanceToGo() == 0){
+      actor.enabled = false;
+      Serial.print (setup.name);
+      Serial.println(" --> Error, check limit switch");
+    }
+    // 2. switch pressed? 3. rail finished without the switch?
+    break;
+  default:        // the other states are written later
+    break;
+}
+}
 
 // ---------------------------------------------------------------- Serial commands
 // Prints name, state, stepper position, count and enabled for one actor.
@@ -130,21 +167,34 @@ void handleSerial();
 
 // ---------------------------------------------------------------- Actor setup and run
 // Configures one actor: home pin as INPUT_PULLUP, stepper max speed and acceleration from its setup.
-void setupActor(const ActorSetup &setup, AccelStepper &stepper);
+void setupActor(const ActorSetup &setup, AccelStepper &stepper){
+  
+  pinMode(setup.homePin, INPUT_PULLUP); // Setup carriages limit switches
+  stepper.setMaxSpeed(setup.speed);     // Setup stepper max speed
+  stepper.setAcceleration(setup.accel); // Setup stepper acceleration
+}
 
 // Called every loop for one actor: skip if disabled, call stepper.run(), then updateActor().
-void runActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper);
+void runActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper){
+  
+  if (!actor.enabled) return; // only runs if the actor is enable
+  updateActor(setup, actor, stepper); // update actor states (State machine)
+  stepper.run(); // calling run as often as possible
+}
 
 // ---------------------------------------------------------------- Arduino
 void setup() {
+
   Serial.begin(115200);
   setupActor(CATRINA_SETUP, catrinaStepper);
   setupActor(MARIACHI_SETUP, mariachiStepper);
   Serial.println("TestPuppetScene ready. Commands: s = startEvent, h = heartGesture, p = status");
+
 }
 
 void loop() {
-  handleSerial();
+  //handleSerial();
+  
   runActor(CATRINA_SETUP, catrinaState, catrinaStepper);
   runActor(MARIACHI_SETUP, mariachiState, mariachiStepper);
 }
