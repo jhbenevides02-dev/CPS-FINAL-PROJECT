@@ -19,6 +19,7 @@ void setup() {
 }
 
 void loop() {
+  
   handClass=readWekiClass();
 
   // turn on LED when message is 1
