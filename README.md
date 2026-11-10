@@ -31,6 +31,8 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 | Input | Processing | Output | Audience Experience |
 |---|---|---|---|
 | [Input 1] | [Recognition / Control] | [Movement / Lighting] | [Effect] 
+| [Input 1] | [Recognition / Control] | [Movement / Lighting] | [Effect] 
+
 
 
 ## Table of Contents
