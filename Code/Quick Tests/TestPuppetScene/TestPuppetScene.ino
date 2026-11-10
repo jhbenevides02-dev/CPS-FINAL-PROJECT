@@ -20,12 +20,17 @@
 // ---------------------------------------------------------------- Timings (ms) TODO
 const unsigned long T_IDLE_WAIT = 1000;  // wait after startEvent before showing
 const unsigned long HOLD_MS     = 2000;  // max wait in HOLD (tHold)
+const unsigned long RST_HOLD_MS = 5000; // wait to restart the bucle
 
 // ---------------------------------------------------------------- Motion TODO
 const long  DANCE_STEPS   = 200;   // dance wiggle amplitude
 const int   DANCE_REPEATS = 3;     // number of wiggles
 const float HOMING_SPEED  = 200;   // steps/s while homing
-const long  HOMING_MARGIN = 200;   // extra steps beyond the rail before homing gives up
+const long  HOMING_MARGIN = 1000;   // extra steps beyond the rail before homing gives up
+
+// ----------------------------------------------------------------- Linghting
+
+const uint8_t reflectorPin = 14; // main reflector pin
 
 // ---------------------------------------------------------------- State machine states
 enum State : uint8_t { IDLE, HOMING, MOVE_12, MOVE_21, HOLD, DANCE, EXIT };
@@ -44,12 +49,12 @@ struct ActorSetup {
 
 const ActorSetup CATRINA_SETUP = { // dir +1 starts on the lefit, dir -1 starts from the right
   // name,     min, max,  dir, speed, accel, homePin   TODO
-  "catrina",   0,   2048, +1,  500,   200,   2
+  "catrina",   0,   7293, +1,  350,   200,   3 // max step estimated for GT2 pulley and 143mm travel distance
 };
 
 const ActorSetup MARIACHI_SETUP = {
   // name,     min, max,  dir, speed, accel, homePin   TODO
-  "mariachi",    0,   2048, -1,  500,   200,   3
+  "mariachi",    0,   6987, +1,  350,   200,   2 // max step estimated for GT2 pulley and 137mm travel distance
 };
 
 // ---------------------------------------------------------------- Actor state (changes while running)
@@ -58,8 +63,8 @@ struct ActorState {
   bool enabled = true;
   bool firstTime = true;
   bool startEvent = false;
-  bool heartGesture = false;
-  bool heartCast = false;
+  bool heartGesture = false; // flag that detect the moment the hear signal has been detected by wekinator
+  bool heartCast = false; // flag that detect is the heart signal has been triggered
   bool idleWaiting = false;
   int  count = 0;
   int  danceIdx = 0;
@@ -76,7 +81,7 @@ AccelStepper catrinaStepper (AccelStepper::FULL4WIRE,  8,  10,  9,   11);   // d
 AccelStepper mariachiStepper(AccelStepper::FULL4WIRE,  4,  6,   5,   7);    // driver pins 4, 5, 6, 7
 
 // ---------------------------------------------------------------- Helpers
-long pos1(const ActorSetup &setup) { return setup.direction * setup.minSteps; } // setup refers to the struct ActorStup
+long pos1(const ActorSetup &setup) { return setup.direction * setup.minSteps; } // setup refers to the struct ActorSetup
 long pos2(const ActorSetup &setup) { return setup.direction * setup.maxSteps; }
 bool homeSwitchPressed(const ActorSetup &setup) { return digitalRead(setup.homePin) == LOW; }
 
@@ -105,11 +110,20 @@ void startHoming(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
 
   stepper.setMaxSpeed(HOMING_SPEED);// use a slow speed while homing
   stepper.moveTo(-setup.direction * (setup.maxSteps + HOMING_MARGIN)); // Check directions when fully build
-  setState(setup, actor, HOMING);
+  setState(setup, actor, HOMING); // set state to Homing
 }
 
 // Starts a show: reset count, heartCast, heartGesture and startEvent, move to pos 2. Goes to MOVE_12.
-void startShowing(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper);
+void startShowing(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper){
+  actor.count = 1;
+  actor.heartCast = false;
+  actor.heartGesture = false;
+  actor.startEvent = false;
+  actor.idleWaiting = false;
+  stepper.moveTo(pos2(setup)); // move to pos 2
+  setState(setup, actor, MOVE_12); // calls next state
+  digitalWrite(reflectorPin, LOW);// TUrns On Reflector
+}
 
 //**************************************Let it Cook***************************************
 // Runs ONE step of the state machine for one actor (called every loop, never blocks, no delay()).
@@ -125,8 +139,18 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
   
   switch (actor.state) {
   case IDLE:
-    if (actor.firstTime && !anyHoming()) startHoming(setup, actor, stepper);
-    //checks if it is the firs power up and any other actor is homming
+    if (actor.firstTime){//check if it is the first power up and any other actor is homing
+      if (!anyHoming()) startHoming(setup, actor, stepper);
+    }
+    else if(actor.startEvent){
+      if(!actor.idleWaiting){
+        actor.idleWaiting = true; // set idle waiting after homing
+        actor.stateStartMs = millis();
+      }
+      else if(millis()-actor.stateStartMs >= T_IDLE_WAIT){
+        startShowing(setup, actor, stepper);
+      }
+    }
     break;
   case HOMING:
     if (homeSwitchPressed(setup)) {
@@ -136,16 +160,57 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
       stepper. moveTo(pos1(setup)); // uses the helper pos1
 
       actor.firstTime = false; //end homing
-      setState(setup, actor, IDLE); // update state
+      setState(setup, actor, IDLE); // update state to IDLE after homing
 
     }
 
     else if (stepper.distanceToGo() == 0){
-      actor.enabled = false;
+      
+      actor.enabled = false; // disabe actor
+      stepper.disableOutputs(); // turn off motor
       Serial.print (setup.name);
       Serial.println(" --> Error, check limit switch");
     }
     // 2. switch pressed? 3. rail finished without the switch?
+    break;
+  case MOVE_12:
+
+    if (stepper.distanceToGo()==0){ // once it has reached pos 2
+      Serial.println("In Pos 2");
+      stepper.moveTo(pos1(setup)); // move to pos 1
+      
+      setState(setup,actor,MOVE_21);
+    }
+    break;
+  case MOVE_21:
+
+    if (stepper.distanceToGo()==0 || homeSwitchPressed(setup)){// once it has reached pos 1 or switch the home
+        Serial.println ("In Pos 1");
+        setState(setup,actor,HOLD); // hold for HOLD_MS for the next action or exit
+    }
+    break;
+  case HOLD:
+
+    if (millis()-actor.stateStartMs >= HOLD_MS && actor.count<2){
+          actor.count +=1; // now count is 2
+          stepper.moveTo(pos2(setup)); // move to pos 2
+          setState(setup,actor,MOVE_12);
+    }
+    else if (actor.count>=2){
+
+      stepper.disableOutputs();
+      digitalWrite(reflectorPin, HIGH); // Turns off reflector
+      setState(setup,actor,EXIT);
+
+    }
+    
+    break;
+  case EXIT:
+    if (millis()-actor.stateStartMs >= RST_HOLD_MS){
+      stepper.enableOutputs(); // energize motors again
+      setState(setup, actor, IDLE);
+    }
+
     break;
   default:        // the other states are written later
     break;
@@ -157,13 +222,24 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
 void printStatus(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper);
 
 // Raises startEvent for one actor, only if it is enabled and in IDLE.
-void sendStartEvent(ActorState &actor);
+void sendStartEvent(ActorState &actor){
+  if (actor.enabled && actor.state == IDLE) actor.startEvent = true; // set start show event to true.
+}
 
 // Raises heartGesture for one actor, only if it is enabled and not in IDLE or HOMING.
 void sendHeartGesture(ActorState &actor);
 
 // Reads the Serial Monitor: 's' = startEvent, 'h' = heartGesture, 'p' = print status (all actors).
-void handleSerial();
+void handleSerial(){
+  while (Serial.available()){
+    char c = Serial.read();
+    if (c == 's'){
+      sendStartEvent(catrinaState);
+      sendStartEvent(mariachiState);
+      Serial.println("Start Show");
+    }
+  }
+}
 
 // ---------------------------------------------------------------- Actor setup and run
 // Configures one actor: home pin as INPUT_PULLUP, stepper max speed and acceleration from its setup.
@@ -186,14 +262,17 @@ void runActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper)
 void setup() {
 
   Serial.begin(115200);
-  setupActor(CATRINA_SETUP, catrinaStepper);
-  setupActor(MARIACHI_SETUP, mariachiStepper);
+  setupActor(CATRINA_SETUP, catrinaStepper);    // Setup catrina actor
+  setupActor(MARIACHI_SETUP, mariachiStepper);  // Setup mariachi actor
+  pinMode(reflectorPin, OUTPUT);
+  digitalWrite(reflectorPin, HIGH); // Turns off reflector
   Serial.println("TestPuppetScene ready. Commands: s = startEvent, h = heartGesture, p = status");
 
 }
 
 void loop() {
-  //handleSerial();
+  
+  handleSerial();
   
   runActor(CATRINA_SETUP, catrinaState, catrinaStepper);
   runActor(MARIACHI_SETUP, mariachiState, mariachiStepper);
