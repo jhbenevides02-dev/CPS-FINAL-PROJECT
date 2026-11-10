@@ -3,6 +3,13 @@
 
 # CPS Interactive Shadow Theatre — Group XX
 
+
+## Team Members
+
+- [Name]
+- [Name]
+- [Name]
+
 ## Introduction
 
 This repository contains the design, hardware documentation, software, and testing materials for our interactive shadow theatre, developed for the Cyber-Physical Systems (CPS) module.
@@ -12,12 +19,6 @@ Inspired by Plato's *Allegory of the Cave*, the project explores how light angle
 [Introduce the final installation, its physical structure, mechanical movement, lighting, and interactive features.]
 
 ![Shadow Theatre](media/shadow-theatre.jpg)
-
-## Team Members
-
-- [Name]
-- [Name]
-- [Name]
 
 ## How It Works
 
@@ -29,12 +30,12 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 
 | Input | Processing | Output | Audience Experience |
 |---|---|---|---|
-| [Input 1] | [Recognition / Control] | [Movement / Lighting] | [Effect] |
-| [Input 2] | [Recognition / Control] | [Movement / Lighting] | [Effect] |
+| [Input 1] | [Recognition / Control] | [Movement / Lighting] | [Effect] 
+
 
 ## Table of Contents
 
-1. [System Architecture](#1-system-architecture)
+1. [System Architecture Design](#1-system-architecture-design)
 2. [What You Need](#2-what-you-need)
 3. [Mechanical & Electrical Setup](#3-mechanical--electrical-setup)
 4. [Software Setup](#4-software-setup)
@@ -47,8 +48,7 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 
 ---
 
-
-# 1. System Architecture
+# 1. System Architecture Design
 
 ## 1.1 System Overview
 
