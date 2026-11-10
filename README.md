@@ -16,6 +16,9 @@ This repository contains the design, hardware documentation, software, and testi
 
 Inspired by Plato's *Allegory of the Cave*, the project explores how light angles, mechanical movement, and audience interaction can transform shadows and challenge our perception of reality.
 
+The performance features two characters, **Catrina and Mariachi**, which move along independent tracks and perform a coordinated dance in response to audience interaction.
+
+
 [Introduce the final installation, its physical structure, mechanical movement, lighting, and interactive features.]
 
 ![Shadow Theatre](media/shadow-theatre.jpg)
@@ -53,14 +56,6 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 # 1. System Architecture Design
 
 ## 1.1 System Overview
-
-The **Interactive Shadow Theatre** is a cyber-physical installation that combines gesture recognition, mechanical movement, and light projection to create an interactive shadow performance.
-
-Inspired by Plato's *Allegory of the Cave*, the project explores how physical objects, light, and movement can transform projected shadows into a dynamic storytelling experience.
-
-The performance features two characters, **Catrina and Mariachi**, which move along independent tracks and perform a coordinated dance in response to audience interaction.
-
-The system integrates three main elements:
 
 - **Input:** A camera captures audience gestures.
 - **Processing:** Processing, Wekinator, and Arduino interpret gestures and coordinate the performance.
