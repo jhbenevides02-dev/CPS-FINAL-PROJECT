@@ -75,11 +75,10 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 
 The physical system consists of a modular theatre frame, a motor-driven character movement mechanism, and a lighting system that transforms moving silhouettes into projected shadows.
 
-### 1.3.1 Theatre Frame & Structural Assembly
-
+### 1.3.1 Theatre Frame Assembly & Light testing
 The theatre is constructed using **cut wooden strips and custom 3D-printed connectors**. The frame supports the projection screen, internal tracks, motors, and lighting system while allowing convenient assembly and adjustments.
 
-The modular structure was designed for stability, ease of fabrication, and accessibility during maintenance.
+The modular structure was designed for stability, ease of fabrication, and accessibility.
 
 ![Theatre Frame](media/mechanical/theatre-frame.jpg)
 
@@ -88,19 +87,8 @@ The modular structure was designed for stability, ease of fabrication, and acces
 [Theatre Frame Design & Assembly](hardware/mechanical/theatre-frame/README.md)
 
 
-#### Exterior Enclosure & Finishing
-
-The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance.
-
-The enclosure is designed to maintain access to internal mechanisms while providing a defined viewing area for the shadow performance.
-
-Surface finishing and painting are used to establish the visual identity of the theatre and distinguish the performance space from its supporting structure.
-
-![Exterior Enclosure](media/mechanical/exterior-enclosure.jpg)
-
-*Figure. Exterior enclosure design and final surface finishing.*
-
-[Exterior Enclosure & Finishing Documentation](hardware/mechanical/exterior-enclosure/README.md)
+**cut wooden frame attach with translucent paper and custom 3D-printed light holder**
+**components we use-like gear//size/length**
 
 
 ### 1.3.2 Motion Transmission & Character Mechanism
@@ -119,7 +107,7 @@ The two independent tracks enable separate movement control, while pulley alignm
 
 *Figure 5. Dual-track layout and belt transmission mechanism.*
 
-#### B. Linear Bearing & Sliding Carriage
+#### B. Linear Bearing Carriage & Modular Servo
 
 Each carriage moves along a linear guide supported by bearings. A custom belt clamp connects the carriage to the timing belt, while the sliding platform provides a stable mounting base for the character mechanism.
 
@@ -129,13 +117,11 @@ The bearing-supported structure is designed to reduce friction, limit unwanted r
 
 *Figure 6. Linear bearing, belt clamp, and sliding carriage assembly.*
 
-#### C. Modular Servo & Laser-Cut Silhouettes
+#### C. Laser-Cut Silhouettes
 
 Catrina and Mariachi are designed as two-dimensional profiles and fabricated through **laser cutting**, allowing their distinctive outlines to be projected clearly.
 
-Each silhouette is attached to a removable servo module mounted on the sliding carriage. While the belt-driven system controls horizontal movement, the servo enables independent character rotation.
-
-The modular design allows different silhouettes to be replaced without modifying the underlying motion mechanism.
+Each silhouette is attached to a removable servo module mounted on the sliding carriage. 
 
 ![Laser-Cut Silhouettes](media/mechanical/laser-cut-silhouettes.jpg)
 
@@ -153,23 +139,19 @@ The modular design allows different silhouettes to be replaced without modifying
 
 [Motion System Design & CAD Files](hardware/mechanical/motion-system/README.md)
 
-### 1.3.3 Lighting & Shadow Projection
+### 1.3.3 Frame decoration
 
-The lighting system projects the moving silhouettes onto a translucent screen, transforming mechanical movements into visual storytelling.
+The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance.
 
-Light positioning, projection angles, and distances are adjusted to control shadow scale, sharpness, and visibility throughout the performance.
+The enclosure is designed to maintain access to internal mechanisms while providing a defined viewing area for the shadow performance.
 
-Lighting tests focus on reducing **double shadows**, maintaining consistent projection quality, and ensuring that the characters appear to interact naturally.
+Surface finishing and painting are used to establish the visual identity of the theatre and distinguish the performance space from its supporting structure.
 
-![Lighting System](media/lighting/lighting-system.jpg)
+![Exterior Enclosure](media/mechanical/exterior-enclosure.jpg)
 
-*Figure 9. Lighting installation and shadow projection arrangement.*
+*Figure. Exterior enclosure design and final surface finishing.*
 
-![Lighting Tests](media/lighting/lighting-tests.jpg)
-
-*Figure 10. Comparison of shadow projection under different lighting conditions.*
-
-[Lighting Installation & Projection Testing](hardware/lighting/README.md)
+[Exterior Enclosure & Finishing Documentation](hardware/mechanical/exterior-enclosure/README.md)
 
 ---
 
