@@ -50,36 +50,194 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 
 ---
 
-## 1. System Architecture
 
-### 1.1 System Overview
+# 1. System Architecture
 
-[Explain how the mechanical, electronic, and software components work together.]
+## 1.1 System Overview
+
+The **Interactive Shadow Theatre** is a cyber-physical installation that combines gesture recognition, mechanical movement, and light projection to create an interactive shadow performance.
+
+Inspired by Plato's *Allegory of the Cave*, the project explores how physical objects, light, and movement can transform projected shadows into a dynamic storytelling experience.
+
+The performance features two characters, **Catrina and Mariachi**, which move along independent tracks and perform a coordinated dance in response to audience interaction.
+
+The system integrates three main elements:
+
+- **Input:** A camera captures audience gestures.
+- **Processing:** Processing, Wekinator, and Arduino interpret gestures and coordinate the performance.
+- **Output:** Motors, servos, lighting, and synchronised music produce the shadow performance.
+
+**System Workflow:**
+
+`Audience Gesture → Camera → Processing → Wekinator → Interaction Logic → Arduino → Motors & Servos → Shadow Performance`
 
 ![System Architecture](media/system-architecture.png)
 
-### 1.2 Input System
-
-[Describe the input methods and what they detect.]
-
-| Input Device | Function | Connection |
-|---|---|---|
-| [Sensor 1] | [Function] | [Pin / Port] |
-| [Sensor 2] | [Function] | [Pin / Port] |
-
-### 1.3 Mechanical & Lighting System
-
-[Explain how mechanical movement and lighting create different shadow effects.]
-
-### 1.4 Control & Communication
-
-[Describe the communication between the microcontroller, software, sensors, and actuators.]
-
-| Connection | Protocol / Setting | Purpose |
-|---|---|---|
-| [Device A → Device B] | [Setting] | [Function] |
+*Figure 1. Overall system architecture.*
 
 ---
+
+## 1.2 Software Design & Gesture Recognition
+
+The software system connects audience gestures to the physical theatre through **camera-based input, machine learning, and Arduino control**.
+
+Processing handles gesture input and communicates with Wekinator, which uses a trained model to recognise the audience's **Heart Gesture**. The recognition result is translated into commands that trigger character movements and the dance sequence.
+
+### A. Gesture Recognition & Machine Learning
+
+The camera captures audience gestures, while Processing extracts and sends input features to Wekinator for classification.
+
+Wekinator is trained to distinguish the Heart Gesture from other inputs, allowing the system to respond to a recognised interaction.
+
+![Gesture Recognition](media/software/gesture-recognition.jpg)
+
+*Figure 2. Camera input and Wekinator training.*
+
+### B. Interaction Logic & Arduino Control
+
+Once a valid gesture is recognised, Processing uses the current interaction state to determine when to send commands to Arduino.
+
+Arduino controls the motors and servos, coordinating the characters' horizontal movement and rotation. Music transitions are synchronised with the performance sequence.
+
+The state-based approach prevents repeated gesture inputs from interrupting an active performance.
+
+![Software Control Flow](media/software/control-flow.png)
+
+*Figure 3. Software processing and Arduino control.*
+
+**Software Workflow:**
+
+`Camera → Processing → Wekinator → Interaction Logic → Arduino → Motors & Servos`
+
+**Detailed Documentation:**
+
+- [Software Implementation & Source Code](code/README.md)
+- [Gesture Recognition & Wekinator](code/gesture-recognition/README.md)
+
+---
+
+## 1.3 Mechanical & Lighting Design
+
+The physical system consists of a modular theatre frame, a motor-driven character movement mechanism, and a lighting system that transforms moving silhouettes into projected shadows.
+
+### 1.3.1 Theatre Frame & Structural Assembly
+
+The theatre is constructed using **cut wooden strips and custom 3D-printed connectors**. The frame supports the projection screen, internal tracks, motors, and lighting system while allowing convenient assembly and adjustments.
+
+The modular structure was designed for stability, ease of fabrication, and accessibility during maintenance.
+
+![Theatre Frame](media/mechanical/theatre-frame.jpg)
+
+*Figure 4. Theatre frame CAD model and physical assembly.*
+
+[Theatre Frame Design & Assembly](hardware/mechanical/theatre-frame/README.md)
+
+### 1.3.2 Motion Transmission & Character Mechanism
+
+The movement system integrates **two independent linear tracks, belt-driven carriages, and modular servo mechanisms** to create coordinated movements between the two shadow characters.
+
+The system combines horizontal translation with individual character rotation.
+
+#### A. Belt-Driven Linear Motion
+
+Motor-driven GT2 timing belts convert rotational motion into horizontal movement, allowing both characters to approach the centre and return to their starting positions.
+
+The two independent tracks enable separate movement control, while pulley alignment and belt tension help maintain consistent transmission.
+
+![Belt Transmission](media/mechanical/belt-drive.jpg)
+
+*Figure 5. Dual-track layout and belt transmission mechanism.*
+
+#### B. Linear Bearing & Sliding Carriage
+
+Each carriage moves along a linear guide supported by bearings. A custom belt clamp connects the carriage to the timing belt, while the sliding platform provides a stable mounting base for the character mechanism.
+
+The bearing-supported structure is designed to reduce friction, limit unwanted rotation, and maintain stable movement.
+
+![Linear Carriage](media/mechanical/carriage.jpg)
+
+*Figure 6. Linear bearing, belt clamp, and sliding carriage assembly.*
+
+#### C. Modular Servo & Laser-Cut Silhouettes
+
+Catrina and Mariachi are designed as two-dimensional profiles and fabricated through **laser cutting**, allowing their distinctive outlines to be projected clearly.
+
+Each silhouette is attached to a removable servo module mounted on the sliding carriage. While the belt-driven system controls horizontal movement, the servo enables independent character rotation.
+
+The modular design allows different silhouettes to be replaced without modifying the underlying motion mechanism.
+
+![Laser-Cut Silhouettes](media/mechanical/laser-cut-silhouettes.jpg)
+
+*Figure 7. Laser-cut character designs and fabricated silhouettes.*
+
+![Servo Module](media/mechanical/servo-module.jpg)
+
+*Figure 8. Modular servo mechanism and silhouette attachment.*
+
+**Mechanical Motion Flow:**
+
+`Motor → Timing Belt → Linear Carriage → Servo Module → Laser-Cut Silhouette`
+
+**Detailed Documentation:**
+
+[Motion System Design & CAD Files](hardware/mechanical/motion-system/README.md)
+
+### 1.3.3 Lighting & Shadow Projection
+
+The lighting system projects the moving silhouettes onto a translucent screen, transforming mechanical movements into visual storytelling.
+
+Light positioning, projection angles, and distances are adjusted to control shadow scale, sharpness, and visibility throughout the performance.
+
+Lighting tests focus on reducing **double shadows**, maintaining consistent projection quality, and ensuring that the characters appear to interact naturally.
+
+![Lighting System](media/lighting/lighting-system.jpg)
+
+*Figure 9. Lighting installation and shadow projection arrangement.*
+
+![Lighting Tests](media/lighting/lighting-tests.jpg)
+
+*Figure 10. Comparison of shadow projection under different lighting conditions.*
+
+[Lighting Installation & Projection Testing](hardware/lighting/README.md)
+
+---
+
+## 1.4 Control & Communication
+
+Processing and Wekinator handle gesture recognition, while Arduino controls the motors and servos. The control system coordinates movement commands and music transitions throughout the performance.
+
+### Communication Pipeline
+
+| Connection | Protocol / Interface | Purpose |
+|---|---|---|
+| Camera → Processing | USB / Video Input | Capture audience gestures |
+| Processing → Wekinator | OSC | Send gesture input features |
+| Wekinator → Processing | OSC | Return recognition results |
+| Processing → Arduino | Serial Communication | Send movement commands |
+| Arduino → Motors / Servos | Motor Driver / Servo Signals | Execute character movements |
+
+### Performance State Management
+
+| State | Movement | Audio |
+|---|---|---|
+| `OPENING` | Characters remain stationary | Music 1 — Mysterious Intro |
+| `APPROACH` | Characters move towards the centre | Music 2 — Building Anticipation |
+| `WAIT_GESTURE` | Characters wait at the centre | Background Music |
+| `DANCE` | Coordinated character rotation and dance movements | Music 3 — Dance Theme |
+| `RETURN` | Characters return to their starting positions | Music 2 |
+| `RESET` | System prepares for the next interaction | Fade Out |
+
+The state-based sequence prevents conflicting commands and supports coordinated character movement and audio playback.
+
+![Control Flowchart](media/control-flowchart.png)
+
+*Figure 11. Performance state machine and communication sequence.*
+
+**Detailed Documentation:**
+
+- [Arduino Motor & Servo Control](code/arduino/README.md)
+- [Processing & Interaction Logic](code/processing/README.md)
+
 
 ## 2. What You Need
 
