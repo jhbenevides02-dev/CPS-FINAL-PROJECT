@@ -25,6 +25,12 @@ DEFAULT_BAUD = 115200         # must match Serial.begin() in the Arduino sketch
 ARDUINO_DEFAULT_PORT = "COM7" # Default COM port used in Arduino Nano Every test board.
 RESET_WAIT_S = 2.0            # the Arduino resets when the port opens; give it time to boot
 KEEPALIVE_S = 0.25            # re-send the same value at most this often
+# Wekinator class number -> character sent to the Arduino. Other classes send nothing.
+CLASS_COMMANDS = {
+    2: "s",   # action
+    3: "h",   # heart
+}
+COMMAND_ENDING = ""           # added after the character. "" = just the character, "\n" = a full line
 
 
 def parse_args():
@@ -83,20 +89,31 @@ def should_send(value, last_value, last_sent_time, now):
 
 def make_handler(ser, dry_run):
     """Return the function python-osc calls for every /wek/outputs message."""
-    state = {"last_value": None, "last_sent": 0.0}   # remembered between messages
+    state = {"last_value": None, "last_sent": 0.0, "last_ignored": None}   # remembered between messages
 
     def on_outputs(address, *values):
         if not values:
             return
-        value = int(round(values[0]))        # Wekinator sends the class as a float, e.g. 1.0
+        value = int(round(values[0]))        # Wekinator sends the class as a float, e.g. 2.0
         print(f"[osc] {address} {values}")
+
+        # Turn the class number into the character for the Arduino (2 -> 's', 3 -> 'h')
+        command = CLASS_COMMANDS.get(value)
+        if command is None:                  # a class with no command (e.g. 1): send nothing
+            if value != state["last_ignored"]:
+                print(f"[bridge] class {value} has no command, nothing sent")
+                state["last_ignored"] = value
+            state["last_value"] = None       # so the next real class is sent straight away
+            return
+        state["last_ignored"] = None
+
         now = time.monotonic()
         if should_send(value, state["last_value"], state["last_sent"], now):
             if dry_run:
-                print(f"[dry-run] would send '{value}'")
+                print(f"[dry-run] would send '{command}' (class {value})")
             else:
-                ser.write(f"{value}\n".encode())   # one line of text, ended by a newline
-                print(f"[serial] sent '{value}'")
+                ser.write((command + COMMAND_ENDING).encode())   # the character, as bytes
+                print(f"[serial] sent '{command}' (class {value})")
             state["last_value"] = value
             state["last_sent"] = now
 

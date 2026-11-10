@@ -30,14 +30,15 @@ from pythonosc.udp_client import SimpleUDPClient
 
 # Reuse the exact same detection and normalisation as the single-image sender.
 from landmarks_sender import (
-    DEFAULT_HOST, DEFAULT_PORT, DEFAULT_RATE, OSC_ADDRESS,
-    create_detector, detect_landmarks, normalise,
+    DEFAULT_HOST, DEFAULT_PORT, DEFAULT_RATE, OSC_ADDRESS, NUM_VALUES,
+    create_detector, detect_landmarks, normalise, draw_landmarks,
 )
 
 # ---- Settings (change here, not in the code below) ----
 DEFAULT_DATASET = Path(__file__).parent / "dataset"   # holds one sub-folder per class
 DEFAULT_BURST_S = 5.0                                # seconds each image is sent for
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
+NONE_CLASS = "none"                                   # "no gesture": photos without a hand are kept as 63 zeros
 WINDOW_NAME = "Image sent to Wekinator"
 WINDOW_MAX_HEIGHT = 600                               # big photos are shrunk to fit the screen
 QUIT_KEYS = (ord("q"), 27)                            # q or Esc
@@ -47,17 +48,6 @@ DEFAULT_LISTEN_PORT = 12000           # Wekinator's output port
 REPLY_ADDRESS = "/wek/outputs"        # Wekinator's output message
 GREEN = (0, 200, 0)                   # colours are (blue, green, red)
 RED = (0, 0, 255)
-BONE_COLOUR = (255, 255, 0)           # lines between landmarks (cyan)
-JOINT_COLOUR = (0, 0, 255)            # landmark dots (red)
-# The hand skeleton: pairs of landmark numbers joined by a line (0 = wrist, 4/8/12/16/20 = fingertips)
-HAND_BONES = [
-    (0, 1), (1, 2), (2, 3), (3, 4),            # thumb
-    (0, 5), (5, 6), (6, 7), (7, 8),            # index finger
-    (5, 9), (9, 10), (10, 11), (11, 12),       # middle finger
-    (9, 13), (13, 14), (14, 15), (15, 16),     # ring finger
-    (13, 17), (17, 18), (18, 19), (19, 20),    # little finger
-    (0, 17),                                   # edge of the palm
-]
 
 
 def parse_args():
@@ -105,27 +95,22 @@ def load_picture(path):
     return picture
 
 
-def draw_landmarks(picture, landmarks):
-    """Draw the 21 landmarks and the bones between them on the picture (in place)."""
-    height, width = picture.shape[:2]
-    # Landmark x, y are 0..1 fractions of the image: multiply by the size to get pixels
-    points = [(int(x * width), int(y * height)) for x, y, z in landmarks]
-    for start, end in HAND_BONES:
-        cv2.line(picture, points[start], points[end], BONE_COLOUR, 2)   # bones
-    for point in points:
-        cv2.circle(picture, point, 5, JOINT_COLOUR, -1)                 # joints (filled circles)
-
-
-def load_messages(detector, images, draw=False):
+def load_messages(detector, images, draw=False, keep_empty=False):
     """Detect every image once. Return [(path, 63 floats, picture)] for the images with a hand.
-    With draw=True the landmarks are drawn on the picture."""
+    With draw=True the landmarks are drawn on the picture.
+    With keep_empty=True an image without a hand is kept and sent as 63 zeros (as the live sender
+    does), instead of being skipped. Used for the 'none' class."""
     messages = []
     for path in images:
         landmarks = detect_landmarks(detector, path)
-        if landmarks is None:
-            print(f"  skipped (no hand found): {path.name}")
-            continue
         picture = load_picture(path)
+        if landmarks is None:
+            if not keep_empty:
+                print(f"  skipped (no hand found): {path.name}")
+                continue
+            print(f"  no hand found, sent as 63 zeros: {path.name}")
+            messages.append((path, [0.0] * NUM_VALUES, picture))
+            continue
         if draw:
             draw_landmarks(picture, landmarks)
         messages.append((path, normalise(landmarks), picture))
@@ -158,10 +143,13 @@ def run_test(args):
     samples = []                                    # (true class, path, 63 values, picture)
     for class_name in class_names:
         folder = args.dataset / class_name
-        if not folder.is_dir():
-            sys.exit(f"Class folder not found: {folder}")
+        if not folder.is_dir():   # e.g. class 'none' may have no photos: its name is still used for the answer
+            print(f"No folder for class '{class_name}' ({folder}): no photos of it will be sent.")
+            continue
         print(f"Detecting hands in class '{class_name}'...")
-        for path, values, picture in load_messages(detector, find_images(folder), draw=True):
+        keep_empty = class_name == NONE_CLASS
+        for path, values, picture in load_messages(detector, find_images(folder), draw=True,
+                                                   keep_empty=keep_empty):
             samples.append((class_name, path, values, picture))
     if not samples:
         sys.exit("Nothing to send.")
@@ -242,7 +230,7 @@ def main():
 
     # 2. Detect the hand in every image ONCE (slow), keep the 63 values in memory
     print(f"Detecting hands in {len(images)} images of class '{args.class_name}'...")
-    messages = load_messages(create_detector(), images)
+    messages = load_messages(create_detector(), images, keep_empty=args.class_name == NONE_CLASS)
     print(f"{len(messages)} of {len(images)} images have a hand and will be sent.")
     if not messages:
         sys.exit("Nothing to send.")
