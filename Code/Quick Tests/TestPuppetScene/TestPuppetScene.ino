@@ -189,6 +189,8 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
   case MOVE_21:
 
     if (stepper.distanceToGo()==0 || homeSwitchPressed(setup)){// once it has reached pos 1 or switch the home
+        
+        if (homeSwitchPressed(setup)) stepper.setCurrentPosition(0);// re-zero home
         Serial.println ("In Pos 1");
         setState(setup,actor,HOLD); // hold for HOLD_MS for the next action or exit
     }
@@ -236,7 +238,7 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
           stepper.moveTo(wigglePos);                   // toward home
         }
         else {
-          stepper.moveTo(stagePos);                    // back to the stage end
+          stepper.moveTo(stagePos);                    // back to the centre of the stage
         }
         actor.danceOut = !actor.danceOut;              // flip for the next move
         actor.danceIdx++;                              // one more move done
