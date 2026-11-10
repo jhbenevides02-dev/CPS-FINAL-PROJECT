@@ -6,9 +6,9 @@
 
 ## Team Members
 
-- [Name]
-- [Name]
-- [Name]
+- Ari Wang
+- Christian Gutierrez
+- Julia Benevides
 
 ## Introduction
 
