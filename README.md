@@ -42,11 +42,10 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 4. [Software Setup](#4-software-setup)
 5. [How to Run](#5-how-to-run)
 6. [Interaction Guide](#6-interaction-guide)
-7. [Expected Results & Testing](#7-expected-results--testing)
-8. [Debugging](#8-debugging)
-9. [Project Files](#9-project-files)
-10. [Demonstration & Limitations](#10-demonstration--limitations)
-11. [References](#11-references)
+7. [Debugging](#8-debugging)
+8. [Project Files](#9-project-files)
+9. [Demonstration & Limitations](#10-demonstration--limitations)
+10. [References](#11-references)
 
 ---
 
@@ -502,42 +501,9 @@ Before running the software:
 
 ---
 
-## 7. Expected Results & Testing
+## 7. Debugging (Physical and Firmware)
 
-### 7.1 Expected Behaviour
-
-| Check | Pass When… |
-|---|---|
-| Code compilation and upload | [Expected result] |
-| System startup | [Expected result] |
-| Input detection | [Expected result] |
-| Mechanical movement | [Expected result] |
-| Lighting control | [Expected result] |
-| Complete interaction sequence | [Expected result] |
-
-### 7.2 Component Testing
-
-[Document the tests performed on individual components.]
-
-| Test | What It Checks | Result |
-|---|---|---|
-| [Mechanical Test] | [Description] | [Pass / Fail] |
-| [Input Test] | [Description] | [Pass / Fail] |
-| [Lighting Test] | [Description] | [Pass / Fail] |
-
-### 7.3 Integration Testing
-
-[Describe how the complete input-processing-output chain is tested.]
-
-### 7.4 Known Behaviours
-
-[Record expected system behaviours that should not be mistaken for faults.]
-
----
-
-## 8. Debugging (Physical and Firmware)
-
-### 8.1 Find the Failing Stage
+### 7.1 Find the Failing Stage
 
 Check each stage in order:
 
@@ -550,25 +516,25 @@ Check each stage in order:
 
 Stop at the first failing stage and investigate the corresponding subsystem.
 
-### 8.2 Mechanical Issues
+### 7.2 Mechanical Issues
 
 | Symptom | Likely Cause | Action |
 |---|---|---|
 | [Problem] | [Cause] | [Solution] |
 
-### 8.3 Electrical Issues
+### 7.3 Electrical Issues
 
 | Symptom | Likely Cause | Action |
 |---|---|---|
 | [Problem] | [Cause] | [Solution] |
 
-### 8.4 Software & Communication Issues
+### 7.4 Software & Communication Issues
 
 | Symptom | Likely Cause | Action |
 |---|---|---|
 | [Problem] | [Cause] | [Solution] |
 
-### 8.5 Configuration Reference
+### 7.5 Configuration Reference
 
 | Setting | Default Value | What It Does |
 |---|---|---|
@@ -579,20 +545,7 @@ Stop at the first failing stage and investigate the corresponding subsystem.
 
 ---
 
-## 9. Project Files
-
-Example repository structure (update to match the actual files):
-
-    Interactive-Shadow-Theatre/
-    ├── README.md
-    ├── code/
-    │   ├── arduino/
-    │   └── processing/
-    ├── hardware/
-    │   ├── mechanical/
-    │   └── circuits/
-    ├── media/
-    └── docs/
+## 8. Project Files
 
 | Folder | Contents |
 |---|---|
@@ -603,25 +556,25 @@ Example repository structure (update to match the actual files):
 
 ---
 
-## 10. Demonstration & Limitations
+## 9. Demonstration & Limitations
 
-### 10.1 Final Demonstration
+### 9.1 Final Demonstration
 
 [Insert a photo or GIF of the completed installation.]
 
 [Add a link to the demonstration video.]
 
-### 10.2 Known Limitations
+### 9.2 Known Limitations
 
 [Describe any limitations observed during testing.]
 
-### 10.3 Future Improvements
+### 9.3 Future Improvements
 
 [Describe potential improvements to the mechanics, interaction, lighting, or storytelling.]
 
 ---
 
-## 11. References
+## 10. References
 
 - [Conceptual inspiration]
 - [Technical documentation]
