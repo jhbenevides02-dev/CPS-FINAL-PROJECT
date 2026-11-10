@@ -16,6 +16,9 @@ This repository contains the design, hardware documentation, software, and testi
 
 Inspired by Plato's *Allegory of the Cave*, the project explores how light angles, mechanical movement, and audience interaction can transform shadows and challenge our perception of reality.
 
+The performance features two characters, **Catrina and Mariachi**, which move along independent tracks and perform a coordinated dance in response to audience interaction.
+
+
 [Introduce the final installation, its physical structure, mechanical movement, lighting, and interactive features.]
 
 ![Shadow Theatre](media/shadow-theatre.jpg)
@@ -31,6 +34,8 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 | Input | Processing | Output | Audience Experience |
 |---|---|---|---|
 | [Input 1] | [Recognition / Control] | [Movement / Lighting] | [Effect] 
+| [Input 1] | [Recognition / Control] | [Movement / Lighting] | [Effect] 
+
 
 
 ## Table of Contents
@@ -52,14 +57,6 @@ The theatre combines physical mechanisms, lighting, and interactive inputs to cr
 
 ## 1.1 System Overview
 
-The **Interactive Shadow Theatre** is a cyber-physical installation that combines gesture recognition, mechanical movement, and light projection to create an interactive shadow performance.
-
-Inspired by Plato's *Allegory of the Cave*, the project explores how physical objects, light, and movement can transform projected shadows into a dynamic storytelling experience.
-
-The performance features two characters, **Catrina and Mariachi**, which move along independent tracks and perform a coordinated dance in response to audience interaction.
-
-The system integrates three main elements:
-
 - **Input:** A camera captures audience gestures.
 - **Processing:** Processing, Wekinator, and Arduino interpret gestures and coordinate the performance.
 - **Output:** Motors, servos, lighting, and synchronised music produce the shadow performance.
@@ -71,45 +68,6 @@ The system integrates three main elements:
 ![System Architecture](media/system-architecture.png)
 
 *Figure 1. Overall system architecture.*
-
----
-
-## 1.2 Software Design & Gesture Recognition
-
-The software system connects audience gestures to the physical theatre through **camera-based input, machine learning, and Arduino control**.
-
-Processing handles gesture input and communicates with Wekinator, which uses a trained model to recognise the audience's **Heart Gesture**. The recognition result is translated into commands that trigger character movements and the dance sequence.
-
-### A. Gesture Recognition & Machine Learning
-
-The camera captures audience gestures, while Processing extracts and sends input features to Wekinator for classification.
-
-Wekinator is trained to distinguish the Heart Gesture from other inputs, allowing the system to respond to a recognised interaction.
-
-![Gesture Recognition](media/software/gesture-recognition.jpg)
-
-*Figure 2. Camera input and Wekinator training.*
-
-### B. Interaction Logic & Arduino Control
-
-Once a valid gesture is recognised, Processing uses the current interaction state to determine when to send commands to Arduino.
-
-Arduino controls the motors and servos, coordinating the characters' horizontal movement and rotation. Music transitions are synchronised with the performance sequence.
-
-The state-based approach prevents repeated gesture inputs from interrupting an active performance.
-
-![Software Control Flow](media/software/control-flow.png)
-
-*Figure 3. Software processing and Arduino control.*
-
-**Software Workflow:**
-
-`Camera → Processing → Wekinator → Interaction Logic → Arduino → Motors & Servos`
-
-**Detailed Documentation:**
-
-- [Software Implementation & Source Code](code/README.md)
-- [Gesture Recognition & Wekinator](code/gesture-recognition/README.md)
 
 ---
 
@@ -214,6 +172,45 @@ Lighting tests focus on reducing **double shadows**, maintaining consistent proj
 [Lighting Installation & Projection Testing](hardware/lighting/README.md)
 
 ---
+
+
+## 1.3 Software Design & Gesture Recognition
+
+The software system connects audience gestures to the physical theatre through **camera-based input, machine learning, and Arduino control**.
+
+Processing handles gesture input and communicates with Wekinator, which uses a trained model to recognise the audience's **Heart Gesture**. The recognition result is translated into commands that trigger character movements and the dance sequence.
+
+### A. Gesture Recognition & Machine Learning
+
+The camera captures audience gestures, while Processing extracts and sends input features to Wekinator for classification.
+
+Wekinator is trained to distinguish the Heart Gesture from other inputs, allowing the system to respond to a recognised interaction.
+
+![Gesture Recognition](media/software/gesture-recognition.jpg)
+
+*Figure 2. Camera input and Wekinator training.*
+
+### B. Interaction Logic & Arduino Control
+
+Once a valid gesture is recognised, Processing uses the current interaction state to determine when to send commands to Arduino.
+
+Arduino controls the motors and servos, coordinating the characters' horizontal movement and rotation. Music transitions are synchronised with the performance sequence.
+
+The state-based approach prevents repeated gesture inputs from interrupting an active performance.
+
+![Software Control Flow](media/software/control-flow.png)
+
+*Figure 3. Software processing and Arduino control.*
+
+**Software Workflow:**
+
+`Camera → Processing → Wekinator → Interaction Logic → Arduino → Motors & Servos`
+
+**Detailed Documentation:**
+
+- [Software Implementation & Source Code](code/README.md)
+- [Gesture Recognition & Wekinator](code/gesture-recognition/README.md)
+
 
 ## 1.4 Control & Communication
 
