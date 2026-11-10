@@ -3,11 +3,12 @@ dataset_sender.py: play the images of ONE class into Wekinator, so it can be tra
 
 dataset/<class>/*.jpg -> MediaPipe -> 63 normalised floats -> OSC /wek/inputs -> Wekinator
 
-Each image is sent as a short burst, then the next image, looping until you stop.
+Each image is sent for a while (--burst seconds), then the next image, looping until you stop.
+A window shows the image that is being sent. Press q or Esc in the window (or Stop) to quit.
 In Wekinator you set the class value and press Start/Stop recording yourself.
 
 Usage (PyCharm: Run > Edit Configurations > Parameters):
-    dataset_sender.py --class heart [--dataset dataset] [--burst 0.5] [--rate 30]
+    dataset_sender.py --class heart [--dataset dataset] [--burst 10] [--rate 30]
 """
 import argparse
 import itertools
@@ -15,6 +16,7 @@ import sys
 import time
 from pathlib import Path
 
+import cv2   # OpenCV: only used to show the image window (installed with mediapipe)
 from pythonosc.udp_client import SimpleUDPClient
 
 # Reuse the exact same detection and normalisation as the single-image sender.
@@ -25,8 +27,11 @@ from landmarks_sender import (
 
 # ---- Settings (change here, not in the code below) ----
 DEFAULT_DATASET = Path(__file__).parent / "dataset"   # holds one sub-folder per class
-DEFAULT_BURST_S = 0.5                                 # seconds each image is sent for
+DEFAULT_BURST_S = 5.0                                # seconds each image is sent for
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
+WINDOW_NAME = "Image sent to Wekinator"
+WINDOW_MAX_HEIGHT = 600                               # big photos are shrunk to fit the screen
+QUIT_KEYS = (ord("q"), 27)                            # q or Esc
 
 
 def parse_args():
@@ -55,15 +60,25 @@ def find_images(class_folder):
     return sorted(images)                         # sorted: same order every run
 
 
+def load_picture(path):
+    """Load an image for the window, shrunk so it fits on the screen."""
+    picture = cv2.imread(str(path))
+    height = picture.shape[0]
+    if height > WINDOW_MAX_HEIGHT:
+        scale = WINDOW_MAX_HEIGHT / height
+        picture = cv2.resize(picture, None, fx=scale, fy=scale)
+    return picture
+
+
 def load_messages(detector, images):
-    """Detect every image once. Return [(image path, 63 floats)] for the images with a hand."""
+    """Detect every image once. Return [(path, 63 floats, picture)] for the images with a hand."""
     messages = []
     for path in images:
         landmarks = detect_landmarks(detector, path)
         if landmarks is None:
             print(f"  skipped (no hand found): {path.name}")
             continue
-        messages.append((path, normalise(landmarks)))
+        messages.append((path, normalise(landmarks), load_picture(path)))
     return messages
 
 
@@ -94,16 +109,33 @@ def main():
           f"record while this runs. Stop with Ctrl+C.")
 
     sent = 0
+    quit_requested = False
     try:
-        for number, (path, values) in itertools.cycle(enumerate(messages, start=1)):
+        for number, (path, values, picture) in itertools.cycle(enumerate(messages, start=1)):
             print(f"image {number}/{len(messages)}: {path.name}")
+
+            # Write the class and image name on a copy of the picture, so you see what is sent
+            shown = picture.copy()
+            label = f"{args.class_name}  {number}/{len(messages)}  {path.name}"
+            cv2.putText(shown, label, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
             burst_end = time.monotonic() + args.burst
             while time.monotonic() < burst_end:     # same image for the whole burst
-                client.send_message(OSC_ADDRESS, values)
+                client.send_message(OSC_ADDRESS, values)      # send the 63 values
                 sent += 1
-                time.sleep(interval)
+                cv2.imshow(WINDOW_NAME, shown)                # show the image in the window
+                # waitKey keeps the window alive AND is our pause between messages (in ms)
+                key = cv2.waitKey(max(1, int(interval * 1000)))
+                if key in QUIT_KEYS:
+                    quit_requested = True
+                    break
+            if quit_requested:
+                break
+        print(f"\nStopped after {sent} messages.")
     except KeyboardInterrupt:   # Ctrl+C or PyCharm's Stop button
         print(f"\nStopped after {sent} messages.")
+    finally:
+        cv2.destroyAllWindows()   # close the image window
 
 
 if __name__ == "__main__":
