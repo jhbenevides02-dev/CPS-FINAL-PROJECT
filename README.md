@@ -9,17 +9,15 @@ This repository contains the design, hardware documentation, software, and testi
 
 Inspired by Plato's *Allegory of the Cave*, the project explores how light angles, mechanical movement, and audience interaction can transform shadows and challenge our perception of reality.
 
+[Introduce the final installation, its physical structure, mechanical movement, lighting, and interactive features.]
+
+![Shadow Theatre](media/shadow-theatre.jpg)
+
 ## Team Members
 
 - [Name]
 - [Name]
 - [Name]
-
-## The Shadow Theatre
-
-[Introduce the final installation, its physical structure, mechanical movement, lighting, and interactive features.]
-
-![Shadow Theatre](media/shadow-theatre.jpg)
 
 ## How It Works
 
