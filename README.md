@@ -132,6 +132,22 @@ The modular structure was designed for stability, ease of fabrication, and acces
 
 [Theatre Frame Design & Assembly](hardware/mechanical/theatre-frame/README.md)
 
+
+#### Exterior Enclosure & Finishing
+
+The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance.
+
+The enclosure is designed to maintain access to internal mechanisms while providing a defined viewing area for the shadow performance.
+
+Surface finishing and painting are used to establish the visual identity of the theatre and distinguish the performance space from its supporting structure.
+
+![Exterior Enclosure](media/mechanical/exterior-enclosure.jpg)
+
+*Figure. Exterior enclosure design and final surface finishing.*
+
+[Exterior Enclosure & Finishing Documentation](hardware/mechanical/exterior-enclosure/README.md)
+
+
 ### 1.3.2 Motion Transmission & Character Mechanism
 
 The movement system integrates **two independent linear tracks, belt-driven carriages, and modular servo mechanisms** to create coordinated movements between the two shadow characters.
@@ -267,44 +283,150 @@ The state-based sequence prevents conflicting commands and supports coordinated 
 
 ---
 
+
 ## 3. Mechanical & Electrical Setup
 
-### 3.1 Safety and Power-Off Check
+### 3.1 Mechanical Assembly
 
-1. Disconnect the system from all power sources.
-2. Check for loose wires or exposed electrical connections.
-3. Confirm that moving mechanisms are unobstructed.
-4. [Add project-specific safety checks.]
+This section describes the physical assembly of the shadow theatre, from the wooden supporting frame to the internal motion system, character mechanisms, and exterior enclosure.
 
-### 3.2 Mechanical Assembly
+#### 3.1.1 Theatre Frame Assembly
 
-[Describe the assembly process of the theatre structure, shadow puppets, and moving mechanisms.]
+The main frame is assembled using pre-cut wooden strips and custom 3D-printed connectors.
 
-1. [Assembly step 1]
-2. [Assembly step 2]
-3. [Assembly step 3]
+1. Prepare the wooden strips and printed connectors.
+2. Assemble the main supporting frame.
+3. Secure the joints and check structural alignment.
+4. Prepare mounting positions for the internal mechanisms.
 
-![Mechanical Assembly](media/mechanical-assembly.png)
+![Theatre Frame Assembly](media/assembly/frame-assembly.jpg)
 
-### 3.3 Electrical Connections
+*Figure. Theatre frame construction and assembly.*
 
-[Describe how sensors, motors, lights, and the microcontroller are connected.]
+[Detailed Frame Assembly Guide](docs/assembly/frame-assembly.md)
 
-| Component | Pin / Connection | Function |
-|---|---|---|
-| [Component 1] | [Pin] | [Function] |
-| [Component 2] | [Pin] | [Function] |
+#### 3.1.2 Internal Motion System Assembly
 
-![Circuit Diagram](media/circuit-diagram.png)
+The dual-track transmission system is installed inside the completed theatre frame.
 
-### 3.4 Lighting & Shadow Alignment
+1. Install and align the linear guide rods.
+2. Mount the motors and timing pulleys.
+3. Install the GT2 timing belts and adjust their tension.
+4. Attach the linear bearings and sliding carriages.
+5. Connect each carriage to its corresponding timing belt.
+6. Manually check the full movement range of both tracks.
+
+![Motion System Assembly](media/assembly/motion-assembly.jpg)
+
+*Figure. Dual-track transmission and sliding carriage installation.*
+
+[Detailed Motion System Assembly Guide](docs/assembly/motion-system.md)
+
+#### 3.1.3 Servo Modules & Silhouette Assembly
+
+The laser-cut characters are mounted onto modular servo mechanisms attached to the sliding carriages.
+
+1. Prepare and laser-cut the Catrina and Mariachi silhouettes.
+2. Assemble the 3D-printed servo holders.
+3. Install the servo modules onto the carriages.
+4. Attach the silhouettes to their corresponding holders.
+5. Check the attachment stability and rotation clearance.
+
+![Character Assembly](media/assembly/character-assembly.jpg)
+
+*Figure. Laser-cut silhouettes and modular servo installation.*
+
+[Detailed Character Assembly Guide](docs/assembly/character-assembly.md)
+
+#### 3.1.4 Exterior Enclosure & Finishing
+
+The exterior panels are prepared and installed to create the final theatrical appearance.
+
+1. Prepare the exterior enclosure panels.
+2. Check their fit against the assembled frame.
+3. Complete surface preparation and painting.
+4. Allow the finish to cure.
+5. Install the panels while maintaining access to internal mechanisms.
+
+![Exterior Enclosure](media/assembly/exterior-enclosure.jpg)
+
+*Figure. Exterior enclosure fabrication, painting, and installation.*
+
+[Detailed Enclosure & Finishing Guide](docs/assembly/exterior-enclosure.md)
+
+---
+
+### 3.2 Electrical Setup
+
+This section covers the electrical design, hardware connections, power distribution, and lighting installation after the mechanical structure has been assembled.
+
+#### 3.2.1 Electrical Safety & Preparation
+
+Before connecting or adjusting electrical components:
+
+1. Disconnect all power sources.
+2. Check for damaged cables and exposed connections.
+3. Confirm that electrical components are securely mounted.
+4. Verify the voltage and current requirements of motors, servos, and lighting.
+5. Ensure that cables will not interfere with moving mechanisms.
+
+#### 3.2.2 Circuit Connections
+
+The electrical circuit connects Arduino to the motor drivers, servo modules, and lighting components.
+
+1. Connect the motor drivers to the Arduino.
+2. Connect the drive motors to their respective drivers.
+3. Connect the servo signal and power cables.
+4. Connect the lighting system.
+5. Verify power distribution and grounding.
+6. Secure the wiring away from the moving mechanisms.
+
+![Circuit Diagram](media/electrical/circuit-diagram.png)
+
+*Figure. Electrical circuit and hardware connections.*
+
+[Detailed Circuit & Wiring Guide](docs/electrical/circuit-design.md)
+
+#### 3.2.3 Lighting Installation & Shadow Alignment
+
+1. Install the translucent projection screen.
+2. Mount the light sources inside the theatre.
+3. Adjust the light angles and projection distances.
+4. Test shadow sharpness and scale.
+5. Minimise unwanted overlapping or double shadows.
+6. Secure the final lighting positions.
+
+![Lighting Setup](media/assembly/lighting-setup.jpg)
+
+*Figure. Lighting installation and shadow alignment.*
+
+[Detailed Lighting Setup Guide](docs/assembly/lighting-setup.md)
+
+#### 3.2.4 Power-On & System Check
+
+Before running the software:
+
+1. Verify all electrical connections and power supply ratings.
+2. Check that both carriages can move freely by hand with power disconnected.
+3. Ensure all moving parts are clear of cables and obstacles.
+4. Power on the control system using the verified supply configuration.
+5. Test each motor and servo individually at low speed.
+6. Verify lighting operation.
+7. Proceed to software calibration.
+
+![System Check](media/electrical/system-check.jpg)
+
+*Figure. Completed installation and hardware verification.*
+
+
+### 3.3 Lighting & Shadow Alignment
 
 1. [Position the projection screen.]
 2. [Adjust the light source angle.]
 3. [Position the shadow objects.]
 4. [Check the projected shadows and movement range.]
 
-### 3.5 Power-On Check
+### 3.4 Power-On Check
 
 [Describe the checks required before switching on the complete system.]
 
