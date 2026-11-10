@@ -24,13 +24,15 @@ const unsigned long RST_HOLD_MS = 5000; // wait to restart the bucle
 
 // ---------------------------------------------------------------- Motion TODO
 const long  DANCE_STEPS   = 200;   // dance wiggle amplitude
-const int   DANCE_REPEATS = 3;     // number of wiggles
+const int   DANCE_REPEATS = 2;     // number of wiggles
 const float HOMING_SPEED  = 200;   // steps/s while homing
 const long  HOMING_MARGIN = 1000;   // extra steps beyond the rail before homing gives up
 
 // ----------------------------------------------------------------- Linghting
 
 const uint8_t reflectorPin = 14; // main reflector pin
+
+
 
 // ---------------------------------------------------------------- State machine states
 enum State : uint8_t { IDLE, HOMING, MOVE_12, MOVE_21, HOLD, DANCE, EXIT };
@@ -45,6 +47,7 @@ struct ActorSetup {
   float speed;       // steps/s
   float accel;       // steps/s^2
   uint8_t homePin;   // home switch to GND, active LOW (INPUT_PULLUP)
+                    // pins 15 and 16 for servo motor control. 15 for catrina, 16 for the mariachi
 };
 
 const ActorSetup CATRINA_SETUP = { // dir +1 starts on the lefit, dir -1 starts from the right
@@ -69,6 +72,7 @@ struct ActorState {
   int  count = 0;
   int  danceIdx = 0;
   unsigned long stateStartMs = 0;
+  bool danceOut = true; // next dance move goes toward home
 };
 
 ActorState catrinaState;
@@ -185,13 +189,26 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
   case MOVE_21:
 
     if (stepper.distanceToGo()==0 || homeSwitchPressed(setup)){// once it has reached pos 1 or switch the home
+        
+        if (homeSwitchPressed(setup)) stepper.setCurrentPosition(0);// re-zero home
         Serial.println ("In Pos 1");
         setState(setup,actor,HOLD); // hold for HOLD_MS for the next action or exit
     }
     break;
   case HOLD:
 
-    if (millis()-actor.stateStartMs >= HOLD_MS && actor.count<2){
+    // check if a heart geture have been detected and received. Then trigger the DANCE event
+    if (actor.heartGesture && actor.count<2 && !actor.heartCast){
+      actor.heartCast = true;
+      actor.heartGesture = false;
+      if (actor.count == 1) actor.count=2; // in case the gesture have been received in the first cycle.
+      actor.danceIdx = 0;
+      stepper.moveTo (pos2(setup)); // First go to the center of the stage
+      setState(setup,actor, DANCE); // set DANCE state
+      actor.danceIdx = 0;
+      actor.danceOut = true;
+    }
+    else if (millis()-actor.stateStartMs >= HOLD_MS && actor.count<2){// keep going with
           actor.count +=1; // now count is 2
           stepper.moveTo(pos2(setup)); // move to pos 2
           setState(setup,actor,MOVE_12);
@@ -199,11 +216,35 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
     else if (actor.count>=2){
 
       stepper.disableOutputs();
-      digitalWrite(reflectorPin, HIGH); // Turns off reflector
       setState(setup,actor,EXIT);
-
+      digitalWrite(reflectorPin, HIGH); //if (!anyShowing()) the last actor to finish turning off
+      // Create anyShowing helper
     }
-    
+    break;
+  
+  case DANCE:
+
+    if (stepper.distanceToGo() == 0) {                 // previous move finished
+
+      long stagePos  = pos2(setup);                                // end of the rail
+      long wigglePos = stagePos - setup.direction * DANCE_STEPS;   // a bit toward home
+
+      if (actor.danceIdx >= 2 * DANCE_REPEATS) {       // all wiggles done
+        stepper.moveTo(pos1(setup));                   // go home
+        setState(setup, actor, MOVE_21);
+      }
+      else {
+        if (actor.danceOut) {
+          stepper.moveTo(wigglePos);                   // toward home
+        }
+        else {
+          stepper.moveTo(stagePos);                    // back to the centre of the stage
+        }
+        actor.danceOut = !actor.danceOut;              // flip for the next move
+        actor.danceIdx++;                              // one more move done
+      }
+    }
+
     break;
   case EXIT:
     if (millis()-actor.stateStartMs >= RST_HOLD_MS){
@@ -227,7 +268,11 @@ void sendStartEvent(ActorState &actor){
 }
 
 // Raises heartGesture for one actor, only if it is enabled and not in IDLE or HOMING.
-void sendHeartGesture(ActorState &actor);
+void receiveHeartGesture(ActorState &actor){
+
+  if (actor.enabled && actor.state != IDLE && actor.state != HOMING) actor.heartGesture = true;// Set actor state to true
+
+}
 
 // Reads the Serial Monitor: 's' = startEvent, 'h' = heartGesture, 'p' = print status (all actors).
 void handleSerial(){
@@ -237,6 +282,11 @@ void handleSerial(){
       sendStartEvent(catrinaState);
       sendStartEvent(mariachiState);
       Serial.println("Start Show");
+    }
+    if (c == 'h'){
+      receiveHeartGesture(catrinaState);
+      receiveHeartGesture(mariachiState);
+      Serial.println("Dance!");
     }
   }
 }
