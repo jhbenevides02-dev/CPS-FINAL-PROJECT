@@ -8,31 +8,37 @@
 //   h = heartGesture (both actors)
 //   p = print status
 //
-// Each actor is made of 3 pieces that always travel together:
+// Each actor is made of 4 pieces that always travel together:
 //   xxxSetup   -> fixed values (name, rail limits, speed, home pin)
 //   xxxState   -> values that change while running (state, count, flags)
 //   xxxStepper -> the motor object
+//   xxxServo   -> the servo motor
 //
 // Values marked TODO are placeholders to be replaced with the real ones.
 
 #include <AccelStepper.h>
+#include <Servo.h>
 
 // ---------------------------------------------------------------- Timings (ms) TODO
-const unsigned long T_IDLE_WAIT = 1000;  // wait after startEvent before showing
-const unsigned long HOLD_MS     = 2000;  // max wait in HOLD (tHold)
-const unsigned long RST_HOLD_MS = 5000; // wait to restart the bucle
+const unsigned long T_IDLE_WAIT = 1000;   // wait after startEvent before showing
+const unsigned long HOLD_MS     = 2000;   // max wait in HOLD (tHold)
+const unsigned long RST_HOLD_MS = 5000;   // wait to restart the bucle
+const unsigned long SERVO_MOVE_MS = 600;  // time to let the servo finish rotating
 
 // ---------------------------------------------------------------- Motion TODO
-const long  DANCE_STEPS   = 200;   // dance wiggle amplitude
-const int   DANCE_REPEATS = 2;     // number of wiggles
-const float HOMING_SPEED  = 200;   // steps/s while homing
+const long  DANCE_STEPS   = 1000;   // dance wiggle amplitude
+const long  DANCE_SPACE   = 1000; 
+const int   DANCE_REPEATS = 2;      // number of wiggles
+const float HOMING_SPEED  = 200;    // steps/s while homing
 const long  HOMING_MARGIN = 1000;   // extra steps beyond the rail before homing gives up
+const int SERVO_REST = 0;           // servo home position
+const int SERVO_A = 90;             // servo pos A
+const int SERVO_B = 5;              // servo pos B
+
 
 // ----------------------------------------------------------------- Linghting
 
 const uint8_t reflectorPin = 14; // main reflector pin
-
-
 
 // ---------------------------------------------------------------- State machine states
 enum State : uint8_t { IDLE, HOMING, MOVE_12, MOVE_21, HOLD, DANCE, EXIT };
@@ -47,17 +53,18 @@ struct ActorSetup {
   float speed;       // steps/s
   float accel;       // steps/s^2
   uint8_t homePin;   // home switch to GND, active LOW (INPUT_PULLUP)
+  uint8_t servoPin;
                     // pins 15 and 16 for servo motor control. 15 for catrina, 16 for the mariachi
 };
 
 const ActorSetup CATRINA_SETUP = { // dir +1 starts on the lefit, dir -1 starts from the right
-  // name,     min, max,  dir, speed, accel, homePin   TODO
-  "catrina",   0,   7293, +1,  350,   200,   3 // max step estimated for GT2 pulley and 143mm travel distance
+  // name,     min, max,  dir, speed, accel, homePin, servoPin
+  "catrina",   0,   7293, +1,  350,   200,   3, 15 // max step estimated for GT2 pulley and 143mm travel distance
 };
 
 const ActorSetup MARIACHI_SETUP = {
-  // name,     min, max,  dir, speed, accel, homePin   TODO
-  "mariachi",    0,   6987, +1,  350,   200,   2 // max step estimated for GT2 pulley and 137mm travel distance
+  // name,     min, max,  dir, speed, accel, homePin, servoPin
+  "mariachi",    0,   6987, +1,  350,   200,   2, 16 // max step estimated for GT2 pulley and 137mm travel distance
 };
 
 // ---------------------------------------------------------------- Actor state (changes while running)
@@ -73,6 +80,9 @@ struct ActorState {
   int  danceIdx = 0;
   unsigned long stateStartMs = 0;
   bool danceOut = true; // next dance move goes toward home
+  bool atStage = false; // if the moving is in the middle
+  bool servoWaiting = false;          // true while the servo is rotating (stepper off)
+  unsigned long servoStartMs = 0;     // time when the servo phase started
 };
 
 ActorState catrinaState;
@@ -84,9 +94,14 @@ ActorState mariachiState;
 AccelStepper catrinaStepper (AccelStepper::FULL4WIRE,  8,  10,  9,   11);   // driver pins 8, 9, 10, 11
 AccelStepper mariachiStepper(AccelStepper::FULL4WIRE,  4,  6,   5,   7);    // driver pins 4, 5, 6, 7
 
+// ---------------------------------------------------------------- Servo
+Servo catrinaServo;
+Servo mariachiServo;
+
 // ---------------------------------------------------------------- Helpers
 long pos1(const ActorSetup &setup) { return setup.direction * setup.minSteps; } // setup refers to the struct ActorSetup
 long pos2(const ActorSetup &setup) { return setup.direction * setup.maxSteps; }
+long danceStage(const ActorSetup &setup) { return pos2(setup) - setup.direction * DANCE_SPACE; }
 bool homeSwitchPressed(const ActorSetup &setup) { return digitalRead(setup.homePin) == LOW; }
 
 bool anyHoming() {
@@ -94,7 +109,9 @@ bool anyHoming() {
          (mariachiState.enabled && mariachiState.state == HOMING);
 }
 
-
+bool bothAtStage() {
+  return catrinaState.atStage && mariachiState.atStage;
+}
 // Function to update the state of an actor
 void setState(const ActorSetup &setup, ActorState &actor, State newState) {
   actor.state = newState;
@@ -124,6 +141,8 @@ void startShowing(const ActorSetup &setup, ActorState &actor, AccelStepper &step
   actor.heartGesture = false;
   actor.startEvent = false;
   actor.idleWaiting = false;
+  actor.atStage = false;
+  actor.servoWaiting = false;
   stepper.moveTo(pos2(setup)); // move to pos 2
   setState(setup, actor, MOVE_12); // calls next state
   digitalWrite(reflectorPin, LOW);// TUrns On Reflector
@@ -139,7 +158,7 @@ void startShowing(const ActorSetup &setup, ActorState &actor, AccelStepper &step
 //   HOLD    : heartGesture and count == 2 -> DANCE; HOLD_MS elapsed -> move to pos 2 -> MOVE_12
 //   DANCE   : wiggle DANCE_REPEATS times around pos 1 -> MOVE_21
 //   EXIT    : print "done <name>" -> IDLE
-void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper){
+void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper, Servo &servo){
   
   switch (actor.state) {
   case IDLE:
@@ -203,9 +222,9 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
       actor.heartGesture = false;
       if (actor.count == 1) actor.count=2; // in case the gesture have been received in the first cycle.
       actor.danceIdx = 0;
-      stepper.moveTo (pos2(setup)); // First go to the center of the stage
+      actor.atStage = false;
+      stepper.moveTo (danceStage(setup)); // First go to the center of the stage
       setState(setup,actor, DANCE); // set DANCE state
-      actor.danceIdx = 0;
       actor.danceOut = true;
     }
     else if (millis()-actor.stateStartMs >= HOLD_MS && actor.count<2){// keep going with
@@ -224,26 +243,43 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
   
   case DANCE:
 
-    if (stepper.distanceToGo() == 0) {                 // previous move finished
+  {
+    long stagePos  = danceStage(setup);
+    long wigglePos = stagePos - setup.direction * DANCE_STEPS;
 
-      long stagePos  = pos2(setup);                                // end of the rail
-      long wigglePos = stagePos - setup.direction * DANCE_STEPS;   // a bit toward home
+    if (actor.servoWaiting) {                          // servo rotating, stepper is off
+      if (millis() - actor.servoStartMs >= SERVO_MOVE_MS) {
+        actor.servoWaiting = false;
+        stepper.enableOutputs();                       // stepper back on
 
-      if (actor.danceIdx >= 2 * DANCE_REPEATS) {       // all wiggles done
-        stepper.moveTo(pos1(setup));                   // go home
-        setState(setup, actor, MOVE_21);
-      }
-      else {
-        if (actor.danceOut) {
-          stepper.moveTo(wigglePos);                   // toward home
+        if (actor.danceIdx >= 2 * DANCE_REPEATS) {     // the last servo phase was the rest
+          stepper.moveTo(pos1(setup));
+          setState(setup, actor, MOVE_21);
         }
         else {
-          stepper.moveTo(stagePos);                    // back to the centre of the stage
+          if (actor.danceOut) stepper.moveTo(wigglePos);
+          else                stepper.moveTo(stagePos);
+          actor.danceOut = !actor.danceOut;
+          actor.danceIdx++;
         }
-        actor.danceOut = !actor.danceOut;              // flip for the next move
-        actor.danceIdx++;                              // one more move done
       }
     }
+    else if (stepper.distanceToGo() == 0) {            // stepper stopped
+      actor.atStage = true;
+
+      if (bothAtStage()) {                             // both on stage
+        int angle;
+        if (actor.danceIdx >= 2 * DANCE_REPEATS) angle = SERVO_REST;
+        else if (actor.danceOut)                 angle = SERVO_A;
+        else                                     angle = SERVO_B;
+
+        stepper.disableOutputs();                      // stepper off while the servo moves
+        servo.write(angle);
+        actor.servoStartMs = millis();
+        actor.servoWaiting = true;
+      }
+    }
+  }
 
     break;
   case EXIT:
@@ -288,23 +324,35 @@ void handleSerial(){
       receiveHeartGesture(mariachiState);
       Serial.println("Dance!");
     }
+    if (c == 'v'){
+      catrinaServo.write(SERVO_A);
+      mariachiServo.write(SERVO_A);
+      Serial.println("Servos -> A");
+    }
+    if (c == 'r'){
+      catrinaServo.write(SERVO_REST);
+      mariachiServo.write(SERVO_REST);
+      Serial.println("Servos -> REST");
+    }
   }
 }
 
 // ---------------------------------------------------------------- Actor setup and run
 // Configures one actor: home pin as INPUT_PULLUP, stepper max speed and acceleration from its setup.
-void setupActor(const ActorSetup &setup, AccelStepper &stepper){
+void setupActor(const ActorSetup &setup, AccelStepper &stepper, Servo &servo){
   
   pinMode(setup.homePin, INPUT_PULLUP); // Setup carriages limit switches
   stepper.setMaxSpeed(setup.speed);     // Setup stepper max speed
   stepper.setAcceleration(setup.accel); // Setup stepper acceleration
+  servo.write(SERVO_REST); // set servo home
+  servo.attach(setup.servoPin);
 }
 
 // Called every loop for one actor: skip if disabled, call stepper.run(), then updateActor().
-void runActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper){
+void runActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper, Servo &servo){
   
   if (!actor.enabled) return; // only runs if the actor is enable
-  updateActor(setup, actor, stepper); // update actor states (State machine)
+  updateActor(setup, actor, stepper, servo); // update actor states (State machine)
   stepper.run(); // calling run as often as possible
 }
 
@@ -312,8 +360,8 @@ void runActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepper)
 void setup() {
 
   Serial.begin(115200);
-  setupActor(CATRINA_SETUP, catrinaStepper);    // Setup catrina actor
-  setupActor(MARIACHI_SETUP, mariachiStepper);  // Setup mariachi actor
+  setupActor(CATRINA_SETUP, catrinaStepper, catrinaServo);    // Setup catrina actor
+  setupActor(MARIACHI_SETUP, mariachiStepper, mariachiServo);  // Setup mariachi actor
   pinMode(reflectorPin, OUTPUT);
   digitalWrite(reflectorPin, HIGH); // Turns off reflector
   Serial.println("TestPuppetScene ready. Commands: s = startEvent, h = heartGesture, p = status");
@@ -324,6 +372,6 @@ void loop() {
   
   handleSerial();
   
-  runActor(CATRINA_SETUP, catrinaState, catrinaStepper);
-  runActor(MARIACHI_SETUP, mariachiState, mariachiStepper);
+  runActor(CATRINA_SETUP, catrinaState, catrinaStepper, catrinaServo);
+  runActor(MARIACHI_SETUP, mariachiState, mariachiStepper, mariachiServo);
 }
