@@ -32,7 +32,9 @@ OSC_ADDRESS = "/wek/outputs"  # Wekinator's default output message
 DEFAULT_BAUD = 115200         # must match Serial.begin() in the Arduino sketch
 ARDUINO_DEFAULT_PORT = "COM7" # Default COM port used in Arduino Nano Every test board.
 RESET_WAIT_S = 2.0            # the Arduino resets when the port opens; give it time to boot
-KEEPALIVE_S = 0.25            # re-send the same value at most this often
+KEEPALIVE_S = 0.25            # (not used any more: letters are now sent once per hold, see HOLD_S)
+HOLD_S = 3.0                  # a class must be held this long before its letter is sent (45 frames at 15 Hz)
+MAX_GAP_S = 0.5               # no OSC message for longer than this restarts the count
 # Wekinator class number -> character sent to the Arduino. Other classes send nothing.
 CLASS_COMMANDS = {
     2: "s",   # action
@@ -44,7 +46,9 @@ MUSIC_FOLDER = Path(__file__).parent / "music"
 TRACK_FILES = {1: MUSIC_FOLDER / "Track_1.mp3", 2: MUSIC_FOLDER / "Track_2.mp3"}
 TRACK_1_STATES = {"IDLE", "MOVE_12", "MOVE_21", "HOLD"}
 TRACK_2_STATES = {"DANCE"}
-STOP_STATE = "EXIT"           # the music stops when all the actors are in this state
+STOP_STATE = "EXIT"           # an actor reaching this state has finished its show
+SHOW_START_STATE = "MOVE_12"  # an actor entering this state starts a new show (music may start again)
+KNOWN_STATES = TRACK_1_STATES | TRACK_2_STATES | {STOP_STATE, "HOMING"}   # other words are ignored
 MUSIC_FADE_MS = 500           # fade-in when a track starts, fade-out when it stops
 STATE_LINE = re.compile(r"^(\w+)\s*->\s*(\w+)$")   # the Arduino prints e.g. "catrina -> MOVE_12"
 
@@ -85,6 +89,7 @@ class MusicPlayer:
 
     def __init__(self, enabled=True):
         self.states = {}          # latest state of each actor, e.g. {"catrina": "IDLE", "mariachi": "IDLE"}
+        self.done = set()         # actors that reached EXIT and have not started a new show yet
         self.current = None       # track playing now: 1, 2 or None
         self.enabled = False      # becomes True only if pygame and the files are available
         if not enabled:
@@ -112,17 +117,29 @@ class MusicPlayer:
         if not match:
             return
         actor, state = match.groups()
+        if state not in KNOWN_STATES:      # e.g. the sketch also prints "Servos -> A": not a puppet state
+            return
         self.states[actor] = state
 
-        # The show is over when ALL actors are in EXIT. (If we stopped at the first one, the other
-        # actor's next line, e.g. MOVE_21, would start track 1 again for a moment.)
-        if all(s == STOP_STATE for s in self.states.values()):
-            self.stop_music()
-        elif TRACK_2_STATES & set(self.states.values()):   # any actor dancing -> dance music
+        # The Arduino goes EXIT -> IDLE almost at once. So an actor that has reached EXIT is "done":
+        # its IDLE is ignored (otherwise track 1 would restart straight away) until it starts a new
+        # show (MOVE_12).
+        if state == STOP_STATE:
+            self.done.add(actor)
+        elif state == SHOW_START_STATE:
+            self.done.discard(actor)
+
+        # Decide from the actors that are not done (a state line only changes one actor):
+        #   any actor in DANCE                          -> track 2
+        #   else any actor in IDLE/MOVE_12/MOVE_21/HOLD -> track 1
+        #   else (everyone done, or in HOMING)          -> no music
+        current_states = {s for a, s in self.states.items() if a not in self.done}
+        if TRACK_2_STATES & current_states:
             self.play(2)
-        elif state in TRACK_1_STATES:
+        elif TRACK_1_STATES & current_states:
             self.play(1)
-        # other states (HOMING, one actor in EXIT): keep playing the current track
+        else:
+            self.stop_music()
 
     def play(self, track):
         """Start a track (looping). Does nothing if it is already playing."""
@@ -193,34 +210,53 @@ def should_send(value, last_value, last_sent_time, now):
 
 
 def make_handler(ser, dry_run):
-    """Return the function python-osc calls for every /wek/outputs message."""
-    state = {"last_value": None, "last_sent": 0.0, "last_ignored": None}   # remembered between messages
+    """Return the function python-osc calls for every /wek/outputs message.
+    A letter is sent ONCE, only after the same class has been held for HOLD_S seconds."""
+    # Remembered between messages:
+    #   held_class: the class we are counting for, held_since: when it started,
+    #   last_message: when the last OSC message arrived, sent: letter already sent for this hold,
+    #   last_progress: when the progress line was last printed
+    state = {"held_class": None, "held_since": 0.0, "last_message": 0.0,
+             "sent": False, "last_progress": 0.0}
 
     def on_outputs(address, *values):
         if not values:
             return
         value = int(round(values[0]))        # Wekinator sends the class as a float, e.g. 2.0
         print(f"[osc] {address} {values}")
+        now = time.monotonic()
+
+        # A different class, or a gap in the messages, starts a new count from zero
+        if value != state["held_class"] or now - state["last_message"] > MAX_GAP_S:
+            if state["held_class"] is not None and value != state["held_class"]:
+                print(f"[bridge] class changed {state['held_class']} -> {value}: count restarts")
+            state["held_class"] = value
+            state["held_since"] = now
+            state["sent"] = False
+            state["last_progress"] = now
+        state["last_message"] = now
+        held_for = now - state["held_since"]
 
         # Turn the class number into the character for the Arduino (2 -> 's', 3 -> 'h')
         command = CLASS_COMMANDS.get(value)
         if command is None:                  # a class with no command (e.g. 1): send nothing
-            if value != state["last_ignored"]:
-                print(f"[bridge] class {value} has no command, nothing sent")
-                state["last_ignored"] = value
-            state["last_value"] = None       # so the next real class is sent straight away
             return
-        state["last_ignored"] = None
 
-        now = time.monotonic()
-        if should_send(value, state["last_value"], state["last_sent"], now):
-            if dry_run:
-                print(f"[dry-run] would send '{command}' (class {value})")
-            else:
-                ser.write((command + COMMAND_ENDING).encode())   # the character, as bytes
-                print(f"[serial] sent '{command}' (class {value})")
-            state["last_value"] = value
-            state["last_sent"] = now
+        if state["sent"]:                    # already sent for this hold: wait for a new gesture
+            return
+        if held_for < HOLD_S:                # not held long enough yet
+            if now - state["last_progress"] >= 1.0:   # progress line about once a second
+                print(f"[bridge] class {value} held {held_for:.1f} / {HOLD_S:.1f} s")
+                state["last_progress"] = now
+            return
+
+        # Held long enough: send the letter once
+        if dry_run:
+            print(f"[dry-run] would send '{command}' (class {value}, held {held_for:.1f} s)")
+        else:
+            ser.write((command + COMMAND_ENDING).encode())   # the character, as bytes
+            print(f"[serial] sent '{command}' (class {value}, held {held_for:.1f} s)")
+        state["sent"] = True
 
     return on_outputs
 

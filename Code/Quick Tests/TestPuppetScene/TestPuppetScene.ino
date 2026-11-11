@@ -32,8 +32,6 @@ const int   DANCE_REPEATS = 2;      // number of wiggles
 const float HOMING_SPEED  = 200;    // steps/s while homing
 const long  HOMING_MARGIN = 1000;   // extra steps beyond the rail before homing gives up
 const int SERVO_REST = 0;           // servo home position
-const int SERVO_A = 90;             // servo pos A
-const int SERVO_B = 5;              // servo pos B
 
 
 // ----------------------------------------------------------------- Linghting
@@ -54,17 +52,18 @@ struct ActorSetup {
   float accel;       // steps/s^2
   uint8_t homePin;   // home switch to GND, active LOW (INPUT_PULLUP)
   uint8_t servoPin;
-                    // pins 15 and 16 for servo motor control. 15 for catrina, 16 for the mariachi
+  int servoA;        // servo angle for the "out" move
+  int servoB;       // servo angle for the "in" move
 };
 
 const ActorSetup CATRINA_SETUP = { // dir +1 starts on the lefit, dir -1 starts from the right
-  // name,     min, max,  dir, speed, accel, homePin, servoPin
-  "catrina",   0,   7293, +1,  350,   200,   3, 15 // max step estimated for GT2 pulley and 143mm travel distance
+  // name,     min, max,  dir, speed, accel, homePin, servoPin, servoA, servoB
+  "catrina",   0,   7293, +1,  350,   200,   3, 15, 90, 0 // max step estimated for GT2 pulley and 143mm travel distance
 };
 
 const ActorSetup MARIACHI_SETUP = {
-  // name,     min, max,  dir, speed, accel, homePin, servoPin
-  "mariachi",    0,   6987, +1,  350,   200,   2, 16 // max step estimated for GT2 pulley and 137mm travel distance
+  // name,     min, max,  dir, speed, accel, homePin, servoPin,  servoA, servoB
+  "mariachi",    0,   6987, +1,  350,   200,   2, 16, 110, 0 // max step estimated for GT2 pulley and 137mm travel distance
 };
 
 // ---------------------------------------------------------------- Actor state (changes while running)
@@ -107,6 +106,15 @@ bool homeSwitchPressed(const ActorSetup &setup) { return digitalRead(setup.homeP
 bool anyHoming() {
   return (catrinaState.enabled && catrinaState.state == HOMING) ||
          (mariachiState.enabled && mariachiState.state == HOMING);
+}
+
+bool actorReady(const ActorState &actor) { //An actor is ready when its state is IDLE and it has finished its first homing.
+  return actor.state == IDLE && !actor.firstTime;
+}
+
+bool sceneReady() {
+  return (!catrinaState.enabled  || actorReady(catrinaState)) &&
+         (!mariachiState.enabled || actorReady(mariachiState));
 }
 
 bool bothAtStage() {
@@ -270,8 +278,8 @@ void updateActor(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
       if (bothAtStage()) {                             // both on stage
         int angle;
         if (actor.danceIdx >= 2 * DANCE_REPEATS) angle = SERVO_REST;
-        else if (actor.danceOut)                 angle = SERVO_A;
-        else                                     angle = SERVO_B;
+        else if (actor.danceOut)                 angle = setup.servoA;
+        else                                     angle = setup.servoB;
 
         stepper.disableOutputs();                      // stepper off while the servo moves
         servo.write(angle);
@@ -300,7 +308,7 @@ void printStatus(const ActorSetup &setup, ActorState &actor, AccelStepper &stepp
 
 // Raises startEvent for one actor, only if it is enabled and in IDLE.
 void sendStartEvent(ActorState &actor){
-  if (actor.enabled && actor.state == IDLE) actor.startEvent = true; // set start show event to true.
+  if (actor.enabled && actorReady(actor)) actor.startEvent = true; // set start show event to true.
 }
 
 // Raises heartGesture for one actor, only if it is enabled and not in IDLE or HOMING.
@@ -315,9 +323,14 @@ void handleSerial(){
   while (Serial.available()){
     char c = Serial.read();
     if (c == 's'){
-      sendStartEvent(catrinaState);
-      sendStartEvent(mariachiState);
-      Serial.println("Start Show");
+      if (sceneReady()) {
+        sendStartEvent(catrinaState);
+        sendStartEvent(mariachiState);
+        Serial.println("Start Show");
+      }
+      else {
+        Serial.println("Not ready, start ignored");
+      }
     }
     if (c == 'h'){
       receiveHeartGesture(catrinaState);
@@ -325,8 +338,8 @@ void handleSerial(){
       Serial.println("Dance!");
     }
     if (c == 'v'){
-      catrinaServo.write(SERVO_A);
-      mariachiServo.write(SERVO_A);
+      catrinaServo.write(CATRINA_SETUP.servoA);
+      mariachiServo.write(MARIACHI_SETUP.servoA);
       Serial.println("Servos -> A");
     }
     if (c == 'r'){
