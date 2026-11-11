@@ -8,11 +8,19 @@ Usage (PyCharm: Run > Edit Configurations > Parameters):
     bridge.py --dry-run          (no Arduino: just print what would be sent)
 """
 import argparse
+import os
+import re
 import sys
 import threading
 import time
+from pathlib import Path
 
 import serial   # this is the "pyserial" package (never install the package called "serial")
+os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")   # no welcome banner in the console
+try:
+    import pygame   # plays the music (pip install pygame). The bridge still works without it.
+except ImportError:
+    pygame = None
 from pythonosc.osc_server import BlockingOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 
@@ -31,6 +39,14 @@ CLASS_COMMANDS = {
     3: "h",   # heart
 }
 COMMAND_ENDING = ""           # added after the character. "" = just the character, "\n" = a full line
+# Music: which track plays in which Arduino state. HOMING keeps the current track; EXIT stops the music.
+MUSIC_FOLDER = Path(__file__).parent / "music"
+TRACK_FILES = {1: MUSIC_FOLDER / "Track_1.mp3", 2: MUSIC_FOLDER / "Track_2.mp3"}
+TRACK_1_STATES = {"IDLE", "MOVE_12", "MOVE_21", "HOLD"}
+TRACK_2_STATES = {"DANCE"}
+STOP_STATE = "EXIT"           # the music stops when all the actors are in this state
+MUSIC_FADE_MS = 500           # fade-in when a track starts, fade-out when it stops
+STATE_LINE = re.compile(r"^(\w+)\s*->\s*(\w+)$")   # the Arduino prints e.g. "catrina -> MOVE_12"
 
 
 def parse_args():
@@ -40,6 +56,7 @@ def parse_args():
     parser.add_argument("--serial-port", default=ARDUINO_DEFAULT_PORT, help="Arduino COM port, e.g. COM5 (required unless --dry-run)")
     parser.add_argument("--baud", type=int, default=DEFAULT_BAUD, help="serial baud rate")
     parser.add_argument("--dry-run", action="store_true", help="no serial port: only print")
+    parser.add_argument("--no-music", action="store_true", help="do not play the music tracks")
     args = parser.parse_args()
     if not args.dry_run and not args.serial_port:
         parser.error("--serial-port is required (or use --dry-run)")
@@ -63,8 +80,75 @@ def open_serial(port, baud):
     return ser
 
 
-def read_replies(ser, stop_event):
-    """Background thread: print every line the Arduino sends back (e.g. 'ACK 1')."""
+class MusicPlayer:
+    """Plays track 1 or track 2 (looping), depending on the states the Arduino prints."""
+
+    def __init__(self, enabled=True):
+        self.states = {}          # latest state of each actor, e.g. {"catrina": "IDLE", "mariachi": "IDLE"}
+        self.current = None       # track playing now: 1, 2 or None
+        self.enabled = False      # becomes True only if pygame and the files are available
+        if not enabled:
+            return
+        if pygame is None:
+            print("[music] pygame is not installed (python -m pip install pygame): no music.")
+            return
+        missing = [str(path) for path in TRACK_FILES.values() if not path.is_file()]
+        if missing:
+            print(f"[music] track file(s) not found: {missing}. No music.")
+            return
+        try:
+            pygame.mixer.init()   # opens the computer's audio output
+        except pygame.error as error:
+            print(f"[music] could not open the audio output: {error}. No music.")
+            return
+        self.enabled = True
+        print("[music] ready: track 1 in IDLE/MOVE_12/MOVE_21/HOLD, track 2 in DANCE, stops in EXIT.")
+
+    def on_arduino_line(self, line):
+        """Called for every line from the Arduino. Only state lines ('catrina -> DANCE') matter."""
+        if not self.enabled:
+            return
+        match = STATE_LINE.match(line)
+        if not match:
+            return
+        actor, state = match.groups()
+        self.states[actor] = state
+
+        # The show is over when ALL actors are in EXIT. (If we stopped at the first one, the other
+        # actor's next line, e.g. MOVE_21, would start track 1 again for a moment.)
+        if all(s == STOP_STATE for s in self.states.values()):
+            self.stop_music()
+        elif TRACK_2_STATES & set(self.states.values()):   # any actor dancing -> dance music
+            self.play(2)
+        elif state in TRACK_1_STATES:
+            self.play(1)
+        # other states (HOMING, one actor in EXIT): keep playing the current track
+
+    def play(self, track):
+        """Start a track (looping). Does nothing if it is already playing."""
+        if track == self.current:
+            return
+        pygame.mixer.music.load(str(TRACK_FILES[track]))
+        pygame.mixer.music.play(loops=-1, fade_ms=MUSIC_FADE_MS)   # loops=-1: repeat until changed
+        self.current = track
+        print(f"[music] playing track {track}")
+
+    def stop_music(self):
+        """Fade the music out. The next IDLE starts track 1 again."""
+        if self.current is None:
+            return
+        pygame.mixer.music.fadeout(MUSIC_FADE_MS)   # waits until the fade is finished
+        self.current = None
+        print("[music] stopped")
+
+    def stop(self):
+        if self.enabled:
+            pygame.mixer.music.stop()
+            pygame.mixer.quit()
+
+
+def read_replies(ser, stop_event, music):
+    """Background thread: print every line the Arduino sends back and let the music react to it."""
     while not stop_event.is_set():
         try:
             line = ser.readline().decode(errors="ignore").strip()
@@ -72,6 +156,27 @@ def read_replies(ser, stop_event):
             break
         if line:
             print(f"[arduino] {line}")
+            try:
+                music.on_arduino_line(line)
+            except Exception as error:   # a music problem must never stop the bridge
+                print(f"[music] error: {error}")
+
+
+def simulate_arduino(music):
+    """Dry run only: lines you type in the PyCharm Run console act as the Arduino's state lines.
+    Type 'DANCE' (or the full line 'catrina -> DANCE'). Background thread."""
+    print("[dry-run] To test the music, click in this console and type a state, then Enter: "
+          "IDLE, MOVE_12, MOVE_21, DANCE, HOLD ...")
+    while True:
+        try:
+            text = input().strip()
+        except EOFError:          # the console has no input available
+            return
+        if not text:
+            continue
+        line = text if "->" in text else f"test -> {text.upper()}"   # 'DANCE' -> 'test -> DANCE'
+        print(f"[simulated arduino] {line}")
+        music.on_arduino_line(line)
 
 
 def should_send(value, last_value, last_sent_time, now):
@@ -125,9 +230,13 @@ def main():
 
     ser = None
     stop_event = threading.Event()
-    if not args.dry_run:
+    music = MusicPlayer(enabled=not args.no_music)
+    if args.dry_run:
+        # No Arduino: you type the state lines yourself to test the music
+        threading.Thread(target=simulate_arduino, args=(music,), daemon=True).start()
+    else:
         ser = open_serial(args.serial_port, args.baud)
-        threading.Thread(target=read_replies, args=(ser, stop_event), daemon=True).start()
+        threading.Thread(target=read_replies, args=(ser, stop_event, music), daemon=True).start()
 
     dispatcher = Dispatcher()
     dispatcher.map(OSC_ADDRESS, make_handler(ser, args.dry_run))
@@ -145,6 +254,7 @@ def main():
         print("\nStopped.")
     finally:
         stop_event.set()
+        music.stop()
         if ser is not None:
             ser.close()
 

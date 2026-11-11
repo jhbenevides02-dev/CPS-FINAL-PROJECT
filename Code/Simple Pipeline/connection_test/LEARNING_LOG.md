@@ -26,3 +26,14 @@ Used for the contribution log and the AI-use notice.
 - **Built:** a test sketch for the Arduino Nano Every. It reads one line at a time from serial (115200), turns the built-in LED on and replies `ACK 1` when it gets `1`, and turns the LED off if nothing arrives for 1000 ms. Tested on its own with the Arduino IDE Serial Monitor (Newline).
 - **Written by me:** the whole sketch (serial setup, line reading, LED logic, `millis()` timeout, `Serial.setTimeout(50)` to avoid blocking). Claude gave the spec and reviewed it (initial timestamp, template comments).
 - **Learned:** non-blocking timing with `millis()` instead of `delay()`, why `readStringUntil` can block (and how `setTimeout` limits it), why the 250 ms keep-alive sits well inside the 1000 ms timeout, and that the Nano Every uses the megaAVR core with no old-bootloader option.
+
+## Part 5: full chain test and documentation
+- **Built:** the full chain run (sender, Wekinator, bridge, Arduino LED), `README.md` and `TEAM_GUIDE.md`.
+- **Written by me:** the test run and checks. Claude drafted the README and team guide; the README Troubleshooting section is still to be written by the team.
+- **Learned:** the run order, the pass criteria (LED on while the chain runs, off within about 1 s when the stream stops), and that one class tests the connection and not recognition.
+
+## Beyond the connection test (written by Claude at my request, then run and checked by me)
+- **`dataset_sender.py`:** plays a photo dataset into Wekinator for manual training, and a `--test` mode that shows the landmarks, the true class and Wekinator's answer. `find_images` was written by Claude in a simple form at my request because of time. A `none` class sends photos without a hand as 63 zeros.
+- **`landmarks_sender.py --webcam`:** live capture at 15 messages per second with a landmark preview.
+- **`bridge.py`:** class 2 -> `s` and class 3 -> `h` for the stage Arduino, and music (track 1 in IDLE/MOVE_12/MOVE_21/HOLD, track 2 in DANCE, stop in EXIT) driven by the Arduino's state lines. Tested in dry run by typing states. Not yet tested with the real Arduino.
+- **Learned:** how MediaPipe VIDEO mode and OpenCV capture work, why training and live data must be prepared identically, and how a background thread can drive audio from serial text.

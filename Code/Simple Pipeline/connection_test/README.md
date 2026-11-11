@@ -5,6 +5,10 @@ Prove that a message can travel through the whole CPS pipeline, using one static
 and the built-in LED of the Arduino. This is **not** gesture recognition (see the note
 at the end).
 
+The same folder has since grown into the working pipeline: webcam capture, training from a photo
+dataset, the class-to-letter mapping for the stage Arduino, and music. See "Beyond the connection
+test" below, and `TEAM_GUIDE.md` for the short team version.
+
 ## Pipeline
 ```
 test_hand.jpg
@@ -28,9 +32,12 @@ bridge.py             prints the reply
 ## Files
 | File | What it is |
 |---|---|
-| `environment.yml` | Pinned package versions (Python 3.11, mediapipe, python-osc, pyserial) |
-| `landmarks_sender.py` | Part 1: image -> 63 floats -> OSC `/wek/inputs` |
-| `bridge.py` | Part 3: OSC `/wek/outputs` -> serial text line |
+| `environment.yml` | Pinned package versions (Python 3.11, mediapipe, python-osc, pyserial, pygame) |
+| `landmarks_sender.py` | Part 1: image **or webcam** -> 63 floats -> OSC `/wek/inputs` |
+| `dataset_sender.py` | Plays a photo dataset into Wekinator (training) or tests the trained model (`--test`) |
+| `bridge.py` | Part 3: OSC `/wek/outputs` -> serial (class 2 -> `s`, class 3 -> `h`), plus music |
+| `dataset/<class>/`, `music/` | Training photos per class (`none`, `action`, `heart`), and `Track_1.mp3`, `Track_2.mp3` |
+| `TEAM_GUIDE.md` | Short guide for the team |
 | `connection_test/connection_test.ino` | Part 4: Arduino test sketch (folder name = file name) |
 | `wekinator/` | Saved Wekinator project |
 | `hand_landmarker.task`, `test_hand.jpg`, `no_hand.jpg` | MediaPipe model and test images |
@@ -42,9 +49,9 @@ bridge.py             prints the reply
 2. **Settings > Project > Python Interpreter**: choose a conda environment with Python 3.11
    (see `environment.yml`).
 3. Install the packages inside that environment, from the PyCharm terminal:
-   `python -m pip install mediapipe==1.1.1 python-osc==1.9.3 pyserial==3.5`
-   Install **`pyserial`, never `serial`** (both import as `serial`).
-4. Check: `python -c "import mediapipe, pythonosc, serial; print(hasattr(serial, 'Serial'))"` prints `True`.
+   `python -m pip install mediapipe==1.1.1 python-osc==1.9.3 pyserial==3.5 pygame==2.6.1`
+   Install **`pyserial`, never `serial`** (both import as `serial`). `pygame` is only for the music.
+4. Check: `python -c "import mediapipe, pythonosc, serial, pygame; print(hasattr(serial, 'Serial'))"` prints `True`.
 
 ### PyCharm run configurations
 Create one per script (Run > Edit Configurations > + > Python). Set the script, the
@@ -57,9 +64,15 @@ run at the same time in separate tabs.
 | `sender no hand` | `landmarks_sender.py` | `no_hand.jpg` |
 | `bridge dry run` | `bridge.py` | `--dry-run` |
 | `bridge` | `bridge.py` | `--serial-port COM7` (use your port) |
+| `sender webcam` | `landmarks_sender.py` | `--webcam` |
+| `dataset heart` / `dataset action` / `dataset none` | `dataset_sender.py` | `--class heart` / `--class action` / `--class none` |
+| `dataset test` | `dataset_sender.py` | `--test --classes none,action,heart` |
 
-Optional sender arguments: `--host`, `--port`, `--rate`, `--print-values`.
-Optional bridge arguments: `--osc-port`, `--baud`.
+Optional sender arguments: `--host`, `--port`, `--rate` (default 30, webcam 15), `--print-values`,
+and for the webcam `--camera N`, `--mirror`. Give **either** an image path **or** `--webcam`.
+Optional dataset arguments: `--dataset <folder>`, `--burst <seconds>` (default 5), `--rate`;
+test mode also `--listen-port`.
+Optional bridge arguments: `--osc-port`, `--baud`, `--no-music`.
 
 ### Arduino IDE
 1. *Tools > Board > Boards Manager*: install **Arduino megaAVR Boards** (once).
@@ -86,8 +99,37 @@ Optional bridge arguments: `--osc-port`, `--baud`.
 - Stopping the sender, or stopping Wekinator, turns the LED off within about 1 s.
 - Starting the sender again turns the LED on again.
 
+## Beyond the connection test
+### Webcam
+`landmarks_sender.py --webcam` replaces the image: one detection and one OSC message every 1/15 s,
+63 zeros when no hand is found, a preview window with the landmarks drawn (`q` / `Esc` quits).
+Use the same mirroring (`--mirror` or not) for training and use.
+
+### Training Wekinator from the photo dataset (manual)
+Wekinator project for the stage: 63 inputs, 1 classifier output, **3 classes**, k-NN. Class numbers:
+**1 = none (no gesture), 2 = action, 3 = heart.**
+1. Photos in `dataset/none`, `dataset/action`, `dataset/heart`.
+2. For each class run `dataset_sender.py --class <name>`. It shows each photo and sends it for `--burst`
+   seconds, in a loop. In Wekinator set the class number and press **Start recording**, then stop.
+   For `none`, photos without a hand are sent as 63 zeros (like the live sender).
+3. **Train**, **Run**, save the project in `wekinator/`.
+4. Test: `dataset_sender.py --test --classes none,action,heart` (Wekinator in Run mode, bridge stopped).
+   Use **unseen** photos (`--dataset dataset_test`) for a real accuracy figure.
+
+### Bridge to the stage Arduino
+Class 2 -> `s`, class 3 -> `h` (`CLASS_COMMANDS` in `bridge.py`), class 1 sends nothing. The character is
+sent alone (`COMMAND_ENDING = ""`). While a class is held, its letter is repeated about every 250 ms.
+
+### Music
+The bridge reads the Arduino's `<actor> -> <STATE>` lines (e.g. `catrina -> DANCE`): track 1
+(`music/Track_1.mp3`) in `IDLE`, `MOVE_12`, `MOVE_21`, `HOLD`; track 2 (`Track_2.mp3`) while any actor is in
+`DANCE`; stops when all actors are in `EXIT`; `HOMING` keeps the current track. Test without the Arduino:
+`bridge.py --dry-run`, then type states (`IDLE`, `DANCE`, `HOLD`, `EXIT`) in the console. `--no-music` disables it.
+
 ## Troubleshooting
-<!-- TODO (written by the team): one entry per problem: symptom, cause, fix. -->
+<!-- TODO (written by the team): one entry per problem: symptom, cause, fix. Also cover: camera does not
+open (another program uses it), `[music]` messages (pygame missing, track file missing), port 12000 busy
+(bridge and `dataset_sender.py --test` both listen on it). -->
 
 ## What this test does and does not prove
 With only one class, Wekinator's k-NN classifier outputs 1 for any input, even 63 zeros

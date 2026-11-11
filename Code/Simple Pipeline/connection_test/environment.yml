@@ -12,4 +12,5 @@ dependencies:
       - mediapipe==1.1.1     # hand landmarks (Tasks API)
       - python-osc==1.9.3    # OSC send/receive (import name: pythonosc)
       - pyserial==3.5        # serial port (import name: serial)
+      - pygame==2.6.1        # plays the music in bridge.py (import name: pygame)
       # NEVER add the package called "serial": it clashes with pyserial.
