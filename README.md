@@ -172,7 +172,7 @@ The servo rotates the character around a vertical axis, changing its orientation
 - **Easy Replacement:** Servo modules can be removed or replaced without disassembling the linear carriage.
 - **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
 
-<img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/ce417ab3-41aa-461a-bdfc-6fd891c3046b" /> <img width="1060" height="793" alt="image" src="https://github.com/user-attachments/assets/fad66b37-c354-425b-aa1e-7997f4d8adf3" />
+<img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
 
 *Figure 5. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
 
@@ -184,18 +184,6 @@ Catrina and Mariachi are designed as two contrasting dance characters inspired b
 - **Mariachi:** His distinctive hat and costume create a recognisable silhouette and contrasting dance poses.
 
 Both characters are constructed using **two intersecting laser-cut profiles**, combining perpendicular outlines into a lightweight three-dimensional assembly.
-
-Unlike conventional flat shadow puppets, the intersecting profiles create different projected outlines as the characters rotate relative to the light source.
-
-Inspired by rotational dance movements, this approach replaces complex limb-controlled puppetry with a simpler mechanism that creates multiple shadow poses through a single rotational movement.
-
-**Key Design Considerations:**
-
-- **Recognisable Characters:** Distinctive costumes and proportions communicate character identity through shadows.
-- **Intersecting Structure:** Perpendicular profiles create a three-dimensional character assembly.
-- **Dynamic Shadow Projection:** Rotation changes the projected outline to create different poses.
-- **Simplified Mechanism:** Reduces the need for individually articulated limbs.
-- **Lightweight Design:** Laser-cut profiles minimise the load on the servo motors.
 
 ![Laser-Cut Silhouettes](media/mechanical/laser-cut-silhouettes.jpg)
 
@@ -209,6 +197,8 @@ The exterior enclosure surrounds the structural frame and conceals the internal 
 Surface finishing and painting, combined with laser-cut decorative details and red curtains, establish the theatre's visual identity and separate the performance space from its supporting structure.
 
 ![Exterior Enclosure](media/mechanical/exterior-enclosure.jpg)
+<img width="4096" height="3072" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
+<img width="1448" height="1086" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
 
 *Figure 7. Exterior enclosure design and final surface finishing.*
 
