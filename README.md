@@ -1,3 +1,5 @@
+<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/b9e24b85-db18-4926-98fd-cff66fe8bbd9" />
+<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/b7b2cbc2-bfb5-4af7-86d2-4373c04e5834" />
 # CPS Interactive Shadow Theatre — Group 20
 
 _First draft (v0.1 of the new structure). Items marked **[TODO]** still need the team's input or evidence._
@@ -199,6 +201,7 @@ Surface finishing and painting, combined with laser-cut decorative details and r
 ![Exterior Enclosure](media/mechanical/exterior-enclosure.jpg)
 <img width="4096" height="3072" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
 <img width="1448" height="1086" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
+<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
 
 *Figure 7. Exterior enclosure design and final surface finishing.*
 
