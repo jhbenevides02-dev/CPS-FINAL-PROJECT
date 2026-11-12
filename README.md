@@ -154,10 +154,7 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
 
 - **Shared Linear Guide:** Reduces structural complexity and space requirements.
 - **Independent Belt Drives:** Allow individual control of character movement.
-- **Two-Part Carriage Housing:** Provides stable bearing support and simplifies maintenance.
-- **Extended Belt Clamp:** Improves belt alignment and transmission stability.
-- **Mechanical Homing:** Establishes repeatable starting positions for both characters.
-
+  
 ![Belt Transmission](media/mechanical/belt-drive.jpg)
 
 <img width="1057" height="831" alt="image" src="https://github.com/user-attachments/assets/58268d91-82d6-437c-a696-bb56a2dfe91f" />
