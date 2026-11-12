@@ -109,12 +109,12 @@ The modular construction offers several advantages:
 
 The structure also provides mounting positions for the linear rails, lighting system, projection screen, and exterior enclosure.
 
-![Theatre Frame](media/mechanical/theatre-frame.jpg)
+<img width="1448" height="1086" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/9d7485cd-354a-46c1-b765-bd32b2fc5f89" />
 
 *Figure 2. Theatre frame constructed from wooden strips and custom 3D-printed connectors.*
 
 
-### Motion System & Character Mechanism
+### Motion System & Character Mechanismz
 
 The motion system integrates **a shared linear guide, two independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
 
