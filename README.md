@@ -1,5 +1,4 @@
-<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/b9e24b85-db18-4926-98fd-cff66fe8bbd9" />
-<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/b7b2cbc2-bfb5-4af7-86d2-4373c04e5834" />
+
 # CPS Interactive Shadow Theatre — Group 20
 
 _First draft (v0.1 of the new structure). Items marked **[TODO]** still need the team's input or evidence._
