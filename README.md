@@ -168,14 +168,9 @@ Each sliding carriage supports an **SG90 micro servo**, housed inside a custom 3
 
 The servo rotates the character around a vertical axis, changing its orientation relative to the light source.
 
-The detachable servo module offers several practical advantages:
-
 - **Quick Testing:** Individual servos can be accessed and tested to identify movement issues.
 - **Easy Replacement:** Servo modules can be removed or replaced without disassembling the linear carriage.
 - **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
-- **Reusable Design:** The same modular structure can be used for both characters.
-
-
 
 <img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/ce417ab3-41aa-461a-bdfc-6fd891c3046b" /> <img width="1060" height="793" alt="image" src="https://github.com/user-attachments/assets/fad66b37-c354-425b-aa1e-7997f4d8adf3" />
 
