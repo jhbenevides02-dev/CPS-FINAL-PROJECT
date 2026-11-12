@@ -93,10 +93,10 @@ The bridge also plays the music, following the state the Arduino reports.
 ---
 
 # 2. System design
+### Motion System & Character Mechanism
 <img width="1448" height="1086" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" />
 
 *Figure 1. The overall mechanical structure of theatre 
-### Motion System & Character Mechanism
 
 The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
 
