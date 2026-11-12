@@ -65,6 +65,25 @@ The audience uses two hand gestures in front of the webcam:
 
 `Hand gesture → Webcam → Python (MediaPipe hand landmarks) → Wekinator (classifier) → Python bridge → Arduino → Steppers, servos, reflector → Shadow performance`
 
+```
+Webcam (or a test image)
+     |
+     v
+landmarks_sender.py   MediaPipe -> 21 landmarks x (x, y, z) = 63 floats (normalised)
+     |  OSC /wek/inputs, UDP, 127.0.0.1:6448
+     v
+Wekinator             classifier, k-NN, 3 classes
+     |  OSC /wek/outputs, UDP, 127.0.0.1:12000
+     v
+bridge.py             class -> one character ('s' or 'h'), plus music
+     |  USB serial, 115200 baud
+     v
+Arduino               stage state machine -> steppers, servos, reflector
+     |  state lines, e.g. "catrina -> DANCE", back over the same serial port
+     v
+bridge.py             changes the music track
+```
+
 The bridge also plays the music, following the state the Arduino reports.
 
 ![System Architecture](Code/Wekinator+PythonPipeline.png)
@@ -271,8 +290,37 @@ Before running the software:
 | `bridge.py` → Arduino | USB serial, 115200 baud | One character: `s` (class 2, action) or `h` (class 3, heart) |
 | Arduino → `bridge.py` | USB serial | Text lines such as `catrina -> DANCE`, used for the music |
 
-- The sender normalises the landmarks: the wrist is the origin and the wrist-to-middle-finger-base distance is the scale. If no hand is found, it sends 63 zeros.
-- While the same class is held, the bridge re-sends its letter about every 250 ms. Class 1 (none) sends nothing.
+Do not change the ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
+
+### Sender (`landmarks_sender.py`)
+
+- Two modes: an image (e.g. `test_hand.jpg`, the reference test) or `--webcam`. Give **either** an image path **or** `--webcam`.
+- Webcam mode: one detection and one OSC message every 1/15 s. A preview window shows the camera with the landmarks drawn; `q` / `Esc` quits.
+- The landmarks are normalised: the wrist is the origin and the wrist-to-middle-finger-base distance is the scale. If no hand is found, 63 zeros are sent, so Wekinator always receives the same number of inputs.
+- One hand only (`num_hands=1`); handedness is not sent.
+- Options: `--host`, `--port`, `--rate` (default 30, webcam 15), `--print-values`, and for the webcam `--camera N` (another camera) and `--mirror` (flip left-right).
+
+### Bridge (`bridge.py`)
+
+- Class to letter (`CLASS_COMMANDS` at the top of `bridge.py`): class 2 → `s`, class 3 → `h`. Class 1 (none) sends nothing.
+- `COMMAND_ENDING` is `""`, so only the character is sent. Set it to `"\n"` if the sketch reads lines.
+- Keep-alive: while the same class stays, the letter is re-sent about every 250 ms (`KEEPALIVE_S`).
+- Waits 2 s after opening the port, because the Arduino resets when the port opens. Arduino replies are read on a background thread.
+- Options: `--serial-port` (default `COM7`), `--osc-port`, `--baud`, `--no-music`, `--dry-run` (no Arduino).
+
+### Music
+
+The bridge reads the Arduino's state lines (`<actor> -> <STATE>`):
+
+| Arduino state | Music |
+|---|---|
+| `IDLE`, `MOVE_12`, `MOVE_21`, `HOLD` | Track 1 (`music/Track_1.mp3`), looping |
+| `DANCE` (any actor) | Track 2 (`music/Track_2.mp3`), looping |
+| `EXIT` (all actors) | Stops with a fade-out. The next `IDLE` starts track 1 again |
+| `HOMING` | Keeps what is playing |
+
+- `--no-music` turns the music off. If `pygame` or a track file is missing, the bridge says so and carries on without music.
+- If the sketch prints the states differently, change `STATE_LINE` in `bridge.py`.
 
 ![Software Pipeline](Code/Wekinator+PythonPipeline.png)
 
@@ -280,15 +328,17 @@ Before running the software:
 
 Each character (actor) runs its own copy of the state machine, without blocking (`millis()`, no `delay()`):
 
-| State | Movement | Music (bridge) |
-|---|---|---|
-| `HOMING` | First power-up only: moves slowly until the home switch is pressed, then zeroes the position | Keeps current track |
-| `IDLE` | Waits for `s` (start) | Track 1 |
-| `MOVE_12` | Moves from position 1 to position 2. Reflector on | Track 1 |
-| `MOVE_21` | Returns to position 1 | Track 1 |
-| `HOLD` | Waits up to 2 s for `h` (heart) | Track 1 |
-| `DANCE` | Both actors go to the centre; servo rotations and wiggles, stepper off while each servo moves | Track 2 |
-| `EXIT` | Steppers off, reflector off; after 5 s back to `IDLE` | Stops (fade-out) |
+| State | Movement |
+|---|---|
+| `HOMING` | First power-up only: moves slowly until the home switch is pressed, then zeroes the position |
+| `IDLE` | Waits for `s` (start) |
+| `MOVE_12` | Moves from position 1 to position 2. Reflector on |
+| `MOVE_21` | Returns to position 1 |
+| `HOLD` | Waits up to 2 s for `h` (heart) |
+| `DANCE` | Both actors go to the centre; servo rotations and wiggles, stepper off while each servo moves |
+| `EXIT` | Steppers off, reflector off; after 5 s back to `IDLE` |
+
+The music for each state is in the Music table above.
 
 ![Control Flowchart](media/control-flowchart.png)
 
@@ -312,11 +362,27 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 
 - **Input:** 63 values per frame (21 MediaPipe hand landmarks × x, y, z), normalised for position and scale. One hand only; handedness is not sent.
 - **Model:** Wekinator, 1 classifier output, **k-nearest neighbours (k-NN)**.
-- **Classes:** 1 = none (no gesture), 2 = action, 3 = heart.
+- **Classes:**
+
+| Class number | Name | Dataset folder | Letter sent to the Arduino |
+|---|---|---|---|
+| 1 | none (no gesture) | `dataset/none` | nothing |
+| 2 | action | `dataset/action` | `s` |
+| 3 | heart | `dataset/heart` | `h` |
+
+**Wekinator settings:** 63 inputs, listening on port `6448`, message `/wek/inputs`. 1 output, classifier, 3 classes, k-NN, sending to `localhost` port `12000`, message `/wek/outputs`.
+
+**Keep these identical between training and live use.** Wekinator learns from whatever it receives while recording, so any difference makes recognition worse:
+
+- same camera, position and lighting, as far as possible
+- same mirroring: the photo dataset is **not** mirrored, so do not use `--mirror` unless the dataset was recorded mirrored
+- same `normalise()` (wrist origin, wrist to middle-finger-base scale)
+- one hand only; handedness is not sent
+- same 63-input order
 
 ### Training data
 
-Photo dataset in `Code/Simple Pipeline/connection_test/dataset/`, played into Wekinator with `dataset_sender.py` (each photo sent for 5 s):
+Photo dataset in `Code/Simple Pipeline/connection_test/dataset/` (`.jpg`, `.jpeg`, `.png`, one folder per class):
 
 | Class | Photos |
 |---|---|
@@ -324,7 +390,17 @@ Photo dataset in `Code/Simple Pipeline/connection_test/dataset/`, played into We
 | action | 31 |
 | heart | 27 |
 
-Photos with no hand in the `none` class are sent as 63 zeros, the same as the live sender. Saved trained project: `wekinator/WekinatorProject/TRAINCLASSIFIER10-11-2026`.
+Saved trained project: `wekinator/WekinatorProject/TRAINCLASSIFIER10-11-2026`.
+
+**How the model is trained (by hand).** `dataset_sender.py` only plays the photos into Wekinator; recording and training are done in Wekinator:
+
+1. Run `dataset_sender.py --class <name>` (e.g. `--class heart`). It shows each photo in a window and sends it for `--burst` seconds (default 5), photo after photo, in a loop.
+2. In Wekinator, set the output class to the class number, press **Start recording** while the script runs, record at least one full pass of the photos, then stop. Stop the script.
+3. Repeat for the other classes. Then **Train**, **Run**, and save the project in `wekinator/`.
+
+- **Class `none`:** photos where no hand is found are **not skipped**. They are sent as 63 zeros, exactly what the live sender sends when it sees no hand, so some photos with no hand at all are included.
+- **Balance:** similar numbers of photos per class, otherwise k-NN leans toward the biggest class.
+- Options: `--dataset <folder>`, `--burst <seconds>`, `--rate`.
 
 [TODO: who is in the photos, lighting and background, mirroring.]
 
@@ -343,8 +419,23 @@ Photos with no hand in the `none` class are sent as 63 zeros, the same as the li
 - The LED turns on and stays on while everything runs.
 - The bridge console shows `[osc]`, `[serial] sent '1'` and `[arduino] ACK 1` lines.
 - Stopping the sender or Wekinator turns the LED off within about 1 s.
+- Starting the sender again turns the LED on again.
 
-This test proves the **connection**, not gesture recognition.
+This test proves the **connection**, not gesture recognition: with only one class, Wekinator's k-NN outputs 1 for any input, even 63 zeros (no hand).
+
+**Status of each part** (before the demo):
+
+| Part | State |
+|---|---|
+| Image → landmarks → OSC → Wekinator → bridge → Arduino LED (connection test) | Built and tested |
+| Live webcam capture (`landmarks_sender.py --webcam`) | Built, tested by the team |
+| Training Wekinator from the photo dataset | Built |
+| Testing the trained model with photos (`dataset_sender.py --test`) | Built, not yet run with new, unseen photos |
+| Bridge sends `s` (action) / `h` (heart) to the Arduino | Built |
+| Music from the Arduino states | Built, tested in `--dry-run`, not yet tested with the real Arduino |
+| Final Arduino sketch | In progress (`Code/Quick Tests/TestPuppetScene`) |
+
+[TODO: update this table after the demo.]
 
 **Other tests in the repo:**
 
@@ -369,11 +460,19 @@ This test proves the **connection**, not gesture recognition.
 | Port 12000 busy | Bridge and `dataset_sender.py --test` both listen on it | Run only one of them |
 | Camera does not open | Another program (Zoom, Teams) is using it | Close the other program |
 | Recognition gets worse live | Camera, lighting or mirroring differs from training | Keep the same set-up and `--mirror` setting as the dataset |
+| `[music]` message and no sound | `pygame` not installed, or a track file is missing | Install `pygame` in the `cps` environment; check `music/Track_1.mp3` and `Track_2.mp3` |
+| `serial.Serial` fails | The package called `serial` was installed instead of `pyserial` | Uninstall `serial`, install `pyserial==3.5` |
+| Bridge sends nothing | Wekinator is not in Run mode, or only class 1 (none) is recognised | Check the Wekinator input indicator and the bridge `[osc]` lines |
 | [TODO] | | |
 
 ## 3.4 ML formal evaluation
 
 `dataset_sender.py --test --classes none,action,heart` sends random photos and compares the true class with Wekinator's answer.
+
+- Wekinator in Run mode, bridge **stopped** (both use port 12000).
+- The window draws the landmarks, shows the true class and Wekinator's answer (green = right, red = wrong or no answer). The console prints a score line per photo.
+- Testing with the **training photos** looks almost perfect and proves little. A real accuracy figure needs **new photos** in a separate folder (`dataset_test/none`, `dataset_test/action`, `dataset_test/heart`), used with `--dataset dataset_test`.
+- Option: `--listen-port`.
 
 [TODO: run with **unseen** photos (`--dataset dataset_test`) and add the confusion matrix and accuracy per class. Compare two models or datasets if possible.]
 
@@ -405,16 +504,92 @@ _Maximum 200 words._
 | Wekinator | [TODO] | Classifier |
 | Arduino IDE + AccelStepper, Servo | [TODO] | Stage sketch |
 
-Pinned versions are in `Code/Simple Pipeline/connection_test/environment.yml`. Full set-up steps are in `Code/Simple Pipeline/connection_test/TEAM_GUIDE.md`.
+Pinned versions are in `Code/Simple Pipeline/connection_test/environment.yml`.
 
-### Run order
+### First-time set-up (once per computer)
+
+**1. Install the tools**
+
+1. **Anaconda** (Windows installer from anaconda.com). Choose "Just Me". "Add Anaconda to PATH" is not needed: PyCharm finds it by itself.
+2. **PyCharm** (Community or Professional, from jetbrains.com). Both can use conda environments.
+3. **Arduino IDE**, then *Tools > Board > Boards Manager* and install **Arduino megaAVR Boards** (for the Arduino Nano Every).
+4. **Wekinator** (desktop app, from wekinator.org). Java is bundled with the current download. If Windows Firewall asks about Java, allow it on private networks.
+5. **Git**, and a clone of this repository.
+
+**2. Open the project in PyCharm**
+
+1. *File > Open* and choose `Code/Simple Pipeline/connection_test`. This folder is the project; do not create a new project or sub-folder.
+2. PyCharm creates a `.idea/` folder. It must not be committed.
+
+**3. Create the Python environment**
+
+1. *File > Settings > Project: connection_test > Python Interpreter*.
+2. **Add Interpreter > Add Local Interpreter > Conda Environment**.
+3. **Conda executable:** if empty, browse to `...\anaconda3\Scripts\conda.exe` (usually `C:\Users\<you>\anaconda3\Scripts\conda.exe`).
+4. **Create new environment**, **Python 3.11**, name `cps`, then **OK**. (To reuse an existing environment, choose **Use existing environment**.)
+5. The bottom-right corner of PyCharm must show the new interpreter (`cps`, Python 3.11).
+
+**4. Install the packages**
+
+Open the PyCharm terminal (`Alt+F12`). Check that it uses the `cps` environment:
+
+    python -c "import sys; print(sys.executable)"
+
+If the path is not inside `cps`, open a **new** terminal tab after setting the interpreter. Then install, always with `python -m pip`:
+
+    python -m pip install mediapipe==1.1.1 python-osc==1.9.3 pyserial==3.5 pygame==2.6.1
+
+Install **`pyserial`, never `serial`**. Both import as `serial`, but the package called `serial` is a different project and `serial.Serial` then fails.
+
+Check that everything imports (prints `True`):
+
+    python -c "import mediapipe, pythonosc, serial, pygame; print(hasattr(serial, 'Serial'))"
+
+Alternative (only if the team agrees): `conda env create -f environment.yml` from the Anaconda Prompt.
+
+**5. PyCharm run configurations**
+
+A run configuration is PyCharm's saved version of a terminal command: interpreter + script + parameters. Create one per script with *Run > Edit Configurations > + > Python*: set the name, the script, the parameters, the working directory (the `connection_test` folder) and the `cps` interpreter.
+
+| Name | Script | Parameters |
+|---|---|---|
+| `sender hand` | `landmarks_sender.py` | `test_hand.jpg` |
+| `sender no hand` | `landmarks_sender.py` | `no_hand.jpg` |
+| `sender webcam` | `landmarks_sender.py` | `--webcam` |
+| `bridge dry run` | `bridge.py` | `--dry-run` |
+| `bridge` | `bridge.py` | `--serial-port COM7` (use your port) |
+| `dataset heart` / `dataset action` / `dataset none` | `dataset_sender.py` | `--class heart` / `--class action` / `--class none` |
+| `dataset test` | `dataset_sender.py` | `--test --classes none,action,heart` |
+
+Different configurations run at the same time in separate tabs of the Run window, each with its own Stop button. Tick **Allow multiple instances** (under *Modify options*) only to start the *same* configuration twice.
+
+**6. Find the COM port**
+
+Arduino IDE > *Tools > Port*, or Device Manager > Ports (COM & LPT). It differs on every computer and can change with another USB socket. It goes in the bridge's `--serial-port` parameter, not in the code.
+
+**7. Arduino IDE**
+
+1. *Tools > Board*: **Arduino Nano Every**. [TODO: confirm the board — `TestPuppetScene` says Arduino Nano.]
+2. *Tools > Port*: the board's COM port.
+3. Open the sketch and **Upload**.
+4. **Close the Serial Monitor** afterwards. Only one program can hold the port.
+
+### Run order (every time)
 
 1. Upload the Arduino sketch with the Serial Monitor **closed**. [TODO: final sketch path.]
-2. Start `bridge.py --serial-port <COM port>`. Wait for the `[music] ready` line.
+2. Start `bridge` (`--serial-port <your COM port>`). Wait for the `[music] ready` line.
 3. Open the trained Wekinator project and press **Run**.
-4. Start `landmarks_sender.py --webcam`.
+4. Start `sender webcam` (`--webcam`).
 
-Stop each script with its Stop button (or `q` / `Esc` in the preview window).
+Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the preview window).
+
+**Rules**
+
+- Only one program can hold the Arduino COM port: close the Serial Monitor before starting the bridge, and only one team member's bridge can use the board at a time.
+- Only one program can listen on port 12000: do not run `dataset_sender.py --test` together with the bridge.
+- The COM port is a run parameter, not a code change. Each person keeps their own run configurations.
+
+**Connection test only** (one image, built-in LED): upload `connection_test/connection_test.ino`, start `bridge`, start Wekinator with the 1-class project and press **Run**, then start `sender hand`. Pass criteria are in 3.1.
 
 [TODO: shutdown steps and the 15-minute set-up checklist.]
 
@@ -431,6 +606,24 @@ Stop each script with its Stop button (or `q` / `Esc` in the preview window).
 | `Code/Wekinator/` | [TODO] |
 | `STAGE/` | [TODO: CAD and fabrication files] |
 | `media/` | [TODO: create — photos, diagrams and videos referenced in this README] |
+
+**Inside `Code/Simple Pipeline/connection_test/`:**
+
+| File | What it is |
+|---|---|
+| `environment.yml` | Pinned package versions (Python 3.11, mediapipe, python-osc, pyserial, pygame) |
+| `check_env.py` | Import check for the environment |
+| `landmarks_sender.py` | Image or webcam → 63 floats → OSC `/wek/inputs` |
+| `dataset_sender.py` | Plays the photo dataset into Wekinator (training) or tests the trained model (`--test`) |
+| `bridge.py` | OSC `/wek/outputs` → serial (class 2 → `s`, class 3 → `h`), plus music |
+| `dataset/<class>/` | Training photos per class (`none`, `action`, `heart`) |
+| `music/` | `Track_1.mp3`, `Track_2.mp3` |
+| `connection_test/connection_test.ino` | Arduino connection test sketch (folder name = file name) |
+| `wekinator/` | Saved Wekinator projects |
+| `hand_landmarker.task`, `test_hand.jpg`, `no_hand.jpg` | MediaPipe model and test images |
+| `LEARNING_LOG.md` | What was built and learned, for the contribution log and AI-use notice |
+
+`.idea/` folders (PyCharm) must not be committed. [TODO: add `.idea/` to `.gitignore`.]
 
 ---
 
@@ -452,4 +645,9 @@ Generative AI (Claude, Anthropic) was used in this project. What it was used for
 
 ## 5.3 Team contributions
 
-[TODO]
+| Area | Owner |
+|---|---|
+| Wekinator training | Julia Benevides, Ari Wang |
+| Arduino sketch | Christian Gutierrez |
+| Music | Ari Wang |
+| [TODO: mechanical build, Python pipeline, README, other areas] | |
