@@ -93,6 +93,9 @@ The bridge also plays the music, following the state the Arduino reports.
 ---
 
 # 2. System design
+<img width="1448" height="1086" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" />
+
+*Figure 1. The overall mechanical structure of theatre 
 
 ### Theatre Frame
 
@@ -109,32 +112,37 @@ The modular construction offers several advantages:
 
 The structure also provides mounting positions for the linear rails, lighting system, projection screen, and exterior enclosure.
 
-<img width="1448" height="1086" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/9d7485cd-354a-46c1-b765-bd32b2fc5f89" />
+<img width="1448" height="1086" alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
 
-*Figure 1. Theatre frame constructed from wooden strips and custom 3D-printed connectors.*
+*Figure 2. Theatre frame constructed from wooden strips and custom 3D-printed connectors.
 
+### Motion System & Character Mechanism
 
-### Motion System & Character Mechanismz
+The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
 
-The motion system integrates **a shared linear guide, two independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
-
-Both characters share two parallel metal guide rods, while independent belt-driven mechanisms allow each carriage to move separately along the same linear path.
-
-The system combines horizontal translation with individual character rotation to support the shadow dance performance.
+The mechanism separates horizontal translation from character rotation, allowing both characters to move independently and perform expressive dance movements.
 
 **Mechanical Motion Flow:**
 
-`28BYJ-48 Stepper Motor → GT2 Timing Belt → Linear Carriage → SG90 Servo Module → Laser-Cut Silhouette`
+`Stepper Motor → GT2 Timing Belt → Linear Carriage → SG90 Servo Module → Laser-Cut Silhouette`
 
-#### A. Belt-Driven Linear Motion
+#### A. Linear Guide & Belt Transmission
 
-The linear motion system uses **two parallel metal guide rods shared by both character carriages**. Each carriage is driven independently by a **28BYJ-48 geared stepper motor**, controlled through a ULN2003 driver board.
+The linear motion system uses **two parallel 6 mm metal guide rods shared by both character carriages**, supported by custom 3D-printed mounting components.
 
-Each motor drives its own GT2 timing belt and pulley system, converting rotational motion into horizontal translation.
+Each carriage is driven independently by a **28BYJ-48 geared stepper motor**, controlled through a ULN2003 driver board. Each motor drives its own GT2 timing belt and pulley system, converting rotational motion into horizontal translation.
 
-This arrangement allows the two characters to approach each other and return to their starting positions independently, while sharing the same guiding structure.
+This arrangement allows the characters to approach each other and return to their starting positions independently while sharing the same guiding structure. Mechanical limit switches establish reference positions during the homing process.
 
-Mechanical limit switches are used to establish reference positions for both carriages during the homing process.
+**Linear Bearing Carriage**
+
+Each carriage contains two **LM6 linear ball bearings (6 × 12 × 19 mm)**, housed within an upper and lower 3D-printed structure secured using bolts and nuts.
+
+The bearings provide smooth, guided movement along the metal rods while limiting unwanted carriage rotation. The two-part housing also allows the bearings to be accessed and replaced during maintenance.
+
+An **extended 3D-printed belt clamp** connects each carriage to its corresponding GT2 timing belt. The extension keeps the belt connection as horizontal and aligned as possible, reducing unwanted pulling angles and lateral forces.
+
+The belt is secured using bolts and nuts, allowing adjustments during assembly and tensioning.
 
 **Estimated Motion Parameters**
 
@@ -145,68 +153,71 @@ Mechanical limit switches are used to establish reference positions for both car
 
 **Key Design Considerations:**
 
-- **Shared Linear Guide:** Reduces the space required for the two character mechanisms.
-- **Independent Belt Drives:** Allow individual control of each character's position and movement.
-- **Bearing-Supported Carriages:** Provide guided and stable horizontal movement.
-- **Mechanical Homing:** Establishes repeatable starting positions for the performance.
+- **Shared Linear Guide:** Reduces structural complexity and space requirements.
+- **Independent Belt Drives:** Allow individual control of character movement.
+- **Two-Part Carriage Housing:** Provides stable bearing support and simplifies maintenance.
+- **Extended Belt Clamp:** Improves belt alignment and transmission stability.
+- **Mechanical Homing:** Establishes repeatable starting positions for both characters.
 
 ![Belt Transmission](media/mechanical/belt-drive.jpg)
 
-*Figure 3. Shared dual-rod linear guide with two independently driven character carriages.*
+<img width="1057" height="831" alt="image" src="https://github.com/user-attachments/assets/58268d91-82d6-437c-a696-bb56a2dfe91f" />
 
-
-#### B. Linear Bearing Carriage & Servo Module
-
-The character mechanism integrates a **bearing-supported linear carriage** and a **modular SG90 servo unit**, combining horizontal translation with rotational movement.
-
-**Linear Bearing Carriage**
-
-Each carriage is supported by two **LM6 linear ball bearings (6 × 12 × 19 mm)**, housed within custom 3D-printed components and guided by two shared 6 mm metal rods.
-
-The bearings reduce friction and provide stable linear movement, while a 3D-printed belt clamp connects each carriage to its independently driven GT2 timing belt.
-
-The modular structure allows the bearing housing and belt clamp to be disassembled for inspection, adjustment, and maintenance.
+*Figure 3. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
 
 ![Linear Carriage](media/mechanical/carriage.jpg)
+<img width="1105" height="1423" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
+*Figure 4. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
 
-*Figure 4. Exploded view of the linear carriage, LM6 bearings, guide rods, and GT2 belt clamp.*
+---
+
+#### B. Modular SG90 Servo & Laser-Cut Silhouettes
+
+The character mechanism combines **modular SG90 servo units with laser-cut silhouettes**, enabling changes in projected poses through controlled rotation.
 
 **Modular SG90 Servo Unit**
 
-An **SG90 micro servo** is housed inside a custom 3D-printed module mounted on each sliding carriage.
+Each sliding carriage supports an **SG90 micro servo**, housed inside a custom 3D-printed module and secured using bolts and nuts.
 
-The servo rotates the character assembly around a vertical axis, changing the orientation of the silhouette relative to the light source to create different projected poses.
+The servo rotates the character around a vertical axis, changing its orientation relative to the light source.
 
-The character attachment consists of three main elements:
+The detachable servo module offers several practical advantages:
 
-1. **Original Servo Disc:** Mounted onto the SG90 output shaft.
-2. **3D-Printed Adapter:** Glued to the servo disc to create a custom attachment interface.
-3. **Slotted Character Holder:** Integrated into the printed adapter to secure the intersecting laser-cut silhouette pieces.
+- **Quick Testing:** Individual servos can be accessed and tested to identify movement issues.
+- **Easy Replacement:** Servo modules can be removed or replaced without disassembling the linear carriage.
+- **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
+- **Reusable Design:** The same modular structure can be used for both characters.
 
-This modular connection enables characters to be inserted, removed, or replaced without rebuilding the servo housing or linear carriage.
 
-![Servo Module](media/mechanical/servo-module.jpg)
 
-*Figure 5. Modular SG90 servo housing, original servo disc, and slotted character attachment.*
+<img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/ce417ab3-41aa-461a-bdfc-6fd891c3046b" /> <img width="1060" height="793" alt="image" src="https://github.com/user-attachments/assets/fad66b37-c354-425b-aa1e-7997f4d8adf3" />
 
-#### C. Laser-Cut Silhouettes
+*Figure 5. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
 
-Catrina and Mariachi are designed as **interlocking laser-cut silhouettes**, combining two perpendicular profiles to create different shadow poses through rotation.
+**Character Design & Laser-Cut Silhouettes**
 
-Unlike conventional flat shadow puppets, the intersecting structure allows the projected silhouette to change as the character rotates relative to the light source.
+Catrina and Mariachi are designed as two contrasting dance characters inspired by traditional Mexican cultural imagery.
 
-Each character is mounted on an SG90 servo module, enabling controlled rotation around a vertical axis.
+- **Catrina:** Her flowing dress emphasises elegant movement and changes in the projected skirt shape.
+- **Mariachi:** His distinctive hat and costume create a recognisable silhouette and contrasting dance poses.
+
+Both characters are constructed using **two intersecting laser-cut profiles**, combining perpendicular outlines into a lightweight three-dimensional assembly.
+
+Unlike conventional flat shadow puppets, the intersecting profiles create different projected outlines as the characters rotate relative to the light source.
+
+Inspired by rotational dance movements, this approach replaces complex limb-controlled puppetry with a simpler mechanism that creates multiple shadow poses through a single rotational movement.
 
 **Key Design Considerations:**
 
-- **Interlocking Structure:** Two laser-cut profiles form a three-dimensional character assembly.
-- **Dynamic Shadow Projection:** Rotation changes the visible outline and creates different character poses.
-- **Simplified Mechanism:** Multiple shadow appearances can be achieved using a single rotational movement.
-- **Lightweight Design:** Laser-cut profiles minimise the load on the servo motor.
+- **Recognisable Characters:** Distinctive costumes and proportions communicate character identity through shadows.
+- **Intersecting Structure:** Perpendicular profiles create a three-dimensional character assembly.
+- **Dynamic Shadow Projection:** Rotation changes the projected outline to create different poses.
+- **Simplified Mechanism:** Reduces the need for individually articulated limbs.
+- **Lightweight Design:** Laser-cut profiles minimise the load on the servo motors.
 
 ![Laser-Cut Silhouettes](media/mechanical/laser-cut-silhouettes.jpg)
 
-*Figure 6. Interlocking laser-cut character designs and assembled Catrina and Mariachi silhouettes.*
+*Figure 6. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
 
 
 ### Exterior enclosure and finishing
