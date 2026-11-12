@@ -137,18 +137,9 @@ This arrangement allows the characters to approach each other and return to thei
 
 Each carriage contains two **LM6 linear ball bearings (6 × 12 × 19 mm)**, housed within an upper and lower 3D-printed structure secured using bolts and nuts.
 
-The bearings provide smooth, guided movement along the metal rods while limiting unwanted carriage rotation. The two-part housing also allows the bearings to be accessed and replaced during maintenance.
-
 An **extended 3D-printed belt clamp** connects each carriage to its corresponding GT2 timing belt. The extension keeps the belt connection as horizontal and aligned as possible, reducing unwanted pulling angles and lateral forces.
 
 The belt is secured using bolts and nuts, allowing adjustments during assembly and tensioning.
-
-**Estimated Motion Parameters**
-
-| Character | Travel (Estimated) | Steps (Estimated) |
-|---|---:|---:|
-| Catrina | 143 mm | 7,293 |
-| Mariachi | 137 mm | 6,987 |
 
 **Key Design Considerations:**
 
