@@ -94,108 +94,198 @@ The bridge also plays the music, following the state the Arduino reports.
 
 ## 2.1 Mechanical design
 
-The physical system consists of a modular theatre frame, a motor-driven character movement mechanism, and a lighting system that transforms moving silhouettes into projected shadows.
-
 ### Why a new mechanism instead of the robot arm
 
 [TODO: written justification required by the brief: why the provided robot arm was replaced, and which parts were reused.]
 
-### Theatre frame
+### Motion System & Character Mechanism
+<img width="1448" height="1086" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" />
 
-The theatre is constructed using **cut wooden strips and custom 3D-printed connectors**. The frame supports the projection screen, internal rails, motors and lighting system while allowing convenient assembly and adjustments.
+*Figure 2. The overall mechanical structure of theatre.*
 
-The modular structure was designed for stability, ease of fabrication and accessibility. A cut wooden frame holds translucent paper as the screen, with a custom 3D-printed light holder.
+The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
 
-*Figure 2. Theatre frame CAD model and physical assembly.* [TODO: add image to `Media/`.]
+The mechanism separates horizontal translation from character rotation, allowing both characters to move independently and perform expressive dance movements.
 
-[TODO: dimensions, fit in the 605 × 370 × 280 mm box, materials, connector clearances.]
+**Mechanical Motion Flow:**
 
-### Motion system and character mechanism
+`Stepper Motor → GT2 Timing Belt → Linear Carriage → SG90 Servo Module → Laser-Cut Silhouette`
 
-The movement system uses **two independent linear rails, belt-driven carriages and modular servo mechanisms** to create coordinated movements between the two shadow characters. It combines horizontal translation with individual character rotation.
+### Theatre Frame
 
-**Mechanical motion flow:** `Stepper motor → GT2 timing belt → Linear carriage → Servo module → Laser-cut silhouette`
+The theatre frame is constructed using **12 × 15 mm wooden strips and custom 3D-printed connectors**, secured with M3 and M4 hex bolts and nuts.
 
-#### A. Belt-driven linear motion
+The structure is designed to fit within a maximum envelope of **575 × 345 × 275 mm (L × W × H)**, providing sufficient space for the dual-track motion system, lighting, and shadow projection.
 
-Each rail is driven by a stepper motor through a GT2 timing belt, which converts rotation into horizontal movement so that both characters can approach the centre and return to their starting positions. The two independent rails allow separate movement control, while pulley alignment and belt tension help maintain consistent transmission.
+The modular construction offers several advantages:
 
-| Rail | Travel (estimated) | Steps (estimated) |
-|---|---|---|
-| Catrina | 143 mm | 7293 |
-| Mariachi | 137 mm | 6987 |
+- **Easy Assembly:** 3D-printed connectors simplify the connection of wooden members.
+- **Modularity:** Individual structural parts can be adjusted or replaced without rebuilding the entire frame.
+- **Accessibility:** The open framework allows access to motors, servo modules, and wiring for inspection and troubleshooting.
+- **Maintenance:** Removable connections support mechanical adjustments and component replacement during prototyping.
 
-Each rail has a home switch, used to zero the carriage position at power-up.
+The structure also provides mounting positions for the linear rails, lighting system, projection screen, and exterior enclosure.
 
-*Figure 3. Dual-rail layout and belt transmission mechanism.* [TODO: add image to `Media/`.]
+<img width="1448" height="1086" alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
 
-#### B. Linear bearing carriage and servo module
+*Figure 3. Theatre frame constructed from wooden strips and custom 3D-printed connectors.*
 
-Each carriage moves along a linear guide supported by bearings. A custom belt clamp connects the carriage to the timing belt, while the sliding platform provides a stable mounting base for the character mechanism. The bearing-supported structure is designed to reduce friction, limit unwanted rotation and maintain stable movement.
+#### A. Linear Guide & Belt Transmission
 
-*Figure 4. Linear bearing, belt clamp and sliding carriage assembly.* [TODO: add image to `Media/`.]
+The linear motion system uses **two parallel 6 mm metal guide rods shared by both character carriages**, supported by custom 3D-printed mounting components.
 
-#### C. Laser-cut silhouettes
+Each carriage is driven independently by a **28BYJ-48 geared stepper motor**, controlled through a ULN2003 driver board. Each motor drives its own GT2 timing belt and pulley system, converting rotational motion into horizontal translation.
 
-Catrina and Mariachi are designed as two-dimensional profiles and fabricated by **laser cutting**, so their outlines project clearly. Each silhouette is attached to a removable servo module mounted on the sliding carriage.
+This arrangement allows the characters to approach each other and return to their starting positions independently while sharing the same guiding structure. Mechanical limit switches establish reference positions during the homing process.
 
-*Figure 5. Laser-cut character designs and fabricated silhouettes.* [TODO: add image to `Media/`.]
+**Linear Bearing Carriage**
 
-*Figure 6. Modular servo mechanism and silhouette attachment.* [TODO: add image to `Media/`.]
+Each carriage contains two **LM6 linear ball bearings (6 × 12 × 19 mm)**, housed within an upper and lower 3D-printed structure secured using bolts and nuts.
+
+An **extended 3D-printed belt clamp** connects each carriage to its corresponding GT2 timing belt. The extension keeps the belt connection as horizontal and aligned as possible, reducing unwanted pulling angles and lateral forces.
+
+The belt is secured using bolts and nuts, allowing adjustments during assembly and tensioning.
+
+**Key Design Considerations:**
+
+- **Shared Linear Guide:** Reduces structural complexity and space requirements.
+- **Independent Belt Drives:** Allow individual control of character movement.
+  
+<img width="1057" height="831" alt="image" src="https://github.com/user-attachments/assets/58268d91-82d6-437c-a696-bb56a2dfe91f" />
+
+*Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
+
+<img width="1105" height="1423" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
+*Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
+
+---
+
+#### B. Modular SG90 Servo & Laser-Cut Silhouettes
+
+The character mechanism combines **modular SG90 servo units with laser-cut silhouettes**, enabling changes in projected poses through controlled rotation.
+
+**Modular SG90 Servo Unit**
+
+Each sliding carriage supports an **SG90 micro servo**, housed inside a custom 3D-printed module and secured using bolts and nuts.
+
+The servo rotates the character around a vertical axis, changing its orientation relative to the light source.
+
+- **Quick Testing:** Individual servos can be accessed and tested to identify movement issues.
+- **Easy Replacement:** Servo modules can be removed or replaced without disassembling the linear carriage.
+- **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
+
+<img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
+
+*Figure 6. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
+
+**Character Design & Laser-Cut Silhouettes**
+
+Catrina and Mariachi are designed as two contrasting dance characters inspired by traditional Mexican cultural imagery.
+
+- **Catrina:** Her flowing dress emphasises elegant movement and changes in the projected skirt shape.
+- **Mariachi:** His distinctive hat and costume create a recognisable silhouette and contrasting dance poses.
+
+Both characters are constructed using **two intersecting laser-cut profiles**, combining perpendicular outlines into a lightweight three-dimensional assembly.
+
+*Figure 7. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.* [TODO: add image to `Media/`.]
 
 ### Exterior enclosure and finishing
 
-The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. It keeps access to the internal mechanisms while providing a defined viewing area. Surface finishing and painting establish the visual identity of the theatre and separate the performance space from its supporting structure.
+The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. Wooden panels were cut to fit the frame, forming the outer casing while maintaining access to the internal mechanisms and providing a defined viewing area.
 
-*Figure 7. Exterior enclosure design and final surface finishing.* [TODO: add image to `Media/`.]
+Surface finishing and painting, combined with laser-cut decorative details and red curtains, establish the theatre's visual identity and separate the performance space from its supporting structure.
 
-### Design decisions and options rejected
+<img width="4096" height="3072" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
+<img width="1448" height="1086" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
+<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
 
-[TODO: e.g. belt vs. other linear drives, rail layout, light source options. Add evidence from tests.]
+*Figure 8. Exterior enclosure design and final surface finishing.*
+
+### Design Decisions & Prototype Testing
+
+Several design decisions were informed by early prototyping and shadow projection experiments, focusing on simplifying mechanical movement and improving visual performance.
+
+| Design Aspect | Initial Approach / Challenge | Final Design | Reason & Impact |
+|---|---|---|---|
+| **Character Movement** | Traditional puppetry requires individual limb control and complex mechanisms. | Interlocking silhouettes driven by translation and rotation. | Creates changing shadow poses with fewer mechanical movements, inspired by rotational dance. |
+| **Shadow Scale** | Character dimensions and projection proportions needed to be determined. | Laser-cut silhouettes of different sizes were tested. | Helped establish suitable character proportions and light-to-screen distances. |
+| **Screen Material** | Different translucent materials produced varying projection effects. | Frosted translucent paper. | Selected for its balance of light transmission and shadow visibility. |
+| **Lighting System** | Diffused and focused light sources were explored. | Simple direct-light arrangement without additional focusing lenses. | Reduces optical complexity while maintaining a clear shadow projection. |
+
+*Figure 9. Prototype comparisons of character movement, silhouette scale, screen materials, and lighting conditions.* [TODO: add image to `Media/`.]
 
 ### Assembly
 
-**Theatre frame**
+The mechanical assembly follows four main stages, from structural construction and motion system integration to projection setup and final enclosure. The internal mechanisms remain accessible for testing and adjustment before the theatre is fully enclosed.
 
-1. Prepare the wooden strips and printed connectors.
-2. Assemble the main supporting frame.
-3. Secure the joints and check structural alignment.
-4. Prepare mounting positions for the internal mechanisms.
+#### 1. Main Frame Assembly
 
-**Internal motion system**
+1. Cut the 12 × 15 mm wooden strips to the required lengths.
+2. Assemble the supporting frame using custom PLA 3D-printed connectors.
+3. Secure the joints using M3/M4 bolts and nuts.
+4. Check the frame alignment and stability, ensuring sufficient space for the internal mechanisms.
 
-1. Install and align the linear guide rods.
-2. Mount the motors and timing pulleys.
-3. Install the GT2 timing belts and adjust their tension.
-4. Attach the linear bearings and sliding carriages.
-5. Connect each carriage to its timing belt.
-6. Manually check the full movement range of both rails.
+*Figure 10. Assembly of the wooden frame using 3D-printed connectors and bolted joints.* [TODO: add image to `Media/`.]
 
-**Servo modules and silhouettes**
+#### 2. Linear Motion & Character Assembly
 
-1. Prepare and laser-cut the Catrina and Mariachi silhouettes.
-2. Assemble the 3D-printed servo holders.
-3. Install the servo modules onto the carriages.
-4. Attach the silhouettes to their holders.
-5. Check attachment stability and rotation clearance.
+**Linear Carriages & Guide Rods**
 
-**Exterior enclosure**
+1. Insert two LM6 linear bearings (6 × 12 × 19 mm) into each custom 3D-printed carriage housing and assemble the sliding platforms.
+2. Prepare the modular SG90 servo holders and check their fit with the carriages.
+3. Pass the two parallel 6 mm metal guide rods through the bearings of both carriages.
+4. Attach the two 3D-printed rail supports and secure the guide assembly to the wooden frame using bolts and nuts.
+5. Adjust the rail supports and carriage positions to maintain rod alignment and ensure smooth sliding movement.
 
-1. Prepare the exterior enclosure panels.
-2. Check their fit against the assembled frame.
-3. Complete surface preparation and painting, and let the finish cure.
-4. Install the panels while keeping access to the internal mechanisms.
+**Servo Modules & Silhouettes**
 
-**Lighting and shadow alignment**
+6. Install the SG90 micro servos into their custom 3D-printed housings.
+7. Mount the servo modules onto the sliding carriages and secure them using bolts and nuts.
+8. Assemble the laser-cut character silhouettes and test different orientations to achieve the desired shadow poses.
+9. Once the positions and projection effects are confirmed, secure the silhouette components using hot glue and attach them to the servo modules.
+10. Check attachment stability and rotation clearance.
 
-1. Install the translucent projection screen.
-2. Mount the light source inside the theatre.
-3. Adjust the light angle and projection distance.
-4. Test shadow sharpness and scale.
-5. Minimise overlapping or double shadows.
-6. Secure the final lighting position.
+**Belt-Driven Transmission**
 
-[TODO: build photos for each stage.]
+11. Mount the 28BYJ-48 stepper motors and timing pulleys onto the supporting frame.
+12. Measure and cut the GT2 timing belts to approximately 750 mm, based on repeated fitting and adjustment during assembly.
+13. Route the two independent belts around their corresponding pulleys and connect them to the sliding carriages using 3D-printed belt clamps, secured with bolts and nuts.
+14. Adjust belt tension and pulley alignment, then manually check the full movement range of both carriages with the power disconnected.
+
+*Figure 11. Assembly of the bearing-supported carriages, shared guide rods, SG90 character modules, and independent belt transmissions.* [TODO: add image to `Media/`.]
+
+#### 3. Screen & Lighting Installation
+
+1. Prepare the frosted translucent paper and position it across the front projection area.
+2. Secure the projection screen to the wooden frame using screws.
+3. Install the light sources using custom 3D-printed mounting brackets, secured with screws.
+4. Adjust the light angles and projection distances to achieve suitable shadow size and clarity.
+5. Test character translation, rotation, and shadow projection before installing the exterior enclosure.
+
+*Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.* [TODO: add image to `Media/`.]
+
+#### 4. Final Enclosure & Finishing
+
+1. Complete the electrical integration and verify the operation of the stepper motors, SG90 servos, and mechanical limit switches.
+2. Cut and prepare the wooden enclosure panels to fit the assembled frame.
+3. Install the exterior panels after successful system testing, retaining access to internal components where necessary.
+4. Complete the surface finishing and add the laser-cut decorative elements and red curtains.
+5. Perform a final check of mechanical movement and shadow projection.
+
+*Figure 13. Final enclosure installation and completed shadow theatre.* [TODO: add image to `Media/`.]
+
+#### Final Assembly Checklist
+
+Before installing the exterior enclosure, a final check is conducted to ensure all mechanical components are securely assembled and functioning correctly. This helps identify potential issues while the internal system remains accessible for adjustment and maintenance.
+
+- [x] **Frame Stability:** Wooden joints, 3D-printed connectors, bolts and nuts are securely fastened.
+- [x] **Linear Motion:** Guide rods are aligned, and both carriages slide smoothly without interference.
+- [x] **Belt Transmission:** GT2 belts are securely clamped, properly tensioned, and aligned with the pulleys.
+- [x] **Servo & Silhouettes:** SG90 modules and character silhouettes are firmly attached, with sufficient rotation clearance.
+- [x] **Motion & Homing:** Both characters move independently, and the mechanical limit switches function correctly.
+- [x] **Projection & Enclosure:** The screen and lights are securely mounted, shadows remain clear, and the enclosure does not interfere with the mechanisms.
+
+*Note: Manual mechanical checks should be performed with power disconnected. Complete powered system testing before final enclosure.*
 
 ---
 
@@ -229,7 +319,7 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 | Home switch (to GND, `INPUT_PULLUP`, active LOW) | 3 | 2 |
 | Reflector (shared, active LOW) | 14 | 14 |
 
-*Figure 8. Electrical circuit and hardware connections.* [TODO: circuit diagram.]
+*Figure 14. Electrical circuit and hardware connections.* [TODO: circuit diagram.]
 
 ### Power estimate
 
@@ -324,7 +414,7 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 
 The music for each state is in the Music table above.
 
-*Figure 9. Performance state machine.* [TODO: state machine diagram.]
+*Figure 15. Performance state machine.* [TODO: state machine diagram.]
 
 ### Gating logic
 
@@ -600,7 +690,6 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 - AccelStepper library. [TODO: full reference]
 - [TODO: module example code, datasheets, image and music credits]
 - Anthropic Claude. Anthropic Claude response to Group 20. 26 October to 11 November 2026.
-
 
 ## 5.2 AI-use notice
 
