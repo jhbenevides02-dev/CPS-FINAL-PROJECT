@@ -96,7 +96,15 @@ The bridge also plays the music, following the state the Arduino reports.
 <img width="1448" height="1086" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" />
 
 *Figure 1. The overall mechanical structure of theatre 
+### Motion System & Character Mechanism
 
+The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
+
+The mechanism separates horizontal translation from character rotation, allowing both characters to move independently and perform expressive dance movements.
+
+**Mechanical Motion Flow:**
+
+`Stepper Motor → GT2 Timing Belt → Linear Carriage → SG90 Servo Module → Laser-Cut Silhouette`
 ### Theatre Frame
 
 The theatre frame is constructed using **12 × 15 mm wooden strips and custom 3D-printed connectors**, secured with M3 and M4 hex bolts and nuts.
@@ -116,15 +124,6 @@ The structure also provides mounting positions for the linear rails, lighting sy
 
 *Figure 2. Theatre frame constructed from wooden strips and custom 3D-printed connectors.
 
-### Motion System & Character Mechanism
-
-The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
-
-The mechanism separates horizontal translation from character rotation, allowing both characters to move independently and perform expressive dance movements.
-
-**Mechanical Motion Flow:**
-
-`Stepper Motor → GT2 Timing Belt → Linear Carriage → SG90 Servo Module → Laser-Cut Silhouette`
 
 #### A. Linear Guide & Belt Transmission
 
