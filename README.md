@@ -34,8 +34,6 @@ The performance features two characters, **Catrina and Mariachi**, which move al
 
 [TODO: introduce the final installation: physical structure, mechanical movement, lighting and interactive features. Explain the "hidden layer" of the story.]
 
-![Shadow Theatre](media/shadow-theatre.jpg)
-
 ## 1.2 User interaction
 
 The audience uses two hand gestures in front of the webcam:
@@ -66,7 +64,7 @@ The audience uses two hand gestures in front of the webcam:
 `Hand gesture → Webcam → Python (MediaPipe hand landmarks) → Wekinator (classifier) → Python bridge → Arduino → Steppers, servos, reflector → Shadow performance`
 
 ```
-Webcam (or a test image)
+Webcam
      |
      v
 landmarks_sender.py   MediaPipe -> 21 landmarks x (x, y, z) = 63 floats (normalised)
@@ -86,7 +84,7 @@ bridge.py             changes the music track
 
 The bridge also plays the music, following the state the Arduino reports.
 
-![System Architecture](Code/Wekinator+PythonPipeline.png)
+![System Architecture](Media/Wekinator+PythonPipeline.png)
 
 *Figure 1. Overall system pipeline.* [TODO: check this is the final diagram.]
 
@@ -108,9 +106,7 @@ The theatre is constructed using **cut wooden strips and custom 3D-printed conne
 
 The modular structure was designed for stability, ease of fabrication and accessibility. A cut wooden frame holds translucent paper as the screen, with a custom 3D-printed light holder.
 
-![Theatre Frame](media/mechanical/theatre-frame.jpg)
-
-*Figure 2. Theatre frame CAD model and physical assembly.*
+*Figure 2. Theatre frame CAD model and physical assembly.* [TODO: add image to `Media/`.]
 
 [TODO: dimensions, fit in the 605 × 370 × 280 mm box, materials, connector clearances.]
 
@@ -131,37 +127,27 @@ Each rail is driven by a stepper motor through a GT2 timing belt, which converts
 
 Each rail has a home switch, used to zero the carriage position at power-up.
 
-![Belt Transmission](media/mechanical/belt-drive.jpg)
-
-*Figure 3. Dual-rail layout and belt transmission mechanism.*
+*Figure 3. Dual-rail layout and belt transmission mechanism.* [TODO: add image to `Media/`.]
 
 #### B. Linear bearing carriage and servo module
 
 Each carriage moves along a linear guide supported by bearings. A custom belt clamp connects the carriage to the timing belt, while the sliding platform provides a stable mounting base for the character mechanism. The bearing-supported structure is designed to reduce friction, limit unwanted rotation and maintain stable movement.
 
-![Linear Carriage](media/mechanical/carriage.jpg)
-
-*Figure 4. Linear bearing, belt clamp and sliding carriage assembly.*
+*Figure 4. Linear bearing, belt clamp and sliding carriage assembly.* [TODO: add image to `Media/`.]
 
 #### C. Laser-cut silhouettes
 
 Catrina and Mariachi are designed as two-dimensional profiles and fabricated by **laser cutting**, so their outlines project clearly. Each silhouette is attached to a removable servo module mounted on the sliding carriage.
 
-![Laser-Cut Silhouettes](media/mechanical/laser-cut-silhouettes.jpg)
+*Figure 5. Laser-cut character designs and fabricated silhouettes.* [TODO: add image to `Media/`.]
 
-*Figure 5. Laser-cut character designs and fabricated silhouettes.*
-
-![Servo Module](media/mechanical/servo-module.jpg)
-
-*Figure 6. Modular servo mechanism and silhouette attachment.*
+*Figure 6. Modular servo mechanism and silhouette attachment.* [TODO: add image to `Media/`.]
 
 ### Exterior enclosure and finishing
 
 The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. It keeps access to the internal mechanisms while providing a defined viewing area. Surface finishing and painting establish the visual identity of the theatre and separate the performance space from its supporting structure.
 
-![Exterior Enclosure](media/mechanical/exterior-enclosure.jpg)
-
-*Figure 7. Exterior enclosure design and final surface finishing.*
+*Figure 7. Exterior enclosure design and final surface finishing.* [TODO: add image to `Media/`.]
 
 ### Design decisions and options rejected
 
@@ -221,7 +207,7 @@ _This section covers the **hardware** assessment criterion._
 
 | Component | Quantity | Purpose |
 |---|---|---|
-| Arduino [TODO: Nano or Nano Every — the sketches state both] | 1 | Runs the stage state machine |
+| Arduino [TODO: Nano or Nano Every — `PuppetScene` says Nano, the set-up steps say Nano Every] | 1 | Runs the stage state machine |
 | 28BYJ-48 stepper motor + driver board [TODO: driver model] | 2 | Drives each carriage along its rail |
 | Servo motor [TODO: model] | 2 | Rotates each silhouette during the dance |
 | Home (limit) switch | 2 | Zeroes each carriage at power-up |
@@ -234,7 +220,7 @@ _This section covers the **hardware** assessment criterion._
 
 ### Wiring and circuit diagram
 
-Pin assignments, from the current stage sketch (`Code/Quick Tests/TestPuppetScene`):
+Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 
 | Function | Catrina | Mariachi |
 |---|---|---|
@@ -242,8 +228,6 @@ Pin assignments, from the current stage sketch (`Code/Quick Tests/TestPuppetScen
 | Servo signal | 15 | 16 |
 | Home switch (to GND, `INPUT_PULLUP`, active LOW) | 3 | 2 |
 | Reflector (shared, active LOW) | 14 | 14 |
-
-![Circuit Diagram](media/electrical/circuit-diagram.png)
 
 *Figure 8. Electrical circuit and hardware connections.* [TODO: circuit diagram.]
 
@@ -294,7 +278,7 @@ Do not change the ports, addresses, the 63-value order or `normalise()` without 
 
 ### Sender (`landmarks_sender.py`)
 
-- Two modes: an image (e.g. `test_hand.jpg`, the reference test) or `--webcam`. Give **either** an image path **or** `--webcam`.
+- Run with `--webcam` for the show.
 - Webcam mode: one detection and one OSC message every 1/15 s. A preview window shows the camera with the landmarks drawn; `q` / `Esc` quits.
 - The landmarks are normalised: the wrist is the origin and the wrist-to-middle-finger-base distance is the scale. If no hand is found, 63 zeros are sent, so Wekinator always receives the same number of inputs.
 - One hand only (`num_hands=1`); handedness is not sent.
@@ -322,7 +306,7 @@ The bridge reads the Arduino's state lines (`<actor> -> <STATE>`):
 - `--no-music` turns the music off. If `pygame` or a track file is missing, the bridge says so and carries on without music.
 - If the sketch prints the states differently, change `STATE_LINE` in `bridge.py`.
 
-![Software Pipeline](Code/Wekinator+PythonPipeline.png)
+![Software Pipeline](Media/Wekinator+PythonPipeline.png)
 
 ### State machine (Arduino)
 
@@ -339,8 +323,6 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 | `EXIT` | Steppers off, reflector off; after 5 s back to `IDLE` |
 
 The music for each state is in the Music table above.
-
-![Control Flowchart](media/control-flowchart.png)
 
 *Figure 9. Performance state machine.* [TODO: state machine diagram.]
 
@@ -382,7 +364,7 @@ The music for each state is in the Music table above.
 
 ### Training data
 
-Photo dataset in `Code/Simple Pipeline/connection_test/dataset/` (`.jpg`, `.jpeg`, `.png`, one folder per class):
+Photo dataset in `Code/Python/dataset/` (`.jpg`, `.jpeg`, `.png`, one folder per class):
 
 | Class | Photos |
 |---|---|
@@ -390,13 +372,13 @@ Photo dataset in `Code/Simple Pipeline/connection_test/dataset/` (`.jpg`, `.jpeg
 | action | 31 |
 | heart | 27 |
 
-Saved trained project: `wekinator/WekinatorProject/TRAINCLASSIFIER10-11-2026`.
+Saved trained project: `Code/Wekinator/` (`TRAINCLASSIFIER10-11-2026.wekproj`).
 
 **How the model is trained (by hand).** `dataset_sender.py` only plays the photos into Wekinator; recording and training are done in Wekinator:
 
 1. Run `dataset_sender.py --class <name>` (e.g. `--class heart`). It shows each photo in a window and sends it for `--burst` seconds (default 5), photo after photo, in a loop.
 2. In Wekinator, set the output class to the class number, press **Start recording** while the script runs, record at least one full pass of the photos, then stop. Stop the script.
-3. Repeat for the other classes. Then **Train**, **Run**, and save the project in `wekinator/`.
+3. Repeat for the other classes. Then **Train**, **Run**, and save the project in `Code/Wekinator/`.
 
 - **Class `none`:** photos where no hand is found are **not skipped**. They are sent as 63 zeros, exactly what the live sender sends when it sees no hand, so some photos with no hand at all are included.
 - **Balance:** similar numbers of photos per class, otherwise k-NN leans toward the biggest class.
@@ -406,7 +388,7 @@ Saved trained project: `wekinator/WekinatorProject/TRAINCLASSIFIER10-11-2026`.
 
 ### Why this model
 
-[TODO: justify k-NN and hand landmarks (e.g. compared with the Processing video features). Link to the evaluation in 3.3.]
+[TODO: justify k-NN and hand landmarks (e.g. compared with the Processing video features). Link to the evaluation in 3.4.]
 
 ---
 
@@ -414,33 +396,22 @@ Saved trained project: `wekinator/WekinatorProject/TRAINCLASSIFIER10-11-2026`.
 
 ## 3.1 Unit and integration tests
 
-**Connection test** (`Code/Simple Pipeline/connection_test`): one image → landmarks → Wekinator (1 class) → bridge → Arduino LED. Pass criteria:
-
-- The LED turns on and stays on while everything runs.
-- The bridge console shows `[osc]`, `[serial] sent '1'` and `[arduino] ACK 1` lines.
-- Stopping the sender or Wekinator turns the LED off within about 1 s.
-- Starting the sender again turns the LED on again.
-
-This test proves the **connection**, not gesture recognition: with only one class, Wekinator's k-NN outputs 1 for any input, even 63 zeros (no hand).
-
 **Status of each part** (before the demo):
 
 | Part | State |
 |---|---|
-| Image → landmarks → OSC → Wekinator → bridge → Arduino LED (connection test) | Built and tested |
 | Live webcam capture (`landmarks_sender.py --webcam`) | Built, tested by the team |
 | Training Wekinator from the photo dataset | Built |
 | Testing the trained model with photos (`dataset_sender.py --test`) | Built, not yet run with new, unseen photos |
 | Bridge sends `s` (action) / `h` (heart) to the Arduino | Built |
 | Music from the Arduino states | Built, tested in `--dry-run`, not yet tested with the real Arduino |
-| Final Arduino sketch | In progress (`Code/Quick Tests/TestPuppetScene`) |
+| Final Arduino sketch | In progress (`Code/Arduino/PuppetScene`) |
 
 [TODO: update this table after the demo.]
 
-**Other tests in the repo:**
+**Other tests:**
 
-- `Code/Quick Tests/StepperMotorTest` and `TestAccelStepper`: stepper motor tests. [TODO: results.]
-- `Code/Quick Tests/TestPuppetScene`: the stage state machine, driven from the Serial Monitor (`s`, `h`, `v` servos to A, `r` servos to rest).
+- `Code/Arduino/PuppetScene` on its own: the stage state machine, driven from the Serial Monitor (`s`, `h`, `v` servos to A, `r` servos to rest).
 - `bridge.py --dry-run`: music tested by typing states. [TODO: test with the real Arduino.]
 
 **Finding the failing stage:** follow the chain in order — sender status line, Wekinator input indicator, bridge `[osc]` lines, bridge `[serial] sent` lines, Arduino output. The first silent link is the one to fix.
@@ -504,7 +475,7 @@ _Maximum 200 words._
 | Wekinator | [TODO] | Classifier |
 | Arduino IDE + AccelStepper, Servo | [TODO] | Stage sketch |
 
-Pinned versions are in `Code/Simple Pipeline/connection_test/environment.yml`.
+Pinned versions are in `Code/Python/environment.yml`.
 
 ### First-time set-up (once per computer)
 
@@ -518,12 +489,13 @@ Pinned versions are in `Code/Simple Pipeline/connection_test/environment.yml`.
 
 **2. Open the project in PyCharm**
 
-1. *File > Open* and choose `Code/Simple Pipeline/connection_test`. This folder is the project; do not create a new project or sub-folder.
+1. *File > Open* and choose `Code/Python`. This folder is the project; do not create a new project or sub-folder.
+   If you set up PyCharm before the folders were reorganised, open `Code/Python` again and update the working directory of each run configuration.
 2. PyCharm creates a `.idea/` folder. It must not be committed.
 
 **3. Create the Python environment**
 
-1. *File > Settings > Project: connection_test > Python Interpreter*.
+1. *File > Settings > Project: Python > Python Interpreter*.
 2. **Add Interpreter > Add Local Interpreter > Conda Environment**.
 3. **Conda executable:** if empty, browse to `...\anaconda3\Scripts\conda.exe` (usually `C:\Users\<you>\anaconda3\Scripts\conda.exe`).
 4. **Create new environment**, **Python 3.11**, name `cps`, then **OK**. (To reuse an existing environment, choose **Use existing environment**.)
@@ -549,12 +521,10 @@ Alternative (only if the team agrees): `conda env create -f environment.yml` fro
 
 **5. PyCharm run configurations**
 
-A run configuration is PyCharm's saved version of a terminal command: interpreter + script + parameters. Create one per script with *Run > Edit Configurations > + > Python*: set the name, the script, the parameters, the working directory (the `connection_test` folder) and the `cps` interpreter.
+A run configuration is PyCharm's saved version of a terminal command: interpreter + script + parameters. Create one per script with *Run > Edit Configurations > + > Python*: set the name, the script, the parameters, the working directory (`Code/Python`) and the `cps` interpreter.
 
 | Name | Script | Parameters |
 |---|---|---|
-| `sender hand` | `landmarks_sender.py` | `test_hand.jpg` |
-| `sender no hand` | `landmarks_sender.py` | `no_hand.jpg` |
 | `sender webcam` | `landmarks_sender.py` | `--webcam` |
 | `bridge dry run` | `bridge.py` | `--dry-run` |
 | `bridge` | `bridge.py` | `--serial-port COM7` (use your port) |
@@ -569,16 +539,16 @@ Arduino IDE > *Tools > Port*, or Device Manager > Ports (COM & LPT). It differs 
 
 **7. Arduino IDE**
 
-1. *Tools > Board*: **Arduino Nano Every**. [TODO: confirm the board — `TestPuppetScene` says Arduino Nano.]
+1. *Tools > Board*: **Arduino Nano Every**. [TODO: confirm the board — `PuppetScene` says Arduino Nano.]
 2. *Tools > Port*: the board's COM port.
-3. Open the sketch and **Upload**.
+3. Open `Code/Arduino/PuppetScene/PuppetScene.ino` and **Upload**.
 4. **Close the Serial Monitor** afterwards. Only one program can hold the port.
 
 ### Run order (every time)
 
-1. Upload the Arduino sketch with the Serial Monitor **closed**. [TODO: final sketch path.]
+1. Upload `Code/Arduino/PuppetScene` with the Serial Monitor **closed**.
 2. Start `bridge` (`--serial-port <your COM port>`). Wait for the `[music] ready` line.
-3. Open the trained Wekinator project and press **Run**.
+3. Open the trained Wekinator project (`Code/Wekinator/TRAINCLASSIFIER10-11-2026.wekproj`) and press **Run**.
 4. Start `sender webcam` (`--webcam`).
 
 Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the preview window).
@@ -589,39 +559,32 @@ Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the 
 - Only one program can listen on port 12000: do not run `dataset_sender.py --test` together with the bridge.
 - The COM port is a run parameter, not a code change. Each person keeps their own run configurations.
 
-**Connection test only** (one image, built-in LED): upload `connection_test/connection_test.ino`, start `bridge`, start Wekinator with the 1-class project and press **Run**, then start `sender hand`. Pass criteria are in 3.1.
-
 [TODO: shutdown steps and the 15-minute set-up checklist.]
 
 ## 4.2 Repository structure
 
 | Path | Contents |
 |---|---|
-| `Code/Simple Pipeline/connection_test/` | Working pipeline: `landmarks_sender.py`, `dataset_sender.py`, `bridge.py`, dataset, music, Wekinator project, guides |
-| `Code/Quick Tests/TestPuppetScene/` | Current stage sketch (state machine) |
-| `Code/Quick Tests/StepperMotorTest/`, `TestAccelStepper/` | Stepper tests |
-| `Code/Arduino/stageControl/` | [TODO: final single Arduino sketch] |
-| `Code/Hand_Landmark_Test/`, `Code/Python/` | Early MediaPipe hand landmark tests |
-| `Code/Processing/` | Processing video input example (100 inputs) |
-| `Code/Wekinator/` | [TODO] |
-| `STAGE/` | [TODO: CAD and fabrication files] |
-| `media/` | [TODO: create — photos, diagrams and videos referenced in this README] |
+| `Code/Python/` | Python pipeline: sender, dataset sender, bridge, dataset, music, environment |
+| `Code/Wekinator/` | Trained Wekinator project used in the show (3 classes) |
+| `Code/Arduino/PuppetScene/` | Stage sketch (state machine) |
+| `Build/` | [TODO: CAD and fabrication files] |
+| `Media/` | Images for this README: pipeline diagrams (`Wekinator+PythonPipeline.png`, `WekinatorOnlyPipeline.png`) [TODO: add photos, CAD renders, circuit and state machine diagrams] |
 
-**Inside `Code/Simple Pipeline/connection_test/`:**
+**Inside `Code/Python/`:**
 
 | File | What it is |
 |---|---|
 | `environment.yml` | Pinned package versions (Python 3.11, mediapipe, python-osc, pyserial, pygame) |
 | `check_env.py` | Import check for the environment |
-| `landmarks_sender.py` | Image or webcam → 63 floats → OSC `/wek/inputs` |
+| `landmarks_sender.py` | Webcam → 63 floats → OSC `/wek/inputs` |
 | `dataset_sender.py` | Plays the photo dataset into Wekinator (training) or tests the trained model (`--test`) |
 | `bridge.py` | OSC `/wek/outputs` → serial (class 2 → `s`, class 3 → `h`), plus music |
 | `dataset/<class>/` | Training photos per class (`none`, `action`, `heart`) |
 | `music/` | `Track_1.mp3`, `Track_2.mp3` |
-| `connection_test/connection_test.ino` | Arduino connection test sketch (folder name = file name) |
-| `wekinator/` | Saved Wekinator projects |
-| `hand_landmarker.task`, `test_hand.jpg`, `no_hand.jpg` | MediaPipe model and test images |
-| `LEARNING_LOG.md` | What was built and learned, for the contribution log and AI-use notice |
+| `hand_landmarker.task` | MediaPipe hand landmark model |
+
+The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to their own folder, so `Code/Python` must be kept together.
 
 `.idea/` folders (PyCharm) must not be committed. [TODO: add `.idea/` to `.gitignore`.]
 
@@ -636,18 +599,15 @@ Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the 
 - MediaPipe Hand Landmarker (Google). [TODO: full reference]
 - AccelStepper library. [TODO: full reference]
 - [TODO: module example code, datasheets, image and music credits]
+- Anthropic Claude. Anthropic Claude response to Group 20. 26 October to 11 November 2026.
+
 
 ## 5.2 AI-use notice
 
-Generative AI (Claude, Anthropic) was used in this project. What it was used for, and what each team member wrote, is recorded in `Code/Simple Pipeline/connection_test/LEARNING_LOG.md`. Claude also helped restructure this README.
+Generative AI (Claude, Anthropic) was used in this project by all three team members (see the Anthropic Claude references in 5.1).
 
-[TODO: complete for all parts of the project and all team members.]
+- **Debugging (main use):** the Arduino IDE has no integrated debugger (no breakpoints or step-by-step execution), so Claude was our main debugging tool. We shared code, Serial Monitor output and error messages, and used its suggestions to find and fix faults. Every fix was tested by the team on the hardware.
+- **Code:** Claude reviewed code written by the team, to identify any possible issues in the pipeline.
+- **Learning:** explanations of the tools and concepts used (Wekinator, k-NN, OSC, serial communication, non-blocking timing).
 
-## 5.3 Team contributions
-
-| Area | Owner |
-|---|---|
-| Wekinator training | Julia Benevides, Ari Wang |
-| Arduino sketch | Christian Gutierrez |
-| Music | Ari Wang |
-| [TODO: mechanical build, Python pipeline, README, other areas] | |
+All AI output was checked, tested and edited by the team, and the team is responsible for the final work.

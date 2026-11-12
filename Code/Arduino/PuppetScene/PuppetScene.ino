@@ -1,4 +1,6 @@
-// TestPuppetScene
+// PuppetScene
+
+// C.G/ECU/2026
 // One scene, two actors, each on its own stepper rail. Follows the state machine diagram:
 // IDLE -> (HOMING first time) -> Showing: MOVE_12 -> MOVE_21 -> HOLD -> (DANCE) -> ... -> EXIT -> IDLE
 //
@@ -6,26 +8,23 @@
 // Serial Monitor at 115200 baud, commands:
 //   s = startEvent (both actors)
 //   h = heartGesture (both actors)
-//   p = print status
 //
 // Each actor is made of 4 pieces that always travel together:
 //   xxxSetup   -> fixed values (name, rail limits, speed, home pin)
 //   xxxState   -> values that change while running (state, count, flags)
 //   xxxStepper -> the motor object
 //   xxxServo   -> the servo motor
-//
-// Values marked TODO are placeholders to be replaced with the real ones.
 
 #include <AccelStepper.h>
 #include <Servo.h>
 
-// ---------------------------------------------------------------- Timings (ms) TODO
+// ---------------------------------------------------------------- Timings (ms)
 const unsigned long T_IDLE_WAIT = 1000;   // wait after startEvent before showing
 const unsigned long HOLD_MS     = 2000;   // max wait in HOLD (tHold)
 const unsigned long RST_HOLD_MS = 5000;   // wait to restart the bucle
 const unsigned long SERVO_MOVE_MS = 600;  // time to let the servo finish rotating
 
-// ---------------------------------------------------------------- Motion TODO
+// ---------------------------------------------------------------- Motion
 const long  DANCE_STEPS   = 1000;   // dance wiggle amplitude
 const long  DANCE_SPACE   = 1000; 
 const int   DANCE_REPEATS = 2;      // number of wiggles
@@ -377,7 +376,7 @@ void setup() {
   setupActor(MARIACHI_SETUP, mariachiStepper, mariachiServo);  // Setup mariachi actor
   pinMode(reflectorPin, OUTPUT);
   digitalWrite(reflectorPin, HIGH); // Turns off reflector
-  Serial.println("TestPuppetScene ready. Commands: s = startEvent, h = heartGesture, p = status");
+  Serial.println("PuppetScene ready. Commands: s = startEvent, h = heartGesture, p = status");
 
 }
 
@@ -388,3 +387,5 @@ void loop() {
   runActor(CATRINA_SETUP, catrinaState, catrinaStepper, catrinaServo);
   runActor(MARIACHI_SETUP, mariachiState, mariachiStepper, mariachiServo);
 }
+
+// Si estás leyendo esto, este código fue escrito por un ecuatoriano
