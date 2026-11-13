@@ -207,11 +207,17 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 ## Laser-cut Profiles
 
+Free hand drawn on a digital painting software, then processed using image tracing to turn it into vector lines. 
+Manually adding 1mm rectangles onto the vector lines to create the registation slits.
+
 <img width="510" height="452" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width="438" height="452" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
 
 *Figures 7.3-7.4 Laser-Cut Profiles*
 
 ## Assembled Figures
+
+Assembled at 90 degree angles, the two frames of each actor slide into place.
+Using hot glue to adhere them together, then mounting them on the servo mounts.
 
 <img width="300" height="500" alt="catrina_two_view_1_second" src="https://github.com/user-attachments/assets/1c66ce31-3911-4962-b20a-9145eb4eaace" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
 
