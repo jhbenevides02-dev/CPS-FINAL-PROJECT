@@ -33,24 +33,25 @@ Inspired by Plato's *Allegory of the Cave*, the project explores how light angle
 
 The performance features two characters, **Catrina and Mariachi**, which move along independent rails and perform a coordinated dance in response to audience interaction.
 
-[TODO: introduce the final installation: physical structure, mechanical movement, lighting and interactive features. Explain the "hidden layer" of the story.]
+Inspired by the Mexican celebration of Día de los Muertos (Day of the Dead), the shadow theatre tells the story of Catrina and Mariachi, two characters brought together through music, movement and the possibility of love. As the theatre comes to life, the audience can influence how their story unfolds through simple hand gestures. By performing the **HEART** gesture, the audience brings the two characters together, allowing them to share a romantic dance. Without this interaction, they continue on their separate paths, leaving their story unresolved. The performance celebrates love, remembrance and the idea that connections can transcend the boundaries between life and death.
 
 ## 1.2 User interaction
 
 The audience uses two hand gestures in front of the webcam:
 
+
 | Gesture (class) | What it does |
 |---|---|
-| **Action** | Starts the show. Both characters travel along their rails. |
-| **Heart** | While the characters are waiting (HOLD), triggers the dance. |
+| **ACTION** | Starts the show. Both characters travel along their rails. |
+| **HEART** | While the characters are waiting (HOLD), triggers the dance. |
 | None | Nothing is sent; the show continues on its own timing. |
 
-| Step | Audience action | System response | Shadow / story effect |
-|---|---|---|---|
-| 1 | Shows the **action** gesture | Reflector turns on, both characters move from position 1 to position 2 and back | [TODO] |
-| 2 | Shows the **heart** gesture while the characters wait | Characters meet at the centre of the stage and dance (servo rotations and wiggles) | [TODO] |
-| 3 | No gesture during the wait | After the hold time the characters repeat the walk once, then exit | [TODO] |
-| 4 | — | Reflector turns off; after 5 s the theatre is ready for the next visitor | [TODO] |
+| Step | Audience action | System response | 
+|---|---|---|
+| 1 | Shows the **ACTION** gesture | Reflector turns on, both characters move from position 1 to position 2 and back | 
+| 2 | Shows the **HEART** gesture while the characters wait | Characters meet at the centre of the stage and dance (servo rotations and wiggles) |
+| 3 | No gesture during the wait | After the hold time the characters repeat the walk once, then exit | 
+| 4 | — | Reflector turns off; after 5 s the theatre is ready for the next visitor |
 
 [TODO: why these gestures fit the story; how visitors are told what to do.]
 
