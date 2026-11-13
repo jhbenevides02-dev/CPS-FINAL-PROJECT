@@ -201,7 +201,7 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 ## Character Inspiration
 
 
-<img width="300" height="500" alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" /><img width="620" height="500" alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
+<img width="620" height="500" alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" /<img width="300" height="500" alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
 
 *Figures 7.1-7.2 Character Design Inspiration*
 
