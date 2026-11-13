@@ -208,7 +208,9 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 ## Assembled Figures
 
-<img width="510" height="710" alt="catrina_two_poses" src="https://github.com/user-attachments/assets/a934922c-fc74-452f-bea6-792aca7fe943" />
+<img width="300" height="500" alt="catrina_two_view" src="https://github.com/user-attachments/assets/070e20c9-b2dc-4434-823a-986107a4c99e" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
+
+
 
 *Figure 7. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
 
