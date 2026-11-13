@@ -38,7 +38,7 @@ Inspired by the Mexican celebration of Día de los Muertos (Day of the Dead), th
 ## 1.2 User interaction
 
 The audience uses two hand gestures in front of the webcam:
-<img width="240" height="256" alt="WhatsApp Image 2026-11-13 at 8 16 30 PM" src="https://github.com/user-attachments/assets/33b96f10-e098-4826-9b85-4378be245b28" /><img width="627" height="627" alt="WhatsApp Image 2026-11-13 at 8 18 18 PM" src="https://github.com/user-attachments/assets/e040ce84-2adc-4459-9252-ef7b75f41c85" />
+<img width="290" height="256" alt="WhatsApp Image 2026-11-13 at 8 16 30 PM" src="https://github.com/user-attachments/assets/33b96f10-e098-4826-9b85-4378be245b28" /><img width="280" height="280" alt="WhatsApp Image 2026-11-13 at 8 18 18 PM" src="https://github.com/user-attachments/assets/e040ce84-2adc-4459-9252-ef7b75f41c85" />
 
 
 
