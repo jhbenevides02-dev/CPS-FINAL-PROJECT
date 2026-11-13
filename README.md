@@ -58,6 +58,7 @@ The audience uses two hand gestures in front of the webcam:
 | 4 | — | Reflector turns off; after 5 s the theatre is ready for the next visitor |
 
 The **ACTION** gesture is often used in films and photos as a frame, a way to focus on an object. Which creates a fun interaction with the audience because it is as if they are directing the play.
+
 The **HEART** gesture was chosen as a way to show and spread the love, then if you don't hold it long enough, their love doesn't grow for each other.
 
 ## 1.3 Demonstration
