@@ -190,6 +190,8 @@ The servo rotates the character around a vertical axis, changing its orientation
 **Character Design & Laser-Cut Silhouettes**
 
 Catrina and Mariachi are designed as two contrasting dance characters inspired by traditional Mexican cultural imagery.
+<img width="1753" height="1811" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
+<img width="2042" height="1837" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" />
 
 - **Catrina:** Her flowing dress emphasises elegant movement and changes in the projected skirt shape.
 - **Mariachi:** His distinctive hat and costume create a recognisable silhouette and contrasting dance poses.
