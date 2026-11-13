@@ -197,9 +197,15 @@ Catrina and Mariachi are designed as two contrasting dance characters inspired b
 Both characters are constructed using **two intersecting laser-cut profiles**, combining perpendicular outlines into a lightweight three-dimensional assembly.
 
 *Figure 7. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
+##Laser-cut Profiles
 <img width="438" height="452" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" /><img width="510" height="452" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" />
+
+##Character Inspiration
 <img width="300" height="500" alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" /><img width="650" height="500" alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
-[TODO: add image to `Media/`.]
+
+##Assembled Figures
+
+*Figure 7. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
 
 ### Exterior enclosure and finishing
 
