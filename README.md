@@ -156,8 +156,9 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
 
 - **Shared Linear Guide:** Reduces structural complexity and space requirements.
 - **Independent Belt Drives:** Allow individual control of character movement.
+
   
-<img width="1057" height="831" alt="image" src="https://github.com/user-attachments/assets/58268d91-82d6-437c-a696-bb56a2dfe91f" />
+  <img width="1372" height="1147" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
 
 *Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
 
