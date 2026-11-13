@@ -196,23 +196,25 @@ Catrina and Mariachi are designed as two contrasting dance characters inspired b
 
 Both characters are constructed using **two intersecting laser-cut profiles**, combining perpendicular outlines into a lightweight three-dimensional assembly.
 
-*Figure 7. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
+
 
 ## Character Inspiration
 
+
 <img width="300" height="500" alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" /><img width="620" height="500" alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
+*Figures 7.1-7.2 Character Design Inspiration*
 
 ## Laser-cut Profiles
 
-<img width="438" height="452" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" /><img width="510" height="452" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" />
+<img width="510" height="452" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width="438" height="452" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
+*Figures 7.3-7.4 Laser-Cut Profiles*
 
 ## Assembled Figures
+<img width="300" height="500" alt="catrina_two_view_1_second" src="https://github.com/user-attachments/assets/1c66ce31-3911-4962-b20a-9145eb4eaace" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
+*Figures 7.5-7.6 Assembled Silhouttes*
 
-<img width="300" height="500" alt="catrina_two_view" src="https://github.com/user-attachments/assets/070e20c9-b2dc-4434-823a-986107a4c99e" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
 
-
-
-*Figure 7. Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
+*Figures 7.1-7.6 Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
 
 ### Exterior enclosure and finishing
 
