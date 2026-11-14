@@ -452,6 +452,12 @@ Note: The sketch never runs a servo and its own stepper together.
 
 Hand gestures seen by the webcam are tracked with MediaPipe, classified by Wekinator and passed by bridge.py to the Arduino, which moves the characters and sends its state back to control the music.
 
+<p align="center">
+     <img src="Media/2026-11-14-software-pipeline.png" alt="Software pipeline" width="90%">
+     Figure 15. Software pipeline: Python scripts and Arduino sketch.
+</p>
+
+
 ### Pipeline and message formats
 
 | Link | Protocol | Address / format |
@@ -459,7 +465,7 @@ Hand gestures seen by the webcam are tracked with MediaPipe, classified by Wekin
 | Webcam → `landmarks_sender.py` | USB video, MediaPipe | 21 hand landmarks × (x, y, z) |
 | `landmarks_sender.py` → Wekinator | OSC over UDP | `127.0.0.1:6448`, `/wek/inputs`, 63 floats, 15 messages/s |
 | Wekinator → `bridge.py` | OSC over UDP | `127.0.0.1:12000`, `/wek/outputs`, class as a float |
-| `bridge.py` → Arduino | USB serial, 115200 baud | One character: `s` (start action) or `h` (dance action) |
+| `bridge.py` → Arduino | USB serial, 115200 baud | One character, sent once per held gesture: `s` (start action) or `h` (dance action) |
 | Arduino → `bridge.py` | USB serial | Text lines such as `catrina -> DANCE`, used for the music |
 
 Do not change the wekinator ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
@@ -474,9 +480,9 @@ Do not change the wekinator ports, addresses, the 63-value order or `normalise()
 
 ### Bridge (`bridge.py`)
 
-- Class to letter (`CLASS_COMMANDS` at the top of `bridge.py`): class 2 → `s`, class 3 → `h`. Class 1 (none) sends nothing.
+- Class to letter: Wekinator sends the class as a float (e.g. `2.0`), which is rounded to an integer, then looked up in `CLASS_COMMANDS` (top of `bridge.py`): class 2 → `s`, class 3 → `h`. Class 1 (none) sends nothing.
 - `COMMAND_ENDING` is `""`, so only the character is sent. Set it to `"\n"` if the sketch reads lines.
-- Keep-alive: while the same class stays, the letter is re-sent about every 250 ms (`KEEPALIVE_S`).
+- Hold before sending: the letter is sent **once**, only after the same class has arrived for 3 s (`HOLD_S`, about 45 messages at 15/s). A different class, or a gap of more than 0.5 s (`MAX_GAP_S`), restarts the count; then the bridge waits for a new gesture.
 - Waits 2 s after opening the port, because the Arduino resets when the port opens. Arduino replies are read on a background thread.
 - Options: `--serial-port` (default `COM7`), `--osc-port`, `--baud`, `--no-music`, `--dry-run` (no Arduino).
 
@@ -488,13 +494,13 @@ The bridge reads the Arduino's state lines (`<actor> -> <STATE>`):
 |---|---|
 | `IDLE`, `MOVE_12`, `MOVE_21`, `HOLD` | Track 1 (`music/Track_1.mp3`), looping |
 | `DANCE` (any actor) | Track 2 (`music/Track_2.mp3`), looping |
-| `EXIT` (all actors) | Stops with a fade-out. The next `IDLE` starts track 1 again |
-| `HOMING` | Keeps what is playing |
+| `EXIT` (all actors) | Stops with a fade-out. Track 1 starts again with the next show (`MOVE_12`) |
+| `HOMING` (all actors) | No music |
 
-- `--no-music` turns the music off. If `pygame` or a track file is missing, the bridge says so and carries on without music.
+Notes:
+- `--no-music` run configuration turns the music off. If `pygame` or a track file is missing, the bridge says so and carries on without music.
 - If the sketch prints the states differently, change `STATE_LINE` in `bridge.py`.
 
-![Software Pipeline](Media/Wekinator+PythonPipeline.png)
 
 ### State machine (Arduino)
 
@@ -512,12 +518,13 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 
 The music for each state is in the Music table above.
 
-*Figure 15. Performance state machine.* [TODO: state machine diagram.]
+*Figure 16. Performance state machine.* [TODO: state machine diagram.]
 
 ### Gating logic
 
 - `s` is accepted only when both actors are in `IDLE` and homed; otherwise the sketch replies "Not ready, start ignored".
 - `h` is accepted only while the show is running (not in `IDLE` or `HOMING`), and the dance can happen only once per show.
+- A letter never moves a motor directly: it only raises a flag for both actors (`startEvent` or `heartGesture`), which `updateActor()` reads on its next pass.
 - The dance starts only when both actors are at the centre.
 
 ### Changes beyond the provided examples
