@@ -33,13 +33,14 @@ Inspired by Plato's *Allegory of the Cave*, the project explores how light angle
 
 The performance features two characters, **Catrina and Mariachi**, which move along independent rails and perform a coordinated dance in response to audience interaction.
 
-Inspired by the Mexican celebration of Día de los Muertos (Day of the Dead), the shadow theatre tells the story of Catrina and Mariachi, two characters brought together through music, movement and the possibility of love. As the theatre comes to life, the audience can influence how their story unfolds through simple hand gestures. By performing the **HEART** gesture, the audience brings the two characters together, allowing them to share a romantic dance. Without this interaction, they continue on their separate paths, leaving their story unresolved. The performance celebrates love, remembrance and the idea that connections can transcend the boundaries between life and death.
+Inspired by the Mexican celebration of "Día de los Muertos" (Day of the Dead), the shadow theatre tells the story of Catrina and Mariachi, two characters brought together through music, movement and the possibility of love. As the theatre comes to life, the audience can influence how their story unfolds through simple hand gestures. By performing the **HEART** gesture, the audience brings the two characters together, allowing them to share a romantic dance. Without this interaction, they continue on their separate paths, leaving their story unresolved. The performance celebrates love, remembrance and the idea that connections can transcend the boundaries between life and death.
 
 ## 1.2 User interaction
 
 The audience uses two hand gestures in front of the webcam:
-
-<img width="320" height="256" alt="WhatsApp Image 2026-11-13 at 8 16 30 PM" src="https://github.com/user-attachments/assets/33b96f10-e098-4826-9b85-4378be245b28" /><img width="280" height="280" alt="WhatsApp Image 2026-11-13 at 8 18 18 PM" src="https://github.com/user-attachments/assets/e040ce84-2adc-4459-9252-ef7b75f41c85" />
+<p align="center">
+<img width="280" height="250" alt="WhatsApp Image 2026-11-13 at 8 16 30 PM" src="https://github.com/user-attachments/assets/33b96f10-e098-4826-9b85-4378be245b28" /><img width="280" height="250" alt="WhatsApp Image 2026-11-13 at 8 18 18 PM" src="https://github.com/user-attachments/assets/e040ce84-2adc-4459-9252-ef7b75f41c85" />
+</p>
 
 
 
