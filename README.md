@@ -372,7 +372,7 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 >4. Verify the voltage and current requirements of motors, servos and lighting.
 >5. Ensure that cables will not interfere with moving mechanisms.
 
->[!NOTE] Before running the software:
+>[!IMPORTANT] Before running the software:
 >1. Verify all electrical connections and power supply ratings.
 >2. Check that both carriages move freely by hand with power disconnected.
 >3. Ensure all moving parts are clear of cables and obstacles.
@@ -384,6 +384,8 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 
 ## 2.3 Software
 
+Hand gestures seen by the webcam are tracked with MediaPipe, classified by Wekinator and passed by bridge.py to the Arduino, which moves the characters and sends its state back to control the music.
+
 ### Pipeline and message formats
 
 | Link | Protocol | Address / format |
@@ -391,14 +393,14 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 | Webcam → `landmarks_sender.py` | USB video, MediaPipe | 21 hand landmarks × (x, y, z) |
 | `landmarks_sender.py` → Wekinator | OSC over UDP | `127.0.0.1:6448`, `/wek/inputs`, 63 floats, 15 messages/s |
 | Wekinator → `bridge.py` | OSC over UDP | `127.0.0.1:12000`, `/wek/outputs`, class as a float |
-| `bridge.py` → Arduino | USB serial, 115200 baud | One character: `s` (class 2, action) or `h` (class 3, heart) |
+| `bridge.py` → Arduino | USB serial, 115200 baud | One character: `s` (start action) or `h` (dance action) |
 | Arduino → `bridge.py` | USB serial | Text lines such as `catrina -> DANCE`, used for the music |
 
-Do not change the ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
+Do not change the wekinator ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
 
 ### Sender (`landmarks_sender.py`)
 
-- Run with `--webcam` for the show.
+- Run with `--webcam` run configuration for the show.
 - Webcam mode: one detection and one OSC message every 1/15 s. A preview window shows the camera with the landmarks drawn; `q` / `Esc` quits.
 - The landmarks are normalised: the wrist is the origin and the wrist-to-middle-finger-base distance is the scale. If no hand is found, 63 zeros are sent, so Wekinator always receives the same number of inputs.
 - One hand only (`num_hands=1`); handedness is not sent.
