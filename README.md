@@ -78,7 +78,7 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 The system turns a hand gesture into movement and light on the stage. Six phases, from the webcam to the actuators, pass data along the pipeline, and the Arduino excecutes and reports back the current state so the music changes to match the scene.
 
 <p align="center">
-<img src="Media/2026-11-14-final-system-pipeline.png" width="60%">
+>
 
 *Figure 1. Overall system pipeline.* [TODO: check this is the final diagram.]
 </p>
@@ -326,23 +326,25 @@ Before installing the exterior enclosure, a final check is conducted to ensure a
 
 An Arduino runs the stage, driving two stepper motors, two servos, two home switches and an LED reflector from a 5 V power bank, and this section covers the parts, wiring, power and safety checks.
 
-### Bill of materials
+### Core components - E-BOM
 
-| Component | Quantity | Purpose |
-|---|---|---|
-| Arduino Nano Every — `PuppetScene.ino` | 1 | Runs the stage state machine |
-| 28BYJ-48 stepper motor CX28BYJ48-08 + driver board | 2 | Drives each carriage along its rail |
-| Servo motor FS90 | 2 | Rotates each silhouette during the dance |
-| Home (limit) switch | 2 | Zeroes each carriage at power-up |
-| Reflector light assembly C513A-WSN-CX0Z0231 | 1 | Light source for the shadows |
-| Webcam | 1 | Gesture input |
-| Power bank + power board (module kit) | 1 | 5 V DC supply |
+Each component was chosen to make the shadow show precise, repeatable and clearly visible. Every part runs from the same 5 V supply.
 
-[TODO: reason for each part and confirmation that it is on the approved list.]
+| Component | Quantity | Purpose | Why this part |
+|---|---|---|---|
+| Arduino Nano Every — `PuppetScene.ino` | 1 | Runs the stage state machine | MCU unit provided for this project |
+| 28BYJ-48 stepper motor CX28BYJ48-08 + driver board | 2 | Drives each carriage along its rail | Moves each character in precise steps, so every show repeats the same dance |
+| Servo motor FS90 | 2 | Rotates each silhouette during the dance | Turns quickly to set angles, changing the shadow's shape so the characters appear to dance |
+| Home (limit) switch | 2 | Zeroes each carriage at power-up | Allows setting up home position to the stepper motors |
+| Reflector light assembly C513A-WSN-CX0Z0231 | 1 | Light source for the shadows | Bright, with a 55° viewing angle, so this single light covers the stage and casts a sharp shadow |
+| Webcam | 1 | Gesture input | Capture the gestures of the audience |
+| Power bank + power board (module kit) | 1 | 5 V DC supply | Main power supply provided for this project |
+
 
 ### Wiring and circuit diagram
 
 Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
+<p align=center>
 
 | Function | Catrina | Mariachi |
 |---|---|---|
@@ -350,12 +352,71 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 | Servo signal | 15 | 16 |
 | Home switch (to GND, `INPUT_PULLUP`, active LOW) | 3 | 2 |
 | Reflector (shared, active LOW) | 14 | 14 |
+</p>
 
-*Figure 14. Electrical circuit and hardware connections.* [TODO: circuit diagram.]
+An Arduino Nano Every, powered and controlled over USB from the laptop, sits on a breadboard whose top rail supplies 5 V from the power board to every other device, with a common GND on both − rails.
+Two ULN2003 drivers run the 28BYJ-48 steppers (Catrina on D8–D11, Mariachi on D4–D7), and two FS90 servos rotate the silhouettes (pins 15 and 16).
+The home switches on D3 and D2 use the Arduino’s internal pull-ups and read LOW when pressed, and the reflector LED turns on when pin 14 goes LOW through a 30 Ω resistor.
+
+<p align=center>
+<img src="Media/2026-11-14-circuit-diagram.png" width="100%">
+Figure 14. Electrical circuit and hardware connections.
+</p>
 
 ### Power estimate
 
-[TODO: current of each stepper, servo and the reflector at idle and at peak, compared with the power bank rating. Measured values preferred.]
+Estimated maximum consumption of the shadow theatre, from datasheet values (no measured currents).
+
+#### General equations
+
+Total power at the supply voltage:
+
+$$P_{total} = V \cdot I_{total}$$
+
+where $I_{total}$ consider the current of all the parts connected to the 5V power bank.
+
+Resistive loads (stepper coils), Ohm's law:
+
+$$I_{phase} = \frac{V}{R_{phase}} \qquad I_{stepper} = k \cdot I_{phase}$$
+
+with $k$ = number of coils energised at once (2 in `FULL4WIRE` mode).
+
+LED with a series resistor:
+
+$$I_{LED} = \frac{V - V_F}{R}$$
+
+#### Current per component (at 5 V)
+
+| Component | Qty | Datasheet value | Calculation | Current per part |
+|---|---|---|---|---|
+| 28BYJ-48 stepper (via ULN2003) | 2 | 50 Ω ± 7 % per phase, 5 V | 5 V / 50 Ω = 100 mA per phase × 2 phases | **200 mA** (max 215 mA at 46.5 Ω) |
+| FS90 servo, idle | 2 | 5 mA (4.8 V), 6 mA (6 V) | interpolated to 5 V | **5 mA** |
+| FS90 servo, moving (no load) | 2 | 100 mA (4.8 V), 120 mA (6 V) | interpolated to 5 V | **103 mA** |
+| FS90 servo, stalled | 2 | 700 mA (4.8 V), 800 mA (6 V) | interpolated to 5 V | **717 mA** |
+| C513A-WSN LED + 30 Ω | 1 | V<sub>F</sub> = 3.2 V typ. (4.0 V max) | (5 − 3.2) / 30 Ω | **60 mA** |
+
+
+Notes:
+
+- The ULN2003 voltage drop (≈ 1 V) is ignored, so the stepper current is an upper bound.
+- The sketch uses `AccelStepper::FULL4WIRE`, so **two coils are on at all times** while a stepper is enabled, also when it stands still. The steppers are only switched off (`disableOutputs`) during the DANCE servo phase and in EXIT.
+- The Arduino is listed separately: As it is powered from the laptop USB, it does not load the power bank.
+
+#### Current per state of the show
+
+From the state machine in `PuppetScene.ino`. Arduino not included (add ≈ 20 mA if it runs from the power bank).
+
+| State | Loads on | I<sub>total</sub> | P = 5 V × I |
+|---|---|---|---|
+| IDLE (after homing) | 2 steppers holding + 2 servos idle | 410 mA | 2.05 W |
+| HOMING | 2 steppers (one moving, one holding) + 2 servos idle | 410 mA | 2.05 W |
+| MOVE_12 / MOVE_21 / HOLD | 2 steppers + 2 servos idle + LED | **470 mA** | **2.35 W** |
+| DANCE (max) | 2 steppers + 2 servos idle + LED | 470 mA | 2.35 W |
+| EXIT | 2 servos idle (steppers and LED off) | 10 mA | 0.05 W |
+
+**Normal show (maximum power consumption state):** 470 mA → **2.35 W** (490 mA, 2.45 W with the Arduino).
+
+Note: The sketch never runs a servo and its own stepper together.
 
 ### Safe powering
 
@@ -722,6 +783,14 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 - AccelStepper library. [TODO: full reference]
 - [TODO: module example code, datasheets, image and music credits]
 - Anthropic Claude. Anthropic Claude response to Group 20. 26 October to 11 November 2026.
+
+## 5.2 Engineering Documentation
+
+- [28BYJ-48 5 V stepper datasheet (Kiatronics)](https://www.piekarz.pl/pdf.php?id=33958): rated 5 V, DC resistance 50 Ω ± 7 %.
+- [FEETECH FS90 specification](https://www.pololu.com/file/0J1435/FS90-specs.pdf): idle, running and stall current at 4.8 V and 6 V.
+- [Cree C513A-WSS/WSN datasheet](https://it.exshinetech.com/datasheets/70/C513A-WSN-CX0Z0341.pdf): I<sub>F</sub> max 30 mA, V<sub>F</sub> 3.2 V typ. / 4.0 V max at 20 mA.
+- [Arduino Nano Every pinout](https://cdn.soselectronic.com/productdata/f5/1b/20adce8e/abx00033.pdf): 40 mA max per pin, 20 mA recommended.
+- [Nano Every board current, ≈ 20 mA (user report)](https://github.com/arduino/ArduinoCore-megaavr/issues/137).
 
 ## 5.2 AI-use notice
 
