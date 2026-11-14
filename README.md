@@ -425,6 +425,16 @@ Note: The sketch never runs a servo and its own stepper together.
 - The sketch switches each stepper off (`disableOutputs`) while its servo rotates, and after the show (EXIT). This was done to limit current draw during the dancing state.
 
 ### Electrical safety and power-on check
+
+>[!Important] 
+>Before running the software:
+>1. Verify all electrical connections and power supply ratings.
+>2. Check that both carriages move freely by hand with power disconnected.
+>3. Ensure all moving parts are clear of cables and obstacles.
+>4. Power on the control system.
+>5. Test each motor and servo individually at low speed.
+>6. Verify lighting operation.
+
 >[!Warning]
 >Before connecting or adjusting electrical components:
 >1. Disconnect all power sources.
@@ -433,13 +443,8 @@ Note: The sketch never runs a servo and its own stepper together.
 >4. Verify the voltage and current requirements of motors, servos and lighting.
 >5. Ensure that cables will not interfere with moving mechanisms.
 
->[!IMPORTANT] Before running the software:
->1. Verify all electrical connections and power supply ratings.
->2. Check that both carriages move freely by hand with power disconnected.
->3. Ensure all moving parts are clear of cables and obstacles.
->4. Power on the control system.
->5. Test each motor and servo individually at low speed.
->6. Verify lighting operation.
+
+
 
 ---
 
