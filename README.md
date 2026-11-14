@@ -372,7 +372,7 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 >4. Verify the voltage and current requirements of motors, servos and lighting.
 >5. Ensure that cables will not interfere with moving mechanisms.
 
->[!Note] Before running the software:
+>[!NOTE] Before running the software:
 >1. Verify all electrical connections and power supply ratings.
 >2. Check that both carriages move freely by hand with power disconnected.
 >3. Ensure all moving parts are clear of cables and obstacles.
