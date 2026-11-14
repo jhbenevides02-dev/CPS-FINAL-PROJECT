@@ -517,8 +517,11 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 | `EXIT` | Steppers off, reflector off; after 5 s back to `IDLE` |
 
 The music for each state is in the Music table above.
+<p align="center">
+     <img src="Media/2026-11-14-state-machine.png" alt="State Machine" width="90%">
+     Figure 16. Performance state machine.
+</p>
 
-*Figure 16. Performance state machine.* [TODO: state machine diagram.]
 
 ### Gating logic
 
@@ -526,10 +529,6 @@ The music for each state is in the Music table above.
 - `h` is accepted only while the show is running (not in `IDLE` or `HOMING`), and the dance can happen only once per show.
 - A letter never moves a motor directly: it only raises a flag for both actors (`startEvent` or `heartGesture`), which `updateActor()` reads on its next pass.
 - The dance starts only when both actors are at the centre.
-
-### Changes beyond the provided examples
-
-[TODO: list what was changed or added beyond the module's example code (e.g. MediaPipe hand landmarks instead of the Processing video input, the bridge, the state machine).]
 
 ---
 
