@@ -70,46 +70,39 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 
 ## 1.4 System overview
 
-`Hand gesture → Webcam → Python (MediaPipe hand landmarks) → Wekinator (classifier) → Python bridge → Arduino → Steppers, servos, reflector → Shadow performance`
+The system turns a hand gesture into movement and light on the stage. Six phases, from the webcam to the actuators, pass data along the pipeline, and the Arduino excecutes and reports back the current state so the music changes to match the scene.
 
-```
-Webcam
-     |
-     v
-landmarks_sender.py   MediaPipe -> 21 landmarks x (x, y, z) = 63 floats (normalised)
-     |  OSC /wek/inputs, UDP, 127.0.0.1:6448
-     v
-Wekinator             classifier, k-NN, 3 classes
-     |  OSC /wek/outputs, UDP, 127.0.0.1:12000
-     v
-bridge.py             class -> one character ('s' or 'h'), plus music
-     |  USB serial, 115200 baud
-     v
-Arduino               stage state machine -> steppers, servos, reflector
-     |  state lines, e.g. "catrina -> DANCE", back over the same serial port
-     v
-bridge.py             changes the music track
-```
+`Hand gesture → Webcam → Python (MediaPipe hand landmarks) → Wekinator (classifier) → Python bridge → Arduino → Steppers, servos, reflector → Shadow performance`
 
 The bridge also plays the music, following the state the Arduino reports.
 
-![System Architecture](Media/Wekinator+PythonPipeline.png)
+<p align="center">
+<img src="Media/2026-11-14-final-system-pipeline.png" width="60%">
 
 *Figure 1. Overall system pipeline.* [TODO: check this is the final diagram.]
+</p>
 
----
+| Stage | Component | What it does | Output |
+|---|---|---|---|
+| Input | Webcam | Films the user's hand | Video frames |
+| Hand tracking | `landmarks_sender.py` (MediaPipe) | Finds 21 hand joints and normalises them | 63 values, OSC port 6448 |
+| Classification | Wekinator (k-NN) | Sorts the hand shape into one of 3 gesture classes | Gesture class, OSC port 12000 |
+| Bridge | `bridge.py` | Turns the class into a command and plays the music for the current scene | `s` or `h`, USB serial at 115200 baud |
+| Control | Arduino (one sketch) | Runs the stage state machine and reports the current scene back to the bridge (dashed arrow) | Motor and light commands |
+| Actuators | Steppers, servos, LED reflector | Move the shadow shapes and light each scene | Movement and light on stage |
 
 # 2. System design
 
 ## 2.1 Mechanical design
 
 ### Motion System & Character Mechanism
-<img width="400" height="300" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" />
+<p align="center">
+<img width="400" height="300" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" /><img width="400" height="300" alt="d1737d13-40b9-44ad-aab9-b317923e32f1" src="https://github.com/user-attachments/assets/d176cbca-f122-48eb-b09e-933711412150" />
+</p>
 
-<img width="400" height="300" alt="d1737d13-40b9-44ad-aab9-b317923e32f1" src="https://github.com/user-attachments/assets/d176cbca-f122-48eb-b09e-933711412150" />
-
-<img width="1402" height="1122" alt="a0dd0ae0-c92b-4edd-85a6-9b6f830faa5b" src="https://github.com/user-attachments/assets/f2dddf94-2428-4435-9e58-03643a1bdf0c" />
-
+<p align="center">
+<img width="800" alt="a0dd0ae0-c92b-4edd-85a6-9b6f830faa5b" src="https://github.com/user-attachments/assets/f2dddf94-2428-4435-9e58-03643a1bdf0c" />
+</p>
 
 *Figure 2. The overall mechanical structure of theatre.*
 
