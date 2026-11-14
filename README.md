@@ -1,5 +1,10 @@
 # CPS Interactive Shadow Theatre — Group 20
-<img width="1448" height="1086" alt="4792ac60-78bc-4818-94a6-db6d05263a0f" src="https://github.com/user-attachments/assets/707979b0-0ed6-41af-85f7-a26eaf36b602" />
+
+An interactive, gesture-controlled shadow theatre inspired by Día de los Muertos, where a HEART hand gesture brings Catrina and Mariachi together to dance.
+
+<p align-"center>
+<img width="800" alt="4792ac60-78bc-4818-94a6-db6d05263a0f" src="https://github.com/user-attachments/assets/707979b0-0ed6-41af-85f7-a26eaf36b602" />
+</p>
 
 _First draft (v0.1 of the new structure). Items marked **[TODO]** still need the team's input or evidence._
 
@@ -71,10 +76,6 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 ## 1.4 System overview
 
 The system turns a hand gesture into movement and light on the stage. Six phases, from the webcam to the actuators, pass data along the pipeline, and the Arduino excecutes and reports back the current state so the music changes to match the scene.
-
-`Hand gesture → Webcam → Python (MediaPipe hand landmarks) → Wekinator (classifier) → Python bridge → Arduino → Steppers, servos, reflector → Shadow performance`
-
-The bridge also plays the music, following the state the Arduino reports.
 
 <p align="center">
 <img src="Media/2026-11-14-final-system-pipeline.png" width="60%">
@@ -323,20 +324,19 @@ Before installing the exterior enclosure, a final check is conducted to ensure a
 
 ## 2.2 Electrical and electronics
 
-_This section covers the **hardware** assessment criterion._
+An Arduino runs the stage, driving two stepper motors, two servos, two home switches and an LED reflector from a 5 V power bank, and this section covers the parts, wiring, power and safety checks.
 
 ### Bill of materials
 
 | Component | Quantity | Purpose |
 |---|---|---|
-| Arduino [TODO: Nano or Nano Every — `PuppetScene` says Nano, the set-up steps say Nano Every] | 1 | Runs the stage state machine |
-| 28BYJ-48 stepper motor + driver board [TODO: driver model] | 2 | Drives each carriage along its rail |
-| Servo motor [TODO: model] | 2 | Rotates each silhouette during the dance |
+| Arduino Nano Every — `PuppetScene.ino` | 1 | Runs the stage state machine |
+| 28BYJ-48 stepper motor CX28BYJ48-08 + driver board | 2 | Drives each carriage along its rail |
+| Servo motor FS90 | 2 | Rotates each silhouette during the dance |
 | Home (limit) switch | 2 | Zeroes each carriage at power-up |
-| Reflector light assembly [TODO: LED type] | 1 | Light source for the shadows |
-| Laptop webcam | 1 | Gesture input |
+| Reflector light assembly C513A-WSN-CX0Z0231 | 1 | Light source for the shadows |
+| Webcam | 1 | Gesture input |
 | Power bank + power board (module kit) | 1 | 5 V DC supply |
-| [TODO: other parts] | | |
 
 [TODO: reason for each part and confirmation that it is on the approved list.]
 
@@ -359,28 +359,26 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 
 ### Safe powering
 
-- [TODO: confirm 5 V DC from the module power bank and power board only.]
-- [TODO: confirm servos and steppers are not powered from the Arduino pins, and all grounds are common.]
-- The sketch switches each stepper off (`disableOutputs`) while its servo rotates, and after the show (EXIT). [TODO: state whether this was done to limit current.]
+- Verify that 5VDC is supplied from the module power bank and power board only.
+- Confirm servos and steppers are not powered from the Arduino VCC pins, and all grounds are common.
+- The sketch switches each stepper off (`disableOutputs`) while its servo rotates, and after the show (EXIT). This was done to limit current draw during the dancing state.
 
 ### Electrical safety and power-on check
+>[!Warning]
+>Before connecting or adjusting electrical components:
+>1. Disconnect all power sources.
+>2. Check for damaged cables and exposed connections.
+>3. Confirm that electrical components are securely mounted.
+>4. Verify the voltage and current requirements of motors, servos and lighting.
+>5. Ensure that cables will not interfere with moving mechanisms.
 
-Before connecting or adjusting electrical components:
-
-1. Disconnect all power sources.
-2. Check for damaged cables and exposed connections.
-3. Confirm that electrical components are securely mounted.
-4. Verify the voltage and current requirements of motors, servos and lighting.
-5. Ensure that cables will not interfere with moving mechanisms.
-
-Before running the software:
-
-1. Verify all electrical connections and power supply ratings.
-2. Check that both carriages move freely by hand with power disconnected.
-3. Ensure all moving parts are clear of cables and obstacles.
-4. Power on the control system.
-5. Test each motor and servo individually at low speed.
-6. Verify lighting operation.
+>[!Note] Before running the software:
+>1. Verify all electrical connections and power supply ratings.
+>2. Check that both carriages move freely by hand with power disconnected.
+>3. Ensure all moving parts are clear of cables and obstacles.
+>4. Power on the control system.
+>5. Test each motor and servo individually at low speed.
+>6. Verify lighting operation.
 
 ---
 
