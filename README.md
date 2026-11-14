@@ -468,7 +468,8 @@ Hand gestures seen by the webcam are tracked with MediaPipe, classified by Wekin
 | `bridge.py` → Arduino | USB serial, 115200 baud | One character, sent once per held gesture: `s` (start action) or `h` (dance action) |
 | Arduino → `bridge.py` | USB serial | Text lines such as `catrina -> DANCE`, used for the music |
 
-Do not change the wekinator ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
+>[!Warning]
+>Do not change the wekinator ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
 
 ### Sender (`landmarks_sender.py`)
 
