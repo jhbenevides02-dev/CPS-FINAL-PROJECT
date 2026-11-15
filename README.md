@@ -79,6 +79,7 @@ The system turns a hand gesture into movement and light on the stage. Six phases
 
 <p align="center">
    <img width=90% src="Media/2026-11-14-final-system-pipeline.png">
+   
    Figure 1. Overall system pipeline. 
 </p>
 
