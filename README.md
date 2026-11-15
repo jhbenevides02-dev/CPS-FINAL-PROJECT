@@ -70,11 +70,10 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 ## 1.3 Demonstration
 
 <img width="4096" height="3072" alt="IMG20261111144412" src="https://github.com/user-attachments/assets/6d7d86e5-2e72-4911-8bcf-a7c2d4f7d0d8" />
-<video src="https://drive.google.com/drive/u/0/folders/1cjZU0_IGwLRKR5fXipCQsCyApMvo8VVY" width="320" height="240" controls></video>
 
+[Watch on YouTube](https://youtu.be/l4lxOTiHyzY)
+[![Main](https://img.youtube.com/vi/l4lxOTiHyzY/0.jpg)](https://www.youtube.com/watch?v=l4lxOTiHyzY)
 
-[![Watch the video](https://youtube.com)](https://youtu.be/l4lxOTiHyzY)
-[TODO: add a link to the demonstration video.]
 
 ## 1.4 System overview
 
