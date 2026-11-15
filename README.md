@@ -161,12 +161,12 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
 - **Independent Belt Drives:** Allow individual control of character movement.
 
     <p align=center>
-    <img width="90%" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
+    <img width="70%" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
 
     *Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
     </p>
     <p align=center>
-    <img width="90%" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
+    <img width="70%" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
         
     *Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
     </p>
