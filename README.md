@@ -606,21 +606,17 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 
 **Status of each part** (before the demo):
 
-| Part | State |
-|---|---|
-| Live webcam capture (`landmarks_sender.py --webcam`) | Built, tested in the full pipeline |
-| Training Wekinator from the photo dataset | Built, tested in the full pipeline |
-| Testing the trained model with photos (`dataset_sender.py --test`) | Built, tested in full pipeline |
-| Bridge sends `s` (action) / `h` (heart) to the Arduino | Built, tested in full pipeline |
-| Music from the Arduino states | Built, tested in full pipeline |
-| Final Arduino sketch | Built, tested in full pipeline (`Code/Arduino/PuppetScene`) |
+| Part | State | Technical Status |
+|---|---|---|
+| Live webcam capture (`landmarks_sender.py --webcam`) | Built, tested in the full pipeline | Successful, but contained blind spots due to camera placement |
+| Training Wekinator from the photo dataset | Built, tested in the full pipeline | Successful |
+| Testing the trained model with photos (`dataset_sender.py --test`) | Built, tested in full pipeline | Successful, but had minor amounts of incorrect distinguishing between gestures |
+| Bridge sends `s` (action) / `h` (heart) to the Arduino | Built, tested in full pipeline | Successful, but contained minor inconsistencies |
+| Music from the Arduino states | Built, tested in full pipeline | Successful |
+| Final Arduino sketch | Built, tested in full pipeline (`Code/Arduino/PuppetScene`) | Successful, but could use fine tuning on recognition thresholds and time frames |
 
 
 
-**Other tests:**
-
-- `Code/Arduino/PuppetScene` on its own: the stage state machine, driven from the Serial Monitor (`s`, `h`, `v` servos to A, `r` servos to rest).
-- `bridge.py --dry-run`: music tested by typing states. [TODO: test with the real Arduino.]
 
 **Finding the failing stage:** follow the chain in order — sender status line, Wekinator input indicator, bridge `[osc]` lines, bridge `[serial] sent` lines, Arduino output. The first silent link is the one to fix.
 
