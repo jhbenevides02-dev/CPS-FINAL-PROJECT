@@ -629,7 +629,14 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 | Symptom | Likely cause | Action |
 |---|---|---|
 | Sketch prints "Error, check limit switch" and the actor stops | Home switch not reached within the rail travel | Check the switch wiring and the homing direction |
-| [TODO] | | |
+| Carriage gets stuck or moves unevenly| Misaligned guide rods, excessive bearing friction, or a faulty ULN2003 driver. | With power disconnected, check carriage movement and rod alignment. If movement is smooth, inspect driver wiring and test the motor separately. |
+| Motor runs but carriage does not move | Loose GT2 belt, slipping pulley, or unsecured belt clamp. | Check belt engagement, adjust tension, and tighten the pulley and belt-clamp connections. |
+| Carriage vibrates during movement | Incorrect belt tension, pulley misalignment, or inconsistent stepper motor operation. | Check belt tension and pulley alignment. If the issue persists, inspect motor connections and drive signals. |
+| SG90 servo does not rotate | Loose wiring, incorrect signal connection, insufficient power, or a faulty servo. | Check power and signal connections, then test the detachable SG90 module independently. |
+| Incorrect character pose | Incorrect silhouette orientation, mounting position, or servo rotation angle. | Test the character orientation under projection and adjust the mounting position or servo angle. |
+| Blurred or overlapping shadows | Unsuitable light angle, projection distance, or multiple light sources creating overlapping shadows. | Adjust the light position and projection distance. Check each light source separately to minimise unwanted shadows. |
+
+**Safety Note:** Disconnect power before adjusting mechanical components. Perform powered motion tests only after confirming that all moving parts are clear of obstructions.
 
 ## 3.3 Software and communication issues
 
