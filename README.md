@@ -204,10 +204,12 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 <p align = center>
     <img width=60% alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
+    
     *Figures 7.1 Character Design Inspiration 1*
 </p>
 <p align = center>  
     <img width=60% alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
+    
     *Figures 7.2 Character Design Inspiration 2*
 </p>
 
@@ -566,7 +568,7 @@ The music for each state is in the Music table above.
 
 ### Training data
 
-Photo dataset in `Code/Python/dataset/` (`.jpg`, `.jpeg`, `.png`, one folder per class):
+The training dataset is made of single-frame photos of our team members performing each gesture (heart, action and none), plus photos of one extra person outside the team. The none class covers any hand pose that is not a heart or an action. The goal was to give the model enough variety to recognise the gestures reliably, without so many similar photos that it overfits to our own hands.
 
 | Class | Photos |
 |---|---|
@@ -586,11 +588,12 @@ Saved trained project: `Code/Wekinator/` (`TRAINCLASSIFIER10-11-2026.wekproj`).
 - **Balance:** similar numbers of photos per class, otherwise k-NN leans toward the biggest class.
 - Options: `--dataset <folder>`, `--burst <seconds>`, `--rate`.
 
-[TODO: who is in the photos, lighting and background, mirroring.]
+>[!Note]
+>To retrain the model, create a dataset folder at `Code/Python/dataset/` with one subfolder per class (`none`, `action`, `heart`, see the table above). Photos can be `.jpg`, `.jpeg` or `.png`.
 
 ### Why this model
 
-[TODO: justify k-NN and hand landmarks (e.g. compared with the Processing video features). Link to the evaluation in 3.4.]
+Hand landmarks describe only the shape of the hand ([Features and classes](#features-and-classes)). The Processing video features from the Wekinator examples send the pixel colours of the whole image, so they change with lighting, background and where the person stands. That is a problem in a variable lighting set-up with a different audience each time. Given that landmarks remove this noise, a few dozen photos per class are enough ([Training data](#training-data)), and a simple k-NN can separate the three poses. k-NN trains in seconds, needs no tuning and can be retrained on site, which fit our short project deadline and left more time for the stage and mechanics. Its limit is that it only recognises poses close to its training examples. See [3.4 ML formal evaluation](#34-ml-formal-evaluation) for the results.
 
 ---
 
