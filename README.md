@@ -130,9 +130,11 @@ The modular construction offers several advantages:
 
 The structure also provides mounting positions for the linear rails, lighting system, projection screen, and exterior enclosure.
 
-<img width="1448" height="1086" alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
+<p align = center>
+<img width=90% alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
 
 *Figure 3. Theatre frame constructed from wooden strips and custom 3D-printed connectors.*
+</p>
 
 #### A. Linear Guide & Belt Transmission
 
@@ -155,14 +157,16 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
 - **Shared Linear Guide:** Reduces structural complexity and space requirements.
 - **Independent Belt Drives:** Allow individual control of character movement.
 
-  
-  <img width="1372" height="1147" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
+    <p align=center>
+    <img width="90%" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
 
-*Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
-
-<img width="1105" height="1423" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
-*Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
-
+    *Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
+    </p>
+    <p align=center>
+    <img width="90%" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
+        
+    *Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
+    </p>
 ---
 
 #### B. Modular SG90 Servo & Laser-Cut Silhouettes
@@ -179,9 +183,11 @@ The servo rotates the character around a vertical axis, changing its orientation
 - **Easy Replacement:** Servo modules can be removed or replaced without disassembling the linear carriage.
 - **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
 
-<img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
+<p align=center>
+<img width="90%" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
 
 *Figure 6. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
+</p>
 
 **Character Design & Laser-Cut Silhouettes**
 
@@ -196,17 +202,21 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 ## Character Inspiration
 
-
-<img width="620" height="500" alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" /><img width="300" height="500" alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
-
-*Figures 7.1-7.2 Character Design Inspiration*
+<p align = center>
+    <img width=60% alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
+    *Figures 7.1 Character Design Inspiration 1*
+</p>
+<p align = center>  
+    <img width=60% alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
+    *Figures 7.2 Character Design Inspiration 2*
+</p>
 
 ## Laser-cut Profiles
 
 Free hand drawn on a digital painting software, then processed using image tracing to turn it into vector lines. 
 Manually adding 1mm rectangles onto the vector lines to create the registation slits.
 
-<img width="510" height="452" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width="438" height="452" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
+<img width=800 alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width=800 alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
 
 *Figures 7.3-7.4 Laser-Cut Profiles*
 
@@ -214,23 +224,20 @@ Manually adding 1mm rectangles onto the vector lines to create the registation s
 
 Assembled at 90 degree angles, the two frames of each actor slide into place.
 Using hot glue to adhere them together, then mounting them on the servo mounts.
-
+<p align=center>
 <img width="300" height="500" alt="catrina_two_view_1_second" src="https://github.com/user-attachments/assets/1c66ce31-3911-4962-b20a-9145eb4eaace" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
 
 *Figures 7.5-7.6 Assembled Silhouttes*
-
-
-*Figures 7.1-7.6 Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
-
+</p>
 ### Exterior enclosure and finishing
 
 The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. Wooden panels were cut to fit the frame, forming the outer casing while maintaining access to the internal mechanisms and providing a defined viewing area.
 
 Surface finishing and painting, combined with laser-cut decorative details and red curtains, establish the theatre's visual identity and separate the performance space from its supporting structure.
 
-<img width="4096" height="3072" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
-<img width="1448" height="1086" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
-<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
+<img width="800" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
+<img width="800" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
+<img width="800" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
 
 *Figure 8. Exterior enclosure design and final surface finishing.*
 
