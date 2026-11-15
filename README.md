@@ -608,14 +608,14 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 
 | Part | State |
 |---|---|
-| Live webcam capture (`landmarks_sender.py --webcam`) | Built, tested by the team |
-| Training Wekinator from the photo dataset | Built |
-| Testing the trained model with photos (`dataset_sender.py --test`) | Built, not yet run with new, unseen photos |
-| Bridge sends `s` (action) / `h` (heart) to the Arduino | Built |
-| Music from the Arduino states | Built, tested in `--dry-run`, not yet tested with the real Arduino |
-| Final Arduino sketch | In progress (`Code/Arduino/PuppetScene`) |
+| Live webcam capture (`landmarks_sender.py --webcam`) | Built, tested in the full pipeline |
+| Training Wekinator from the photo dataset | Built, tested in the full pipeline |
+| Testing the trained model with photos (`dataset_sender.py --test`) | Built, tested in full pipeline |
+| Bridge sends `s` (action) / `h` (heart) to the Arduino | Built, tested in full pipeline |
+| Music from the Arduino states | Built, tested in full pipeline |
+| Final Arduino sketch | Built, tested in full pipeline (`Code/Arduino/PuppetScene`) |
 
-[TODO: update this table after the demo.]
+
 
 **Other tests:**
 
