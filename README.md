@@ -1,5 +1,10 @@
 # CPS Interactive Shadow Theatre — Group 20
-<img width="1448" height="1086" alt="4792ac60-78bc-4818-94a6-db6d05263a0f" src="https://github.com/user-attachments/assets/707979b0-0ed6-41af-85f7-a26eaf36b602" />
+
+An interactive, gesture-controlled shadow theatre inspired by Día de los Muertos, where a HEART hand gesture brings Catrina and Mariachi together to dance.
+
+<p align-"center>
+<img width="1000" alt="4792ac60-78bc-4818-94a6-db6d05263a0f" src="https://github.com/user-attachments/assets/707979b0-0ed6-41af-85f7-a26eaf36b602" />
+</p>
 
 _First draft (v0.1 of the new structure). Items marked **[TODO]** still need the team's input or evidence._
 
@@ -33,13 +38,14 @@ Inspired by Plato's *Allegory of the Cave*, the project explores how light angle
 
 The performance features two characters, **Catrina and Mariachi**, which move along independent rails and perform a coordinated dance in response to audience interaction.
 
-Inspired by the Mexican celebration of Día de los Muertos (Day of the Dead), the shadow theatre tells the story of Catrina and Mariachi, two characters brought together through music, movement and the possibility of love. As the theatre comes to life, the audience can influence how their story unfolds through simple hand gestures. By performing the **HEART** gesture, the audience brings the two characters together, allowing them to share a romantic dance. Without this interaction, they continue on their separate paths, leaving their story unresolved. The performance celebrates love, remembrance and the idea that connections can transcend the boundaries between life and death.
+Inspired by the Mexican celebration of "Día de los Muertos" (Day of the Dead), the shadow theatre tells the story of Catrina and Mariachi, two characters brought together through music, movement and the possibility of love. As the theatre comes to life, the audience can influence how their story unfolds through simple hand gestures. By performing the **HEART** gesture, the audience brings the two characters together, allowing them to share a romantic dance. Without this interaction, they continue on their separate paths, leaving their story unresolved. The performance celebrates love, remembrance and the idea that connections can transcend the boundaries between life and death.
 
 ## 1.2 User interaction
 
 The audience uses two hand gestures in front of the webcam:
-
-<img width="320" height="256" alt="WhatsApp Image 2026-11-13 at 8 16 30 PM" src="https://github.com/user-attachments/assets/33b96f10-e098-4826-9b85-4378be245b28" /><img width="280" height="280" alt="WhatsApp Image 2026-11-13 at 8 18 18 PM" src="https://github.com/user-attachments/assets/e040ce84-2adc-4459-9252-ef7b75f41c85" />
+<p align="center">
+<img width="280" height="250" alt="WhatsApp Image 2026-11-13 at 8 16 30 PM" src="https://github.com/user-attachments/assets/33b96f10-e098-4826-9b85-4378be245b28" /><img width="280" height="250" alt="WhatsApp Image 2026-11-13 at 8 18 18 PM" src="https://github.com/user-attachments/assets/e040ce84-2adc-4459-9252-ef7b75f41c85" />
+</p>
 
 
 
@@ -63,52 +69,44 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 
 ## 1.3 Demonstration
 
-[TODO: insert a photo or GIF of the completed installation.]
+<img width="4096" height="3072" alt="IMG20261111144412" src="https://github.com/user-attachments/assets/6d7d86e5-2e72-4911-8bcf-a7c2d4f7d0d8" />
 
-[TODO: add a link to the demonstration video.]
+[Watch on YouTube](https://youtu.be/l4lxOTiHyzY)
+[![Main](https://img.youtube.com/vi/l4lxOTiHyzY/0.jpg)](https://www.youtube.com/watch?v=l4lxOTiHyzY)
+
 
 ## 1.4 System overview
 
-`Hand gesture → Webcam → Python (MediaPipe hand landmarks) → Wekinator (classifier) → Python bridge → Arduino → Steppers, servos, reflector → Shadow performance`
+The system turns a hand gesture into movement and light on the stage. Six phases, from the webcam to the actuators, pass data along the pipeline, and the Arduino excecutes and reports back the current state so the music changes to match the scene.
 
-```
-Webcam
-     |
-     v
-landmarks_sender.py   MediaPipe -> 21 landmarks x (x, y, z) = 63 floats (normalised)
-     |  OSC /wek/inputs, UDP, 127.0.0.1:6448
-     v
-Wekinator             classifier, k-NN, 3 classes
-     |  OSC /wek/outputs, UDP, 127.0.0.1:12000
-     v
-bridge.py             class -> one character ('s' or 'h'), plus music
-     |  USB serial, 115200 baud
-     v
-Arduino               stage state machine -> steppers, servos, reflector
-     |  state lines, e.g. "catrina -> DANCE", back over the same serial port
-     v
-bridge.py             changes the music track
-```
+<p align="center">
+   <img width=90% src="Media/2026-11-14-final-system-pipeline.png">
+   
+   Figure 1. Overall system pipeline. 
+</p>
 
-The bridge also plays the music, following the state the Arduino reports.
+| Stage | Component | What it does | Output |
+|---|---|---|---|
+| Input | Webcam | Films the user's hand | Video frames |
+| Hand tracking | `landmarks_sender.py` (MediaPipe) | Finds 21 hand joints and normalises them | 63 values, OSC port 6448 |
+| Classification | Wekinator (k-NN) | Sorts the hand shape into one of 3 gesture classes | Gesture class, OSC port 12000 |
+| Bridge | `bridge.py` | Turns the class into a command and plays the music for the current scene | `s` or `h`, USB serial at 115200 baud |
+| Control | Arduino (one sketch) | Runs the stage state machine and reports the current scene back to the bridge (dashed arrow) | Motor and light commands |
+| Actuators | Steppers, servos, LED reflector | Move the shadow shapes and light each scene | Movement and light on stage |
 
-![System Architecture](Media/Wekinator+PythonPipeline.png)
-
-*Figure 1. Overall system pipeline.* [TODO: check this is the final diagram.]
-
----
 
 # 2. System design
 
 ## 2.1 Mechanical design
 
 ### Motion System & Character Mechanism
-<img width="400" height="300" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" />
+<p align="center">
+<img width="400" height="300" alt="508e7483-6251-4179-a854-c6a237d877be" src="https://github.com/user-attachments/assets/e1df55ab-b620-4b25-94da-ed316fd29dcf" /><img width="400" height="300" alt="d1737d13-40b9-44ad-aab9-b317923e32f1" src="https://github.com/user-attachments/assets/d176cbca-f122-48eb-b09e-933711412150" />
+</p>
 
-<img width="400" height="300" alt="d1737d13-40b9-44ad-aab9-b317923e32f1" src="https://github.com/user-attachments/assets/d176cbca-f122-48eb-b09e-933711412150" />
-
-<img width="1402" height="1122" alt="a0dd0ae0-c92b-4edd-85a6-9b6f830faa5b" src="https://github.com/user-attachments/assets/f2dddf94-2428-4435-9e58-03643a1bdf0c" />
-
+<p align="center">
+<img width="800" alt="a0dd0ae0-c92b-4edd-85a6-9b6f830faa5b" src="https://github.com/user-attachments/assets/f2dddf94-2428-4435-9e58-03643a1bdf0c" />
+</p>
 
 *Figure 2. The overall mechanical structure of theatre.*
 
@@ -135,9 +133,11 @@ The modular construction offers several advantages:
 
 The structure also provides mounting positions for the linear rails, lighting system, projection screen, and exterior enclosure.
 
-<img width="1448" height="1086" alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
+<p align = center>
+<img width=90% alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
 
 *Figure 3. Theatre frame constructed from wooden strips and custom 3D-printed connectors.*
+</p>
 
 #### A. Linear Guide & Belt Transmission
 
@@ -160,14 +160,16 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
 - **Shared Linear Guide:** Reduces structural complexity and space requirements.
 - **Independent Belt Drives:** Allow individual control of character movement.
 
-  
-  <img width="1372" height="1147" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
+    <p align=center>
+    <img width="70%" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
 
-*Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
-
-<img width="1105" height="1423" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
-*Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
-
+    *Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
+    </p>
+    <p align=center>
+    <img width="70%" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
+        
+    *Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
+    </p>
 ---
 
 #### B. Modular SG90 Servo & Laser-Cut Silhouettes
@@ -184,9 +186,11 @@ The servo rotates the character around a vertical axis, changing its orientation
 - **Easy Replacement:** Servo modules can be removed or replaced without disassembling the linear carriage.
 - **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
 
-<img width="1024" height="1536" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
+<p align=center>
+<img width="50%" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
 
 *Figure 6. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
+</p>
 
 **Character Design & Laser-Cut Silhouettes**
 
@@ -201,17 +205,23 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 ## Character Inspiration
 
-
-<img width="620" height="500" alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" /><img width="300" height="500" alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
-
-*Figures 7.1-7.2 Character Design Inspiration*
+<p align = center>
+    <img width=60% alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
+    
+    *Figures 7.1 Character Design Inspiration 1*
+</p>
+<p align = center>  
+    <img width=60% alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
+    
+    *Figures 7.2 Character Design Inspiration 2*
+</p>
 
 ## Laser-cut Profiles
 
 Free hand drawn on a digital painting software, then processed using image tracing to turn it into vector lines. 
 Manually adding 1mm rectangles onto the vector lines to create the registation slits.
 
-<img width="510" height="452" alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width="438" height="452" alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
+<img width=800 alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width=800 alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
 
 *Figures 7.3-7.4 Laser-Cut Profiles*
 
@@ -219,23 +229,20 @@ Manually adding 1mm rectangles onto the vector lines to create the registation s
 
 Assembled at 90 degree angles, the two frames of each actor slide into place.
 Using hot glue to adhere them together, then mounting them on the servo mounts.
-
+<p align=center>
 <img width="300" height="500" alt="catrina_two_view_1_second" src="https://github.com/user-attachments/assets/1c66ce31-3911-4962-b20a-9145eb4eaace" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
 
 *Figures 7.5-7.6 Assembled Silhouttes*
-
-
-*Figures 7.1-7.6 Character designs, laser-cut profiles, and assembled Catrina and Mariachi silhouettes.*
-
+</p>
 ### Exterior enclosure and finishing
 
 The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. Wooden panels were cut to fit the frame, forming the outer casing while maintaining access to the internal mechanisms and providing a defined viewing area.
 
 Surface finishing and painting, combined with laser-cut decorative details and red curtains, establish the theatre's visual identity and separate the performance space from its supporting structure.
 
-<img width="4096" height="3072" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
-<img width="1448" height="1086" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
-<img width="3072" height="4096" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
+<img width="800" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
+<img width="800" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
+<img width="800" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
 
 *Figure 8. Exterior enclosure design and final surface finishing.*
 
@@ -329,26 +336,27 @@ Before installing the exterior enclosure, a final check is conducted to ensure a
 
 ## 2.2 Electrical and electronics
 
-_This section covers the **hardware** assessment criterion._
+An Arduino runs the stage, driving two stepper motors, two servos, two home switches and an LED reflector from a 5 V power bank, and this section covers the parts, wiring, power and safety checks.
 
-### Bill of materials
+### Core components - E-BOM
 
-| Component | Quantity | Purpose |
-|---|---|---|
-| Arduino [TODO: Nano or Nano Every — `PuppetScene` says Nano, the set-up steps say Nano Every] | 1 | Runs the stage state machine |
-| 28BYJ-48 stepper motor + driver board [TODO: driver model] | 2 | Drives each carriage along its rail |
-| Servo motor [TODO: model] | 2 | Rotates each silhouette during the dance |
-| Home (limit) switch | 2 | Zeroes each carriage at power-up |
-| Reflector light assembly [TODO: LED type] | 1 | Light source for the shadows |
-| Laptop webcam | 1 | Gesture input |
-| Power bank + power board (module kit) | 1 | 5 V DC supply |
-| [TODO: other parts] | | |
+Each component was chosen to make the shadow show precise, repeatable and clearly visible. Every part runs from the same 5 V supply.
 
-[TODO: reason for each part and confirmation that it is on the approved list.]
+| Component | Quantity | Purpose | Why this part |
+|---|---|---|---|
+| Arduino Nano Every — `PuppetScene.ino` | 1 | Runs the stage state machine | MCU unit provided for this project |
+| 28BYJ-48 stepper motor CX28BYJ48-08 + driver board | 2 | Drives each carriage along its rail | Moves each character in precise steps, so every show repeats the same dance |
+| Servo motor FS90 | 2 | Rotates each silhouette during the dance | Turns quickly to set angles, changing the shadow's shape so the characters appear to dance |
+| Home (limit) switch | 2 | Zeroes each carriage at power-up | Allows setting up home position to the stepper motors |
+| Reflector light assembly C513A-WSN-CX0Z0231 | 1 | Light source for the shadows | Bright, with a 55° viewing angle, so this single light covers the stage and casts a sharp shadow |
+| Webcam | 1 | Gesture input | Capture the gestures of the audience |
+| Power bank + power board (module kit) | 1 | 5 V DC supply | Main power supply provided for this project |
+
 
 ### Wiring and circuit diagram
 
 Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
+<p align=center>
 
 | Function | Catrina | Mariachi |
 |---|---|---|
@@ -356,41 +364,111 @@ Pin assignments, from the current stage sketch (`Code/Arduino/PuppetScene`):
 | Servo signal | 15 | 16 |
 | Home switch (to GND, `INPUT_PULLUP`, active LOW) | 3 | 2 |
 | Reflector (shared, active LOW) | 14 | 14 |
+</p>
 
-*Figure 14. Electrical circuit and hardware connections.* [TODO: circuit diagram.]
+An Arduino Nano Every, powered and controlled over USB from the laptop, sits on a breadboard whose top rail supplies 5 V from the power board to every other device, with a common GND on both − rails.
+Two ULN2003 drivers run the 28BYJ-48 steppers (Catrina on D8–D11, Mariachi on D4–D7), and two FS90 servos rotate the silhouettes (pins 15 and 16).
+The home switches on D3 and D2 use the Arduino’s internal pull-ups and read LOW when pressed, and the reflector LED turns on when pin 14 goes LOW through a 30 Ω resistor.
+
+<p align=center>
+<img src="Media/2026-11-14-circuit-diagram.png" width="100%">
+Figure 14. Electrical circuit and hardware connections.
+</p>
 
 ### Power estimate
 
-[TODO: current of each stepper, servo and the reflector at idle and at peak, compared with the power bank rating. Measured values preferred.]
+Estimated maximum consumption of the shadow theatre, from datasheet values (no measured currents).
+
+#### General equations
+
+Total power at the supply voltage:
+
+$$P_{total} = V \cdot I_{total}$$
+
+where $I_{total}$ consider the current of all the parts connected to the 5V power bank.
+
+Resistive loads (stepper coils), Ohm's law:
+
+$$I_{phase} = \frac{V}{R_{phase}} \qquad I_{stepper} = k \cdot I_{phase}$$
+
+with $k$ = number of coils energised at once (2 in `FULL4WIRE` mode).
+
+LED with a series resistor:
+
+$$I_{LED} = \frac{V - V_F}{R}$$
+
+#### Current per component (at 5 V)
+
+| Component | Qty | Datasheet value | Calculation | Current per part |
+|---|---|---|---|---|
+| 28BYJ-48 stepper (via ULN2003) | 2 | 50 Ω ± 7 % per phase, 5 V | 5 V / 50 Ω = 100 mA per phase × 2 phases | **200 mA** (max 215 mA at 46.5 Ω) |
+| FS90 servo, idle | 2 | 5 mA (4.8 V), 6 mA (6 V) | interpolated to 5 V | **5 mA** |
+| FS90 servo, moving (no load) | 2 | 100 mA (4.8 V), 120 mA (6 V) | interpolated to 5 V | **103 mA** |
+| FS90 servo, stalled | 2 | 700 mA (4.8 V), 800 mA (6 V) | interpolated to 5 V | **717 mA** |
+| C513A-WSN LED + 30 Ω | 1 | V<sub>F</sub> = 3.2 V typ. (4.0 V max) | (5 − 3.2) / 30 Ω | **60 mA** |
+
+
+Notes:
+
+- The ULN2003 voltage drop (≈ 1 V) is ignored, so the stepper current is an upper bound.
+- The sketch uses `AccelStepper::FULL4WIRE`, so **two coils are on at all times** while a stepper is enabled, also when it stands still. The steppers are only switched off (`disableOutputs`) during the DANCE servo phase and in EXIT.
+- The Arduino is listed separately: As it is powered from the laptop USB, it does not load the power bank.
+
+#### Current per state of the show
+
+From the state machine in `PuppetScene.ino`. Arduino not included (add ≈ 20 mA if it runs from the power bank).
+
+| State | Loads on | I<sub>total</sub> | P = 5 V × I |
+|---|---|---|---|
+| IDLE (after homing) | 2 steppers holding + 2 servos idle | 410 mA | 2.05 W |
+| HOMING | 2 steppers (one moving, one holding) + 2 servos idle | 410 mA | 2.05 W |
+| MOVE_12 / MOVE_21 / HOLD | 2 steppers + 2 servos idle + LED | **470 mA** | **2.35 W** |
+| DANCE (max) | 2 steppers + 2 servos idle + LED | 470 mA | 2.35 W |
+| EXIT | 2 servos idle (steppers and LED off) | 10 mA | 0.05 W |
+
+**Normal show (maximum power consumption state):** 470 mA → **2.35 W** (490 mA, 2.45 W with the Arduino).
+
+Note: The sketch never runs a servo and its own stepper together.
 
 ### Safe powering
 
-- [TODO: confirm 5 V DC from the module power bank and power board only.]
-- [TODO: confirm servos and steppers are not powered from the Arduino pins, and all grounds are common.]
-- The sketch switches each stepper off (`disableOutputs`) while its servo rotates, and after the show (EXIT). [TODO: state whether this was done to limit current.]
+- Verify that 5VDC is supplied from the module power bank and power board only.
+- Confirm servos and steppers are not powered from the Arduino VCC pins, and all grounds are common.
+- The sketch switches each stepper off (`disableOutputs`) while its servo rotates, and after the show (EXIT). This was done to limit current draw during the dancing state.
 
 ### Electrical safety and power-on check
 
-Before connecting or adjusting electrical components:
+>[!Important] 
+>Before running the software:
+>1. Verify all electrical connections and power supply ratings.
+>2. Check that both carriages move freely by hand with power disconnected.
+>3. Ensure all moving parts are clear of cables and obstacles.
+>4. Power on the control system.
+>5. Test each motor and servo individually at low speed.
+>6. Verify lighting operation.
 
-1. Disconnect all power sources.
-2. Check for damaged cables and exposed connections.
-3. Confirm that electrical components are securely mounted.
-4. Verify the voltage and current requirements of motors, servos and lighting.
-5. Ensure that cables will not interfere with moving mechanisms.
+>[!Warning]
+>Before connecting or adjusting electrical components:
+>1. Disconnect all power sources.
+>2. Check for damaged cables and exposed connections.
+>3. Confirm that electrical components are securely mounted.
+>4. Verify the voltage and current requirements of motors, servos and lighting.
+>5. Ensure that cables will not interfere with moving mechanisms.
 
-Before running the software:
 
-1. Verify all electrical connections and power supply ratings.
-2. Check that both carriages move freely by hand with power disconnected.
-3. Ensure all moving parts are clear of cables and obstacles.
-4. Power on the control system.
-5. Test each motor and servo individually at low speed.
-6. Verify lighting operation.
+
 
 ---
 
 ## 2.3 Software
+
+Hand gestures seen by the webcam are tracked with MediaPipe, classified by Wekinator and passed by bridge.py to the Arduino, which moves the characters and sends its state back to control the music.
+
+<p align="center">
+     <img src="Media/2026-11-14-software-pipeline.png" alt="Software pipeline" width="90%">
+     Figure 15. Software pipeline: Python scripts and Arduino sketch.
+</p>
+
 
 ### Pipeline and message formats
 
@@ -399,14 +477,15 @@ Before running the software:
 | Webcam → `landmarks_sender.py` | USB video, MediaPipe | 21 hand landmarks × (x, y, z) |
 | `landmarks_sender.py` → Wekinator | OSC over UDP | `127.0.0.1:6448`, `/wek/inputs`, 63 floats, 15 messages/s |
 | Wekinator → `bridge.py` | OSC over UDP | `127.0.0.1:12000`, `/wek/outputs`, class as a float |
-| `bridge.py` → Arduino | USB serial, 115200 baud | One character: `s` (class 2, action) or `h` (class 3, heart) |
+| `bridge.py` → Arduino | USB serial, 115200 baud | One character, sent once per held gesture: `s` (start action) or `h` (dance action) |
 | Arduino → `bridge.py` | USB serial | Text lines such as `catrina -> DANCE`, used for the music |
 
-Do not change the ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
+>[!Warning]
+>Do not change the wekinator ports, addresses, the 63-value order or `normalise()` without telling the team: every other script depends on them.
 
 ### Sender (`landmarks_sender.py`)
 
-- Run with `--webcam` for the show.
+- Run with `--webcam` run configuration for the show.
 - Webcam mode: one detection and one OSC message every 1/15 s. A preview window shows the camera with the landmarks drawn; `q` / `Esc` quits.
 - The landmarks are normalised: the wrist is the origin and the wrist-to-middle-finger-base distance is the scale. If no hand is found, 63 zeros are sent, so Wekinator always receives the same number of inputs.
 - One hand only (`num_hands=1`); handedness is not sent.
@@ -414,9 +493,9 @@ Do not change the ports, addresses, the 63-value order or `normalise()` without 
 
 ### Bridge (`bridge.py`)
 
-- Class to letter (`CLASS_COMMANDS` at the top of `bridge.py`): class 2 → `s`, class 3 → `h`. Class 1 (none) sends nothing.
+- Class to letter: Wekinator sends the class as a float (e.g. `2.0`), which is rounded to an integer, then looked up in `CLASS_COMMANDS` (top of `bridge.py`): class 2 → `s`, class 3 → `h`. Class 1 (none) sends nothing.
 - `COMMAND_ENDING` is `""`, so only the character is sent. Set it to `"\n"` if the sketch reads lines.
-- Keep-alive: while the same class stays, the letter is re-sent about every 250 ms (`KEEPALIVE_S`).
+- Hold before sending: the letter is sent **once**, only after the same class has arrived for 3 s (`HOLD_S`, about 45 messages at 15/s). A different class, or a gap of more than 0.5 s (`MAX_GAP_S`), restarts the count; then the bridge waits for a new gesture.
 - Waits 2 s after opening the port, because the Arduino resets when the port opens. Arduino replies are read on a background thread.
 - Options: `--serial-port` (default `COM7`), `--osc-port`, `--baud`, `--no-music`, `--dry-run` (no Arduino).
 
@@ -428,13 +507,13 @@ The bridge reads the Arduino's state lines (`<actor> -> <STATE>`):
 |---|---|
 | `IDLE`, `MOVE_12`, `MOVE_21`, `HOLD` | Track 1 (`music/Track_1.mp3`), looping |
 | `DANCE` (any actor) | Track 2 (`music/Track_2.mp3`), looping |
-| `EXIT` (all actors) | Stops with a fade-out. The next `IDLE` starts track 1 again |
-| `HOMING` | Keeps what is playing |
+| `EXIT` (all actors) | Stops with a fade-out. Track 1 starts again with the next show (`MOVE_12`) |
+| `HOMING` (all actors) | No music |
 
-- `--no-music` turns the music off. If `pygame` or a track file is missing, the bridge says so and carries on without music.
+Notes:
+- `--no-music` run configuration turns the music off. If `pygame` or a track file is missing, the bridge says so and carries on without music.
 - If the sketch prints the states differently, change `STATE_LINE` in `bridge.py`.
 
-![Software Pipeline](Media/Wekinator+PythonPipeline.png)
 
 ### State machine (Arduino)
 
@@ -451,18 +530,18 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 | `EXIT` | Steppers off, reflector off; after 5 s back to `IDLE` |
 
 The music for each state is in the Music table above.
+<p align="center">
+     <img src="Media/2026-11-14-state-machine.png" alt="State Machine" width="90%">
+     Figure 16. Performance state machine.
+</p>
 
-*Figure 15. Performance state machine.* [TODO: state machine diagram.]
 
 ### Gating logic
 
 - `s` is accepted only when both actors are in `IDLE` and homed; otherwise the sketch replies "Not ready, start ignored".
 - `h` is accepted only while the show is running (not in `IDLE` or `HOMING`), and the dance can happen only once per show.
+- A letter never moves a motor directly: it only raises a flag for both actors (`startEvent` or `heartGesture`), which `updateActor()` reads on its next pass.
 - The dance starts only when both actors are at the centre.
-
-### Changes beyond the provided examples
-
-[TODO: list what was changed or added beyond the module's example code (e.g. MediaPipe hand landmarks instead of the Processing video input, the bridge, the state machine).]
 
 ---
 
@@ -492,7 +571,7 @@ The music for each state is in the Music table above.
 
 ### Training data
 
-Photo dataset in `Code/Python/dataset/` (`.jpg`, `.jpeg`, `.png`, one folder per class):
+The training dataset is made of single-frame photos of our team members performing each gesture (heart, action and none), plus photos of one extra person outside the team. The none class covers any hand pose that is not a heart or an action. The goal was to give the model enough variety to recognise the gestures reliably, without so many similar photos that it overfits to our own hands.
 
 | Class | Photos |
 |---|---|
@@ -512,11 +591,12 @@ Saved trained project: `Code/Wekinator/` (`TRAINCLASSIFIER10-11-2026.wekproj`).
 - **Balance:** similar numbers of photos per class, otherwise k-NN leans toward the biggest class.
 - Options: `--dataset <folder>`, `--burst <seconds>`, `--rate`.
 
-[TODO: who is in the photos, lighting and background, mirroring.]
+>[!Note]
+>To retrain the model, create a dataset folder at `Code/Python/dataset/` with one subfolder per class (`none`, `action`, `heart`, see the table above). Photos can be `.jpg`, `.jpeg` or `.png`.
 
 ### Why this model
 
-[TODO: justify k-NN and hand landmarks (e.g. compared with the Processing video features). Link to the evaluation in 3.4.]
+Hand landmarks describe only the shape of the hand ([Features and classes](#features-and-classes)). The Processing video features from the Wekinator examples send the pixel colours of the whole image, so they change with lighting, background and where the person stands. That is a problem in a variable lighting set-up with a different audience each time. Given that landmarks remove this noise, a few dozen photos per class are enough ([Training data](#training-data)), and a simple k-NN can separate the three poses. k-NN trains in seconds, needs no tuning and can be retrained on site, which fit our short project deadline and left more time for the stage and mechanics. Its limit is that it only recognises poses close to its training examples. See [3.4 ML formal evaluation](#34-ml-formal-evaluation) for the results.
 
 ---
 
@@ -728,6 +808,14 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 - AccelStepper library. [TODO: full reference]
 - [TODO: module example code, datasheets, image and music credits]
 - Anthropic Claude. Anthropic Claude response to Group 20. 26 October to 11 November 2026.
+
+## 5.2 Engineering Documentation
+
+- [28BYJ-48 5 V stepper datasheet (Kiatronics)](https://www.piekarz.pl/pdf.php?id=33958): rated 5 V, DC resistance 50 Ω ± 7 %.
+- [FEETECH FS90 specification](https://www.pololu.com/file/0J1435/FS90-specs.pdf): idle, running and stall current at 4.8 V and 6 V.
+- [Cree C513A-WSS/WSN datasheet](https://it.exshinetech.com/datasheets/70/C513A-WSN-CX0Z0341.pdf): I<sub>F</sub> max 30 mA, V<sub>F</sub> 3.2 V typ. / 4.0 V max at 20 mA.
+- [Arduino Nano Every pinout](https://cdn.soselectronic.com/productdata/f5/1b/20adce8e/abx00033.pdf): 40 mA max per pin, 20 mA recommended.
+- [Nano Every board current, ≈ 20 mA (user report)](https://github.com/arduino/ArduinoCore-megaavr/issues/137).
 
 ## 5.2 AI-use notice
 
