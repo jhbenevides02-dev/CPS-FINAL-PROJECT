@@ -842,11 +842,14 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 
 ## 5.1 Citations
 
-- Plato, *Allegory of the Cave* (conceptual inspiration). [TODO: full reference]
+-
+- Plato, *The Republic*, Book VII, "Allegory of the Cave". [Wikipedia](https://en.wikipedia.org/wiki/Allegory_of_the_cave).
 - Wekinator — wekinator.org. [TODO: full reference]
 - MediaPipe Hand Landmarker (Google). [TODO: full reference]
 - AccelStepper library. [TODO: full reference]
-- [TODO: module example code, datasheets, image and music credits]
+- *La Llorona* (Mexican Folk Song). "The Artistic Value and Cultural Symbolism of La Llorona." Xiaohongshu (RED). [Source Video](https://xhslink.cn/o/1buiYKscI7y).
+- *The Phantom of the Opera* (Cello Quartet Arrangement). Xiaohongshu (RED). [Source Video](https://xhslink.cn/o/igsaYjSxsw).
+
 - Anthropic Claude. Anthropic Claude response to Group 20. 26 October to 11 November 2026.
 
 ## 5.2 Engineering Documentation
