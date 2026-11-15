@@ -688,7 +688,16 @@ Overall, the system performed reasonably well with unseen users, particularly wh
 
 These observations suggest that expanding the training dataset with a wider variety of users and gesture variations, alongside refining the activation timing and recognition thresholds, could improve the reliability and accessibility of the interaction.
 
-[TODO: results with people not in the training data; timed set-up (≤ 15 min).]
+
+### Timed Set-Up
+
+1. Unpacking and placement:  1-2 minutes
+2. Circuit and Mechanical Check : 30 seconds-3 minutes
+3. Laptop, power bank, and webcam connections: 30 seconds
+4. Power Cycle: 30 seconds
+5. Open Applications (Wekinator, Pycharm, Arduino, Camera): 1-2 minutes
+6. Ready for operation: Set up time 3 minutes 30 seconds-8 minutes
+
 
 
 ## 3.6 Improvements and limitations
