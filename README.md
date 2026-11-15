@@ -666,7 +666,7 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 
 Testing with users who were not included in the original training dataset revealed some inconsistencies in gesture recognition.
 
-# Action Gesture Recognition
+### Action Gesture Recognition
 
 <img width="1920" height="1080" alt="Screenshot 2026-11-15 205350" src="https://github.com/user-attachments/assets/f9db5adc-610b-4278-81d1-0774ada1acb4" />
 
@@ -675,7 +675,7 @@ The **ACTION** gesture occasionally produced false activations, with the theatre
 
 There were also occasional delays in recognition. For example, when attempting to turn the theatre back on immediately after it had switched off, the system sometimes took a moment to recognise the action gesture or appeared to experience a short delay before accepting the input. This affected the responsiveness and consistency of the interaction.
 
-# Heart Gesture Recognition
+### Heart Gesture Recognition
 
 <img width="1920" height="1080" alt="Screenshot 2026-11-15 205416" src="https://github.com/user-attachments/assets/1078277b-ba27-4564-a7e4-9fe8912facf5" />
 
@@ -686,7 +686,7 @@ Some participants struggled to maintain a consistent hand position for the full 
 
 Differences in hand size and dexterity also introduced some variation. Some participants found it more difficult to form the rounded heart shape, while others produced heart gestures with a significantly smaller circumference than those represented in the original training dataset. Although this rarely prevented successful recognition, it highlighted some limitations in the model's ability to accommodate variations in how different users perform the same gesture.
 
-# Overall Findings
+### Overall Findings
 
 Overall, the system performed reasonably well with unseen users, particularly when gestures were performed in positions and shapes similar to the original training examples. However, testing highlighted opportunities to improve generalisation across different users, reduce false activations and make gesture recognition more tolerant of variations in hand positioning, size and movement.
 
