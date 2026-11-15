@@ -187,7 +187,7 @@ The servo rotates the character around a vertical axis, changing its orientation
 - **Independent Maintenance:** Servo adjustments can be performed without disturbing the belt transmission or guide rods.
 
 <p align=center>
-<img width="90%" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
+<img width="50%" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
 
 *Figure 6. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
 </p>
