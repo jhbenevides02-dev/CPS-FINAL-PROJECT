@@ -666,11 +666,16 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 
 [TODO: results with people not in the training data; timed set-up (≤ 15 min).]
 
+
 ## 3.6 Improvements and limitations
 
-_Maximum 200 words._
-
-[TODO]
+| Area | Current Limitations | Potential Improvements |
+|---|---|---|
+| **Mechanical Movement** | Limited travel range and potential vibration during movement. | Refine belt tension and carriage alignment for smoother, more stable movement. |
+| **Character Animation & Storytelling** | The current performance focuses on two characters dancing along a single shared guide. | Introduce additional tracks, background layers, and new characters to create richer movements, layered scenes, and more complex storylines. |
+| **Lighting & Projection** | The current lighting setup provides limited changes in atmosphere during the performance. | Combine spotlights and general lighting with dynamic transitions to highlight characters, shift the atmosphere, and create more dramatic effects. |
+| **Gesture Interaction** | Gesture recognition can be sensitive to environmental conditions. | Improve recognition reliability and introduce more varied gestures for richer audience participation. |
+| **Maintenance & Accessibility** | Internal components are less accessible after the enclosure is installed. | Introduce removable enclosure panels for easier maintenance and future upgrades. |
 
 ---
 
