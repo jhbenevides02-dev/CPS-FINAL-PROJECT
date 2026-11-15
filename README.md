@@ -78,10 +78,11 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 The system turns a hand gesture into movement and light on the stage. Six phases, from the webcam to the actuators, pass data along the pipeline, and the Arduino excecutes and reports back the current state so the music changes to match the scene.
 
 <p align="center">
-<img width=90% src="media/2026-11-14-final-system-pipeline.png>
+<img width=90% src="Media/2026-11-14-final-system-pipeline.png>
 
 Figure 1. Overall system pipeline.
 </p>
+
 
 | Stage | Component | What it does | Output |
 |---|---|---|---|
@@ -91,6 +92,7 @@ Figure 1. Overall system pipeline.
 | Bridge | `bridge.py` | Turns the class into a command and plays the music for the current scene | `s` or `h`, USB serial at 115200 baud |
 | Control | Arduino (one sketch) | Runs the stage state machine and reports the current scene back to the bridge (dashed arrow) | Motor and light commands |
 | Actuators | Steppers, servos, LED reflector | Move the shadow shapes and light each scene | Movement and light on stage |
+
 
 # 2. System design
 
