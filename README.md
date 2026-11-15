@@ -819,10 +819,13 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 
 ## 5.2 AI-use notice
 
-Generative AI (Claude, Anthropic) was used in this project by all three team members (see the Anthropic Claude references in 5.1).
+Generative AI (Claude, Anthropic，Chatgpt) was used in this project by all three team members (see the Anthropic Claude references in 5.1).
 
 - **Debugging (main use):** the Arduino IDE has no integrated debugger (no breakpoints or step-by-step execution), so Claude was our main debugging tool. We shared code, Serial Monitor output and error messages, and used its suggestions to find and fix faults. Every fix was tested by the team on the hardware.
 - **Code:** Claude reviewed code written by the team, to identify any possible issues in the pipeline.
 - **Learning:** explanations of the tools and concepts used (Wekinator, k-NN, OSC, serial communication, non-blocking timing).
+- **CAD Rendering:** Rhino model screenshots were provided to ChatGPT to improve materials, lighting, and backgrounds for clearer mechanical visualisation.
+- **Image Enhancement:** ChatGPT was used to improve image clarity and highlight component details and assembly structures.
+
 
 All AI output was checked, tested and edited by the team, and the team is responsible for the final work.
