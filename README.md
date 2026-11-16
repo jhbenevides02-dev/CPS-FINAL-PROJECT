@@ -232,9 +232,9 @@ Assembled at 90 degree angles, the two frames of each actor slide into place.
 Using hot glue to adhere them together, then mounting them on the servo mounts.
 <p align=center>
 <img width="300" height="500" alt="catrina_two_view_1_second" src="https://github.com/user-attachments/assets/1c66ce31-3911-4962-b20a-9145eb4eaace" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
-
-*Figures 7.5-7.6 Assembled Silhouttes*
+Figures 7.5-7.6 Assembled Silhouttes
 </p>
+
 ### Exterior enclosure and finishing
 
 The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. Wooden panels were cut to fit the frame, forming the outer casing while maintaining access to the internal mechanisms and providing a defined viewing area.
