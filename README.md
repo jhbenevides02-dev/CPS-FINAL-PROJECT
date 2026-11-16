@@ -317,7 +317,9 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Adjust the light angles and projection distances to achieve suitable shadow size and clarity.
 5. Test character translation, rotation, and shadow projection before installing the exterior enclosure.
 
-*Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.* [TODO: add image to `Media/`.]
+<img width="480" height="640" alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
+
+*Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.*
 
 #### 4. Final Enclosure & Finishing
 
@@ -327,7 +329,9 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Complete the surface finishing and add the laser-cut decorative elements and red curtains.
 5. Perform a final check of mechanical movement and shadow projection.
 
-*Figure 13. Final enclosure installation and completed shadow theatre.* [TODO: add image to `Media/`.]
+<img width="480" height="480" alt="3" src="https://github.com/user-attachments/assets/a0ffdf75-0cb6-4c29-9de2-31977e05d626" />
+
+*Figure 13. Final enclosure installation and completed shadow theatre.* 
 
 #### Final Assembly Checklist
 
