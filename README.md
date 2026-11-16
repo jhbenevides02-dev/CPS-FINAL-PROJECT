@@ -279,7 +279,7 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Check the frame alignment and stability, ensuring sufficient space for the internal mechanisms.
 
 <p align="center">
-<img width="680" height="500" alt="2026-11-14-3Dprinting-structure" src="https://github.com/user-attachments/assets/75e28cc6-67f6-450a-bb10-eb4ee1ae5165" />
+<img width="400" height="400" alt="2026-11-14-3Dprinting-structure" src="https://github.com/user-attachments/assets/75e28cc6-67f6-450a-bb10-eb4ee1ae5165" />
 <img height="400" alt="WhatsApp Image 2026-11-16 at 5 45 24 PM" src="https://github.com/user-attachments/assets/66a73b24-1e6e-4d7f-a44f-8c61e3d54867" />
 <p align="center">
 *Figure 10. Assembly of the wooden frame using 3D-printed connectors and bolted joints.*
