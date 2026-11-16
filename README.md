@@ -258,8 +258,8 @@ Several design decisions were informed by early prototyping and shadow projectio
 | **Screen Material** | Different translucent materials produced varying projection effects. | Frosted translucent paper. | Selected for its balance of light transmission and shadow visibility. |
 | **Lighting System** | Diffused and focused light sources were explored. | Simple direct-light arrangement without additional focusing lenses. | Reduces optical complexity while maintaining a clear shadow projection. |
 
-<img width="1280" height="960" alt="6" src="https://github.com/user-attachments/assets/311dcf7f-3299-4438-84b0-44b3ae8a38cc" />
-<img width="1280" height="960" alt="WhatsApp Image 2026-11-16 at 5 45 25 PM" src="https://github.com/user-attachments/assets/6f0049ee-ce33-4282-b79c-afb32b61fdcb" />
+<img width="640" height="480" alt="6" src="https://github.com/user-attachments/assets/311dcf7f-3299-4438-84b0-44b3ae8a38cc" />
+<img width="640" height="480" alt="WhatsApp Image 2026-11-16 at 5 45 25 PM" src="https://github.com/user-attachments/assets/6f0049ee-ce33-4282-b79c-afb32b61fdcb" />
 
 *Figure 9. Prototype comparisons of character movement, silhouette scale, screen materials, and lighting conditions.* [TODO: add image to `Media/`.]
 
