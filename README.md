@@ -697,7 +697,7 @@ These observations suggest that expanding the training dataset with a wider vari
 
 1. Unpacking and placement:  1-2 minutes
 2. Circuit and Mechanical Check : 30 seconds-3 minutes
-3. Laptop, power bank, and webcam connections: 30 seconds
+3. Arduino, laptop, power bank, and webcam connections: 30 seconds
 4. Power Cycle: 30 seconds
 5. Open Applications (Wekinator, Pycharm, Arduino, Camera): 1-2 minutes
 6. Ready for operation: Set up time 3 minutes 30 seconds-8 minutes
