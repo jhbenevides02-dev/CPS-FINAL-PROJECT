@@ -317,7 +317,7 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Adjust the light angles and projection distances to achieve suitable shadow size and clarity.
 5. Test character translation, rotation, and shadow projection before installing the exterior enclosure.
 
-<img width="520" height="540 alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
+<img width="520" height="540" alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
 
 *Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.*
 
