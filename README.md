@@ -686,62 +686,10 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 - The window draws the landmarks, shows the true class and Wekinator's answer (green = right, red = wrong or no answer). The console prints a score line per photo.
 - Testing with the **training photos** looks almost perfect and proves little. A real accuracy figure needs **new photos** in a separate folder (`dataset_test/none`, `dataset_test/action`, `dataset_test/heart`), used with `--dataset dataset_test`.
 - Option: `--listen-port`.
-<mxfile host="app.diagrams.net">
-  <diagram name="Page-1" id="wpE2_UW4hNmslEv5WnW5">
-    <mxGraphModel dx="519" dy="458" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="qBCUGnqRLksSLma48NtS-3" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;labelPadding=0 4;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="335" y="310" as="sourcePoint" />
-            <mxPoint x="335" y="350" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-9" edge="1" parent="1" source="qBCUGnqRLksSLma48NtS-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="260" y="440" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-10" edge="1" parent="1" source="qBCUGnqRLksSLma48NtS-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="410" y="440" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;strong&gt;Is the gesture being recognised?&lt;/strong&gt;" vertex="1">
-          <mxGeometry height="60" width="120" x="275" y="340" as="geometry" />
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-8" edge="1" parent="1" source="qBCUGnqRLksSLma48NtS-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="qBCUGnqRLksSLma48NtS-4" value="">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;strong&gt;Action Gesture Problem Detected&lt;/strong&gt;" vertex="1">
-          <mxGeometry height="60" width="152.5" x="258.75" y="250" as="geometry" />
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-14" edge="1" parent="1" source="qBCUGnqRLksSLma48NtS-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;labelPadding=0 4;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="270" y="580" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=7;align=center;" value="&lt;div&gt;&lt;font size=&quot;1&quot;&gt;&lt;b style=&quot;line-height: 160%;&quot;&gt;NO&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Hold longer&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Check camera visibility&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Keep hand parallel to camera&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Release and redo gesture&lt;/span&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="120" width="120" x="200" y="440" as="geometry" />
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-15" edge="1" parent="1" source="qBCUGnqRLksSLma48NtS-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;labelPadding=0 4;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="580" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=7;align=center;" value="&lt;div style=&quot;&quot;&gt;&lt;b style=&quot;font-size: 10px; background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Incorrectly / randomly&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Move hands out of view&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Increase registration time&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;Improve neutral-class dataset&lt;/span&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="120" width="120" x="350" y="440" as="geometry" />
-        </mxCell>
-        <mxCell id="qBCUGnqRLksSLma48NtS-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;strong&gt;Retest Gesture Recognition&lt;/strong&gt;" vertex="1">
-          <mxGeometry height="30" width="120" x="275" y="570" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
 
-[TODO: run with **unseen** photos (`--dataset dataset_test`) and add the confusion matrix and accuracy per class. Compare two models or datasets if possible.]
+<img width="2720" height="3520" alt="Untitled Diagram" src="https://github.com/user-attachments/assets/d72291e5-d2f7-4127-b692-32ba9a16bc2b" />
+
+
 
 ## 3.5 Unseen users and set-up time
 
