@@ -2,7 +2,7 @@
 
 An interactive, gesture-controlled shadow theatre inspired by Día de los Muertos, where a HEART hand gesture brings Catrina and Mariachi together to dance.
 
-<p align-"center>
+<p align-"center">
 <img width="1000" alt="4792ac60-78bc-4818-94a6-db6d05263a0f" src="https://github.com/user-attachments/assets/707979b0-0ed6-41af-85f7-a26eaf36b602" />
 </p>
 
@@ -859,11 +859,12 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
   - Fiebrink, R., Trueman, D. and Cook, P. R. (2009). "A Meta-Instrument for Interactive, On-the-Fly Machine Learning." *Proceedings of the International Conference on New Interfaces for Musical Expression (NIME)*, Pittsburgh, PA, pp. 280–285. [DOI: 10.5281/zenodo.1177513](https://doi.org/10.5281/zenodo.1177513).
 - MediaPipe Hand Landmarker. Google AI Edge. *Hand landmarks detection guide*. [Google AI Edge documentation](https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker). Accessed 16 November 2026.
   - Zhang, F., Bazarevsky, V., Vakunov, A., Tkachenka, A., Sung, G., Chang, C.-L. and Grundmann, M. (2020). "MediaPipe Hands: On-device Real-time Hand Tracking." *CVPR Workshop on Computer Vision for AR/VR*, Seattle, WA. [arXiv:2006.10214](https://arxiv.org/abs/2006.10214).
-- AccelStepper library. McCauley, M. (2009–2023). *AccelStepper library for Arduino*, version [x.xx]. AirSpayce Pty Ltd. GPL v2. [airspayce.com](https://www.airspayce.com/mikem/arduino/AccelStepper/). Accessed 16 November 2026.
+- AccelStepper library. McCauley, M. (2009–2023). *AccelStepper library for Arduino*, version [1.64]. AirSpayce Pty Ltd. GPL v2. [airspayce.com](https://www.airspayce.com/mikem/arduino/AccelStepper/). Accessed 16 November 2026.
 - *La Llorona* (Mexican Folk Song). "The Artistic Value and Cultural Symbolism of La Llorona." Xiaohongshu (RED). [Source Video](https://xhslink.cn/o/1buiYKscI7y).
 - *The Phantom of the Opera* (Cello Quartet Arrangement). Xiaohongshu (RED). [Source Video](https://xhslink.cn/o/igsaYjSxsw).
 
 - Anthropic Claude. Anthropic Claude response to Group 20. 26 October to 11 November 2026.
+- OpenAI ChatGPT. OpenAI ChatGPT response to Group 20. 26 October to 16 November 2026.
 
 ## 5.2 Engineering Documentation
 
@@ -873,7 +874,7 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 - [Arduino Nano Every pinout](https://cdn.soselectronic.com/productdata/f5/1b/20adce8e/abx00033.pdf): 40 mA max per pin, 20 mA recommended.
 - [Nano Every board current, ≈ 20 mA (user report)](https://github.com/arduino/ArduinoCore-megaavr/issues/137).
 
-## 5.2 AI-use notice
+## 5.3 AI-use notice
 
 Generative AI (Claude, Anthropic，Chatgpt) was used in this project by all three team members (see the Anthropic Claude references in 5.1).
 
