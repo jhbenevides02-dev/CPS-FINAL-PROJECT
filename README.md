@@ -1,4 +1,4 @@
-[Action ML.drawio](https://github.com/user-attachments/files/34921581/Action.ML.drawio)
+
 # CPS Interactive Shadow Theatre — Group 20
 
 An interactive, gesture-controlled shadow theatre inspired by Día de los Muertos, where a HEART hand gesture brings Catrina and Mariachi together to dance.
