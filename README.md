@@ -686,7 +686,7 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 - Testing with the **training photos** looks almost perfect and proves little. A real accuracy figure needs **new photos** in a separate folder (`dataset_test/none`, `dataset_test/action`, `dataset_test/heart`), used with `--dataset dataset_test`.
 - Option: `--listen-port`.
 
-<img width="272" height="372" alt="Untitled Diagram" src="https://github.com/user-attachments/assets/d72291e5-d2f7-4127-b692-32ba9a16bc2b" /><img width="272" height="372" alt="heart" src="https://github.com/user-attachments/assets/a96dc164-4646-4034-b13f-584166d25347" />
+<img  width="372" height="480" alt="Untitled Diagram" src="https://github.com/user-attachments/assets/d72291e5-d2f7-4127-b692-32ba9a16bc2b" /><img width="372" height="480" alt="heart" src="https://github.com/user-attachments/assets/a96dc164-4646-4034-b13f-584166d25347" />
 
 
 
