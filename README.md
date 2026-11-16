@@ -304,7 +304,7 @@ The mechanical assembly follows four main stages, from structural construction a
 13. Route the two independent belts around their corresponding pulleys and connect them to the sliding carriages using 3D-printed belt clamps, secured with bolts and nuts.
 14. Adjust belt tension and pulley alignment, then manually check the full movement range of both carriages with the power disconnected.
 
-<img width="480" height="640" alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
+<img width="480" height="496 alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
 <img width="502" height="496" alt="4" src="https://github.com/user-attachments/assets/3a1a4954-a832-46c0-86b2-d803b8549d8b" />
 
 *Figure 11. Assembly of the bearing-supported carriages, shared guide rods, SG90 character modules, and independent belt transmissions.*
@@ -317,7 +317,7 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Adjust the light angles and projection distances to achieve suitable shadow size and clarity.
 5. Test character translation, rotation, and shadow projection before installing the exterior enclosure.
 
-<img width="480" height="640" alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
+<img width="520" height="540 alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
 
 *Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.*
 
@@ -329,7 +329,7 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Complete the surface finishing and add the laser-cut decorative elements and red curtains.
 5. Perform a final check of mechanical movement and shadow projection.
 
-<img width="480" height="480" alt="3" src="https://github.com/user-attachments/assets/a0ffdf75-0cb6-4c29-9de2-31977e05d626" />
+<img width="480" height="500" alt="3" src="https://github.com/user-attachments/assets/a0ffdf75-0cb6-4c29-9de2-31977e05d626" />
 
 *Figure 13. Final enclosure installation and completed shadow theatre.* 
 
