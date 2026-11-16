@@ -304,7 +304,7 @@ The mechanical assembly follows four main stages, from structural construction a
 13. Route the two independent belts around their corresponding pulleys and connect them to the sliding carriages using 3D-printed belt clamps, secured with bolts and nuts.
 14. Adjust belt tension and pulley alignment, then manually check the full movement range of both carriages with the power disconnected.
 
-<img width="480" height="496 alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
+<img width="480" height="496" alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
 <img width="502" height="496" alt="4" src="https://github.com/user-attachments/assets/3a1a4954-a832-46c0-86b2-d803b8549d8b" />
 
 *Figure 11. Assembly of the bearing-supported carriages, shared guide rods, SG90 character modules, and independent belt transmissions.*
