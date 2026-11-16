@@ -69,7 +69,9 @@ The **HEART** gesture was chosen as a way to show and spread the love, then if y
 
 ## 1.3 Demonstration
 
-<img width="4096" height="3072" alt="IMG20261111144412" src="https://github.com/user-attachments/assets/6d7d86e5-2e72-4911-8bcf-a7c2d4f7d0d8" />
+<p align=center>
+<img width=90% alt="IMG20261111144412" src="https://github.com/user-attachments/assets/6d7d86e5-2e72-4911-8bcf-a7c2d4f7d0d8" />
+</p>
 
 [Watch on YouTube](https://youtu.be/l4lxOTiHyzY)
 [![Main](https://img.youtube.com/vi/l4lxOTiHyzY/0.jpg)](https://www.youtube.com/watch?v=l4lxOTiHyzY)
@@ -81,7 +83,6 @@ The system turns a hand gesture into movement and light on the stage. Six phases
 
 <p align="center">
    <img width=90% src="Media/2026-11-14-final-system-pipeline.png">
-   
    Figure 1. Overall system pipeline. 
 </p>
 
@@ -632,20 +633,21 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 | Character projects an incorrect pose | Incorrect silhouette orientation or servo rotation angle | Adjust the character position and test the servo angle under projection |
 | Shadows appear blurred or doubled | Incorrect light angle, projection distance or overlapping light sources | Adjust light position and distance; test each light source separately |
 
-**Safety:** Disconnect power before adjusting mechanical parts. Check that moving components are clear before powered testing.
+>[!Warning]
+>**Safety:** Disconnect power before adjusting mechanical parts. Check that moving components are clear before powered testing.
 
 ## 3.3 Software and communication issues
 
 | Symptom | Likely cause | Action |
 |---|---|---|
-| Bridge cannot open the COM port | Arduino IDE Serial Monitor or another bridge is using it | Close the Serial Monitor; only one program can hold the port |
-| Port 12000 busy | Bridge and `dataset_sender.py --test` both listen on it | Run only one of them |
-| Camera does not open | Another program (Zoom, Teams) is using it | Close the other program |
-| Recognition gets worse live | Camera, lighting or mirroring differs from training | Keep the same set-up and `--mirror` setting as the dataset |
-| `[music]` message and no sound | `pygame` not installed, or a track file is missing | Install `pygame` in the `cps` environment; check `music/Track_1.mp3` and `Track_2.mp3` |
-| `serial.Serial` fails | The package called `serial` was installed instead of `pyserial` | Uninstall `serial`, install `pyserial==3.5` |
-| Bridge sends nothing | Wekinator is not in Run mode, or only class 1 (none) is recognised | Check the Wekinator input indicator and the bridge `[osc]` lines |
-| [TODO] | | |
+| Gesture is recognised but the bridge never sends | The gesture wasn't held for 3 s (`HOLD_S`), or the class flickered or the hand left the frame for more than 0.5 s (`MAX_GAP_S`), which restarts the count | Hold the pose still for over 3 s and watch the `[osc]` lines for class flicker |
+| Wekinator always outputs "none" | No hand is detected, so 63 zeros are sent (hand out of frame, too dark, too far away) | Check the preview window shows landmarks on the hand; improve the lighting or move closer |
+| The wrong hand is tracked | Two hands are in frame and `num_hands=1` picks one | Ask the user to show only one hand |
+| Arduino replies "Not ready, start ignored" | The actors are still `HOMING`, or in the 5 s `EXIT` wait | Wait for both actors to reach `IDLE` before giving the action gesture |
+| Heart gesture does nothing | The show isn't running, the 2 s `HOLD` window has passed, or the dance already happened this show | Do the heart during the `HOLD` window. Only one dance is allowed per show |
+| Actors re-home every time the bridge starts | Expected: the Arduino resets when the port opens | Start the bridge before the audience arrives; a letter sent during `HOMING` is ignored |
+| Music stays silent after a show | Expected after `EXIT`: Track 1 only restarts at the next `MOVE_12` | No action needed |
+| Bridge crashes mid-show (`SerialException`) | The USB cable was disconnected or a loose connector dropped out | Reconnect the cable and restart the bridge; the actors will re-home |
 
 ## 3.4 ML formal evaluation
 
@@ -663,9 +665,10 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 Testing with users who were not included in the original training dataset revealed some inconsistencies in gesture recognition.
 
 ### Action Gesture Recognition
+<p align="center">
+<img width="90%" alt="Screenshot 2026-11-15 205350" src="https://github.com/user-attachments/assets/f9db5adc-610b-4278-81d1-0774ada1acb4" />
 
-<img width="1920" height="1080" alt="Screenshot 2026-11-15 205350" src="https://github.com/user-attachments/assets/f9db5adc-610b-4278-81d1-0774ada1acb4" />
-
+</p>
 
 The **ACTION** gesture occasionally produced false activations, with the theatre turning on unexpectedly even when users were not performing the gesture. Due to the **ACTION** gestures landmarks being a common hand placement.
 
@@ -673,8 +676,9 @@ There were also occasional delays in recognition. For example, when attempting t
 
 ### Heart Gesture Recognition
 
-<img width="1920" height="1080" alt="Screenshot 2026-11-15 205416" src="https://github.com/user-attachments/assets/1078277b-ba27-4564-a7e4-9fe8912facf5" />
-
+<p align="center">
+<img width=90% alt="Screenshot 2026-11-15 205416" src="https://github.com/user-attachments/assets/1078277b-ba27-4564-a7e4-9fe8912facf5">
+</p>
 
 The **HEART** gesture was generally recognised accurately, with successful activation in most attempts. However, the requirement to maintain a recognised gesture continuously for three seconds occasionally made activation difficult.
 
@@ -725,8 +729,8 @@ These observations suggest that expanding the training dataset with a wider vari
 | python-osc | 1.9.3 | OSC send/receive |
 | pyserial (never `serial`) | 3.5 | Serial port |
 | pygame | 2.6.1 | Music |
-| Wekinator | [TODO] | Classifier |
-| Arduino IDE + AccelStepper, Servo | [TODO] | Stage sketch |
+| Wekinator | Latest version | Classifier |
+| Arduino IDE + AccelStepper, Servo | IDE V2.3.10, AccelStepper V1.64 Serrvo V1.3.0 | Stage sketch |
 
 Pinned versions are in `Code/Python/environment.yml`.
 
@@ -758,17 +762,23 @@ Pinned versions are in `Code/Python/environment.yml`.
 
 Open the PyCharm terminal (`Alt+F12`). Check that it uses the `cps` environment:
 
-    python -c "import sys; print(sys.executable)"
+```shell
+python -c "import sys; print(sys.executable)"
+```
 
 If the path is not inside `cps`, open a **new** terminal tab after setting the interpreter. Then install, always with `python -m pip`:
 
-    python -m pip install mediapipe==1.1.1 python-osc==1.9.3 pyserial==3.5 pygame==2.6.1
+```shell
+python -m pip install mediapipe==1.1.1 python-osc==1.9.3 pyserial==3.5 pygame==2.6.1
+```
 
 Install **`pyserial`, never `serial`**. Both import as `serial`, but the package called `serial` is a different project and `serial.Serial` then fails.
 
 Check that everything imports (prints `True`):
 
-    python -c "import mediapipe, pythonosc, serial, pygame; print(hasattr(serial, 'Serial'))"
+```shell
+python -c "import mediapipe, pythonosc, serial, pygame; print(hasattr(serial, 'Serial'))"
+```
 
 Alternative (only if the team agrees): `conda env create -f environment.yml` from the Anaconda Prompt.
 
@@ -792,10 +802,10 @@ Arduino IDE > *Tools > Port*, or Device Manager > Ports (COM & LPT). It differs 
 
 **7. Arduino IDE**
 
-1. *Tools > Board*: **Arduino Nano Every**. [TODO: confirm the board — `PuppetScene` says Arduino Nano.]
+1. *Tools > Board*: **Arduino Nano Every**. 
 2. *Tools > Port*: the board's COM port.
 3. Open `Code/Arduino/PuppetScene/PuppetScene.ino` and **Upload**.
-4. **Close the Serial Monitor** afterwards. Only one program can hold the port.
+4. **Close the Serial Monitor** afterwards. ==Only one program can hold the port.==
 
 ### Run order (every time)
 
@@ -806,13 +816,10 @@ Arduino IDE > *Tools > Port*, or Device Manager > Ports (COM & LPT). It differs 
 
 Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the preview window).
 
-**Rules**
-
-- Only one program can hold the Arduino COM port: close the Serial Monitor before starting the bridge, and only one team member's bridge can use the board at a time.
-- Only one program can listen on port 12000: do not run `dataset_sender.py --test` together with the bridge.
-- The COM port is a run parameter, not a code change. Each person keeps their own run configurations.
-
-[TODO: shutdown steps and the 15-minute set-up checklist.]
+>[!Important]
+>- Only one program can hold the Arduino COM port: close the Serial Monitor before starting the bridge, and only one team member's bridge can use the board at a time.
+>- Only one program can listen on port 12000: do not run `dataset_sender.py --test` together with the bridge.
+>- The COM port is a run parameter, not a code change. Each person keeps their own run configurations.
 
 ## 4.2 Repository structure
 
@@ -821,8 +828,9 @@ Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the 
 | `Code/Python/` | Python pipeline: sender, dataset sender, bridge, dataset, music, environment |
 | `Code/Wekinator/` | Trained Wekinator project used in the show (3 classes) |
 | `Code/Arduino/PuppetScene/` | Stage sketch (state machine) |
-| `Build/` | [TODO: CAD and fabrication files] |
-| `Media/` | Images for this README: pipeline diagrams (`Wekinator+PythonPipeline.png`, `WekinatorOnlyPipeline.png`) [TODO: add photos, CAD renders, circuit and state machine diagrams] |
+| `Build/Actor Design` | Puppets DXF files |
+| `Build/Final Model` | Stage CAD models |
+| `Media/` | Images for this README
 
 **Inside `Code/Python/`:**
 
@@ -833,13 +841,11 @@ Stop each script with the Stop button in its PyCharm tab (or `q` / `Esc` in the 
 | `landmarks_sender.py` | Webcam → 63 floats → OSC `/wek/inputs` |
 | `dataset_sender.py` | Plays the photo dataset into Wekinator (training) or tests the trained model (`--test`) |
 | `bridge.py` | OSC `/wek/outputs` → serial (class 2 → `s`, class 3 → `h`), plus music |
-| `dataset/<class>/` | Training photos per class (`none`, `action`, `heart`) |
 | `music/` | `Track_1.mp3`, `Track_2.mp3` |
 | `hand_landmarker.task` | MediaPipe hand landmark model |
 
 The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to their own folder, so `Code/Python` must be kept together.
 
-`.idea/` folders (PyCharm) must not be committed. [TODO: add `.idea/` to `.gitignore`.]
 
 ---
 
@@ -849,9 +855,11 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 
 -
 - Plato, *The Republic*, Book VII, "Allegory of the Cave". [Wikipedia](https://en.wikipedia.org/wiki/Allegory_of_the_cave).
-- Wekinator — wekinator.org. [TODO: full reference]
-- MediaPipe Hand Landmarker (Google). [TODO: full reference]
-- AccelStepper library. [TODO: full reference]
+- Wekinator. Fiebrink, R. *Wekinator: Software for real-time, interactive machine learning*. [wekinator.org](http://www.wekinator.org/). Accessed 16 November 2026.
+  - Fiebrink, R., Trueman, D. and Cook, P. R. (2009). "A Meta-Instrument for Interactive, On-the-Fly Machine Learning." *Proceedings of the International Conference on New Interfaces for Musical Expression (NIME)*, Pittsburgh, PA, pp. 280–285. [DOI: 10.5281/zenodo.1177513](https://doi.org/10.5281/zenodo.1177513).
+- MediaPipe Hand Landmarker. Google AI Edge. *Hand landmarks detection guide*. [Google AI Edge documentation](https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker). Accessed 16 November 2026.
+  - Zhang, F., Bazarevsky, V., Vakunov, A., Tkachenka, A., Sung, G., Chang, C.-L. and Grundmann, M. (2020). "MediaPipe Hands: On-device Real-time Hand Tracking." *CVPR Workshop on Computer Vision for AR/VR*, Seattle, WA. [arXiv:2006.10214](https://arxiv.org/abs/2006.10214).
+- AccelStepper library. McCauley, M. (2009–2023). *AccelStepper library for Arduino*, version [x.xx]. AirSpayce Pty Ltd. GPL v2. [airspayce.com](https://www.airspayce.com/mikem/arduino/AccelStepper/). Accessed 16 November 2026.
 - *La Llorona* (Mexican Folk Song). "The Artistic Value and Cultural Symbolism of La Llorona." Xiaohongshu (RED). [Source Video](https://xhslink.cn/o/1buiYKscI7y).
 - *The Phantom of the Opera* (Cello Quartet Arrangement). Xiaohongshu (RED). [Source Video](https://xhslink.cn/o/igsaYjSxsw).
 
