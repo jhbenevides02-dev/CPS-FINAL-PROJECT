@@ -83,7 +83,8 @@ The system turns a hand gesture into movement and light on the stage. Six phases
 
 <p align="center">
    <img width=90% src="Media/2026-11-14-final-system-pipeline.png">
-   Figure 1. Overall system pipeline. 
+<p align="center">
+Figure 1. Overall system pipeline. 
 </p>
 
 | Stage | Component | What it does | Output |
@@ -107,10 +108,9 @@ The system turns a hand gesture into movement and light on the stage. Six phases
 
 <p align="center">
 <img width="800" alt="a0dd0ae0-c92b-4edd-85a6-9b6f830faa5b" src="https://github.com/user-attachments/assets/f2dddf94-2428-4435-9e58-03643a1bdf0c" />
-</p>
-
+<p align="center">
 *Figure 2. The overall mechanical structure of theatre.*
-
+</p>
 The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
 
 The mechanism separates horizontal translation from character rotation, allowing both characters to move independently and perform expressive dance movements.
@@ -136,7 +136,7 @@ The structure also provides mounting positions for the linear rails, lighting sy
 
 <p align = center>
 <img width=90% alt="e172a33b-e2b4-4ea0-a627-67861c5e2382" src="https://github.com/user-attachments/assets/b087db9a-79a6-434c-b086-c52282bf8207" />
-
+<p align="center">
 *Figure 3. Theatre frame constructed from wooden strips and custom 3D-printed connectors.*
 </p>
 
@@ -163,12 +163,12 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
 
     <p align=center>
     <img width="70%" alt="34a5d12d-de15-4d36-bcd9-c454c3210d28" src="https://github.com/user-attachments/assets/836c9f0f-deb1-44c8-9b6b-fa07e54e1bca" />
-
+    <p align="center">
     *Figure 4. Shared dual-rod linear guide and independently driven GT2 belt transmissions.*
     </p>
     <p align=center>
     <img width="70%" alt="96b60c0a-9957-450c-beda-7acc471c73c6" src="https://github.com/user-attachments/assets/ad868186-7925-4137-8f76-75e4d326c080" />
-        
+    <p align="center">  
     *Figure 5. Exploded view of the two-part linear carriage, LM6 bearings, and extended belt clamp.*
     </p>
 ---
@@ -189,7 +189,7 @@ The servo rotates the character around a vertical axis, changing its orientation
 
 <p align=center>
 <img width="50%" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
-
+<p align="center">
 *Figure 6. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
 </p>
 
@@ -208,12 +208,12 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 <p align = center>
     <img width=60% alt="catrina_illustrationchronicles_1500" src="https://github.com/user-attachments/assets/e59fee42-a361-4b10-abdc-3cc9199c7f3c" />
-    
+    <p align="center">
     *Figures 7.1 Character Design Inspiration 1*
 </p>
 <p align = center>  
     <img width=60% alt="mariachidrawing" src="https://github.com/user-attachments/assets/4835d55e-9a9e-4397-846c-8f3e182d12d2" />
-    
+    <p align="center">
     *Figures 7.2 Character Design Inspiration 2*
 </p>
 
@@ -221,10 +221,11 @@ Both characters are constructed using **two intersecting laser-cut profiles**, c
 
 Free hand drawn on a digital painting software, then processed using image tracing to turn it into vector lines. 
 Manually adding 1mm rectangles onto the vector lines to create the registation slits.
-
+<p align="center">
 <img width=800 alt="catrina" src="https://github.com/user-attachments/assets/b9b321bf-6d6f-41fb-964f-4e88afcce8a5" /><img width=800 alt="mariachi" src="https://github.com/user-attachments/assets/5ebddde0-e961-47bf-8372-574cced9950e" />
-
+<p align="center">
 *Figures 7.3-7.4 Laser-Cut Profiles*
+</p>
 
 ## Assembled Figures
 
@@ -232,6 +233,7 @@ Assembled at 90 degree angles, the two frames of each actor slide into place.
 Using hot glue to adhere them together, then mounting them on the servo mounts.
 <p align=center>
 <img width="300" height="500" alt="catrina_two_view_1_second" src="https://github.com/user-attachments/assets/1c66ce31-3911-4962-b20a-9145eb4eaace" /><img width="300" height="500" alt="mariachi_two_poses" src="https://github.com/user-attachments/assets/e70a916f-705b-4a7e-a1a8-a4b337c3e279" />
+<p align="center">
 Figures 7.5-7.6 Assembled Silhouttes
 </p>
 
@@ -240,12 +242,13 @@ Figures 7.5-7.6 Assembled Silhouttes
 The exterior enclosure surrounds the structural frame and conceals the internal mechanical and electronic components, creating a cohesive theatrical appearance. Wooden panels were cut to fit the frame, forming the outer casing while maintaining access to the internal mechanisms and providing a defined viewing area.
 
 Surface finishing and painting, combined with laser-cut decorative details and red curtains, establish the theatre's visual identity and separate the performance space from its supporting structure.
-
+<p align="center">
 <img width="800" alt="a9be0985d4db4d5169e1ef3d4d55eb80" src="https://github.com/user-attachments/assets/d06776bd-2b3d-4ebc-9424-76ea33a116fe" />
 <img width="800" alt="d640d71f-6dcc-4e76-81dd-3cd03d9627ac" src="https://github.com/user-attachments/assets/d4120eb5-a6c1-4e39-8537-cc37a44a73f9" />
 <img width="800" alt="984efee3b1fa96b544d054b6b9cd4bfa" src="https://github.com/user-attachments/assets/9b6f073d-eb3e-4300-8b5a-775b28a041bc" />
-
+<p align="center">
 *Figure 8. Exterior enclosure design and final surface finishing.*
+</p>
 
 ### Design Decisions & Prototype Testing
 
@@ -257,11 +260,12 @@ Several design decisions were informed by early prototyping and shadow projectio
 | **Shadow Scale** | Character dimensions and projection proportions needed to be determined. | Laser-cut silhouettes of different sizes were tested. | Helped establish suitable character proportions and light-to-screen distances. |
 | **Screen Material** | Different translucent materials produced varying projection effects. | Frosted translucent paper. | Selected for its balance of light transmission and shadow visibility. |
 | **Lighting System** | Diffused and focused light sources were explored. | Simple direct-light arrangement without additional focusing lenses. | Reduces optical complexity while maintaining a clear shadow projection. |
-
+<p align="center">
 <img width="640" height="480" alt="6" src="https://github.com/user-attachments/assets/311dcf7f-3299-4438-84b0-44b3ae8a38cc" />
 <img width="640" height="480" alt="WhatsApp Image 2026-11-16 at 5 45 25 PM" src="https://github.com/user-attachments/assets/6f0049ee-ce33-4282-b79c-afb32b61fdcb" />
-
+<p align="center">
 *Figure 9. Prototype comparisons of character movement, silhouette scale, screen materials, and lighting conditions.* 
+</p>
 
 ### Assembly
 
@@ -274,10 +278,12 @@ The mechanical assembly follows four main stages, from structural construction a
 3. Secure the joints using M3/M4 bolts and nuts.
 4. Check the frame alignment and stability, ensuring sufficient space for the internal mechanisms.
 
-<img width="470" height="480" alt="11" src="https://github.com/user-attachments/assets/82a8bc91-85fa-421c-a2fd-3dbdb24fdec5" />
-<img width="520" height="480" alt="WhatsApp Image 2026-11-16 at 5 45 24 PM" src="https://github.com/user-attachments/assets/66a73b24-1e6e-4d7f-a44f-8c61e3d54867" />
-
+<p align="center">
+<img height="400" alt="11" src="https://github.com/user-attachments/assets/82a8bc91-85fa-421c-a2fd-3dbdb24fdec5" />
+<img height="400" alt="WhatsApp Image 2026-11-16 at 5 45 24 PM" src="https://github.com/user-attachments/assets/66a73b24-1e6e-4d7f-a44f-8c61e3d54867" />
+<p align="center">
 *Figure 10. Assembly of the wooden frame using 3D-printed connectors and bolted joints.*
+</p>
 
 #### 2. Linear Motion & Character Assembly
 
@@ -321,9 +327,9 @@ The mechanical assembly follows four main stages, from structural construction a
 
 <p align=center>
 <img width="50%" alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
-</p>
-
+<p align="center">
 *Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.*
+</p>
 
 #### 4. Final Enclosure & Finishing
 
@@ -335,9 +341,9 @@ The mechanical assembly follows four main stages, from structural construction a
 
 <p align="center">
 <img width="50%" alt="3" src="https://github.com/user-attachments/assets/a0ffdf75-0cb6-4c29-9de2-31977e05d626" />
-</p>
-
+<p align="center">
 *Figure 13. Final enclosure installation and completed shadow theatre.* 
+</p>
 
 #### Final Assembly Checklist
 
@@ -392,6 +398,7 @@ The home switches on D3 and D2 use the Arduino’s internal pull-ups and read LO
 
 <p align=center>
 <img src="Media/2026-11-14-circuit-diagram.png" width="100%">
+<p align="center">
 Figure 14. Electrical circuit and hardware connections.
 </p>
 
