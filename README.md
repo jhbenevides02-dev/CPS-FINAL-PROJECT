@@ -261,7 +261,7 @@ Several design decisions were informed by early prototyping and shadow projectio
 <img width="640" height="480" alt="6" src="https://github.com/user-attachments/assets/311dcf7f-3299-4438-84b0-44b3ae8a38cc" />
 <img width="640" height="480" alt="WhatsApp Image 2026-11-16 at 5 45 25 PM" src="https://github.com/user-attachments/assets/6f0049ee-ce33-4282-b79c-afb32b61fdcb" />
 
-*Figure 9. Prototype comparisons of character movement, silhouette scale, screen materials, and lighting conditions.* [TODO: add image to `Media/`.]
+*Figure 9. Prototype comparisons of character movement, silhouette scale, screen materials, and lighting conditions.* 
 
 ### Assembly
 
@@ -274,7 +274,10 @@ The mechanical assembly follows four main stages, from structural construction a
 3. Secure the joints using M3/M4 bolts and nuts.
 4. Check the frame alignment and stability, ensuring sufficient space for the internal mechanisms.
 
-*Figure 10. Assembly of the wooden frame using 3D-printed connectors and bolted joints.* [TODO: add image to `Media/`.]
+<img width="480" height="640" alt="11" src="https://github.com/user-attachments/assets/82a8bc91-85fa-421c-a2fd-3dbdb24fdec5" />
+<img width="640" height="480" alt="WhatsApp Image 2026-11-16 at 5 45 24 PM" src="https://github.com/user-attachments/assets/66a73b24-1e6e-4d7f-a44f-8c61e3d54867" />
+
+*Figure 10. Assembly of the wooden frame using 3D-printed connectors and bolted joints.*
 
 #### 2. Linear Motion & Character Assembly
 
@@ -301,7 +304,10 @@ The mechanical assembly follows four main stages, from structural construction a
 13. Route the two independent belts around their corresponding pulleys and connect them to the sliding carriages using 3D-printed belt clamps, secured with bolts and nuts.
 14. Adjust belt tension and pulley alignment, then manually check the full movement range of both carriages with the power disconnected.
 
-*Figure 11. Assembly of the bearing-supported carriages, shared guide rods, SG90 character modules, and independent belt transmissions.* [TODO: add image to `Media/`.]
+<img width="480" height="640" alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
+<img width="502" height="496" alt="4" src="https://github.com/user-attachments/assets/3a1a4954-a832-46c0-86b2-d803b8549d8b" />
+
+*Figure 11. Assembly of the bearing-supported carriages, shared guide rods, SG90 character modules, and independent belt transmissions.*
 
 #### 3. Screen & Lighting Installation
 
