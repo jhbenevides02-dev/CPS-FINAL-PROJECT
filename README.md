@@ -304,8 +304,10 @@ The mechanical assembly follows four main stages, from structural construction a
 13. Route the two independent belts around their corresponding pulleys and connect them to the sliding carriages using 3D-printed belt clamps, secured with bolts and nuts.
 14. Adjust belt tension and pulley alignment, then manually check the full movement range of both carriages with the power disconnected.
 
-<img width="480" height="496" alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
-<img width="502" height="496" alt="4" src="https://github.com/user-attachments/assets/3a1a4954-a832-46c0-86b2-d803b8549d8b" />
+<p align=center>
+<img height="400" alt="5" src="https://github.com/user-attachments/assets/ed6c995a-5a94-4a02-a497-76bda2928bab" />
+<img height="400" alt="4" src="https://github.com/user-attachments/assets/3a1a4954-a832-46c0-86b2-d803b8549d8b" />
+</p>
 
 *Figure 11. Assembly of the bearing-supported carriages, shared guide rods, SG90 character modules, and independent belt transmissions.*
 
@@ -317,7 +319,9 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Adjust the light angles and projection distances to achieve suitable shadow size and clarity.
 5. Test character translation, rotation, and shadow projection before installing the exterior enclosure.
 
-<img width="520" height="540" alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
+<p align=center>
+<img width="50%" alt="2" src="https://github.com/user-attachments/assets/c45f2d02-6a63-4feb-a9ed-8b723f6914be" />
+</p>
 
 *Figure 12. Installation of the projection screen, lighting brackets, and shadow alignment.*
 
@@ -329,7 +333,9 @@ The mechanical assembly follows four main stages, from structural construction a
 4. Complete the surface finishing and add the laser-cut decorative elements and red curtains.
 5. Perform a final check of mechanical movement and shadow projection.
 
-<img width="480" height="500" alt="3" src="https://github.com/user-attachments/assets/a0ffdf75-0cb6-4c29-9de2-31977e05d626" />
+<p align="center">
+<img width="50%" alt="3" src="https://github.com/user-attachments/assets/a0ffdf75-0cb6-4c29-9de2-31977e05d626" />
+</p>
 
 *Figure 13. Final enclosure installation and completed shadow theatre.* 
 
@@ -480,7 +486,8 @@ Hand gestures seen by the webcam are tracked with MediaPipe, classified by Wekin
 
 <p align="center">
      <img src="Media/2026-11-14-software-pipeline.png" alt="Software pipeline" width="90%">
-     Figure 15. Software pipeline: Python scripts and Arduino sketch.
+<p align="center">   
+*Figure 15. Software pipeline: Python scripts and Arduino sketch.*
 </p>
 
 
@@ -546,7 +553,8 @@ Each character (actor) runs its own copy of the state machine, without blocking 
 The music for each state is in the Music table above.
 <p align="center">
      <img src="Media/2026-11-14-state-machine.png" alt="State Machine" width="90%">
-     Figure 16. Performance state machine.
+<p align="center">   
+    *Figure 16. Performance state machine.*
 </p>
 
 
@@ -743,7 +751,7 @@ These observations suggest that expanding the training dataset with a wider vari
 | pyserial (never `serial`) | 3.5 | Serial port |
 | pygame | 2.6.1 | Music |
 | Wekinator | Latest version | Classifier |
-| Arduino IDE + AccelStepper, Servo | IDE V2.3.10, AccelStepper V1.64 Serrvo V1.3.0 | Stage sketch |
+| Arduino IDE + AccelStepper, Servo | IDE V2.3.10, AccelStepper V1.64, Servo V1.3.0 | Stage sketch |
 
 Pinned versions are in `Code/Python/environment.yml`.
 
