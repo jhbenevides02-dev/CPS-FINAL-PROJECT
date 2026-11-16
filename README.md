@@ -36,7 +36,7 @@ This repository contains the design, hardware documentation, software and testin
 
 Inspired by Plato's *Allegory of the Cave*, the project explores how light angles, mechanical movement and audience interaction can transform shadows and challenge our perception of reality.
 
-The performance features two characters, **Catrina and Mariachi**, which move along independent rails and perform a coordinated dance in response to audience interaction.
+The performance features two characters, **Catrina and Mariachi**, which move along shared guide rails and perform a coordinated dance in response to audience interaction.
 
 Inspired by the Mexican celebration of "Día de los Muertos" (Day of the Dead), the shadow theatre tells the story of Catrina and Mariachi, two characters brought together through music, movement and the possibility of love. As the theatre comes to life, the audience can influence how their story unfolds through simple hand gestures. By performing the **HEART** gesture, the audience brings the two characters together, allowing them to share a romantic dance. Without this interaction, they continue on their separate paths, leaving their story unresolved. The performance celebrates love, remembrance and the idea that connections can transcend the boundaries between life and death.
 
@@ -111,7 +111,7 @@ Figure 1. Overall system pipeline.
 <p align="center">
 *Figure 2. The overall mechanical structure of theatre.*
 </p>
-The movement system combines **a shared linear guide, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
+The movement system combines ** shared guide rails, independently driven carriages, and modular servo mechanisms** to create coordinated movements between Catrina and Mariachi.
 
 The mechanism separates horizontal translation from character rotation, allowing both characters to move independently and perform expressive dance movements.
 
@@ -142,7 +142,7 @@ The structure also provides mounting positions for the linear rails, lighting sy
 
 #### A. Linear Guide & Belt Transmission
 
-The linear motion system uses **two parallel 6 mm metal guide rods shared by both character carriages**, supported by custom 3D-printed mounting components.
+The linear motion system uses **two parallel 6 mm metal guide rods (rails) shared by both character carriages**, supported by custom 3D-printed mounting components.
 
 Each carriage is driven independently by a **28BYJ-48 geared stepper motor**, controlled through a ULN2003 driver board. Each motor drives its own GT2 timing belt and pulley system, converting rotational motion into horizontal translation.
 
@@ -173,13 +173,13 @@ The belt is secured using bolts and nuts, allowing adjustments during assembly a
     </p>
 ---
 
-#### B. Modular SG90 Servo & Laser-Cut Silhouettes
+#### B. Modular FS90 Servo & Laser-Cut Silhouettes
 
-The character mechanism combines **modular SG90 servo units with laser-cut silhouettes**, enabling changes in projected poses through controlled rotation.
+The character mechanism combines **modular FS90 servo units with laser-cut silhouettes**, enabling changes in projected poses through controlled rotation.
 
-**Modular SG90 Servo Unit**
+**Modular FS90 Servo Unit**
 
-Each sliding carriage supports an **SG90 micro servo**, housed inside a custom 3D-printed module and secured using bolts and nuts.
+Each sliding carriage supports an **FS90 micro servo**, housed inside a custom 3D-printed module and secured using bolts and nuts.
 
 The servo rotates the character around a vertical axis, changing its orientation relative to the light source.
 
@@ -190,7 +190,7 @@ The servo rotates the character around a vertical axis, changing its orientation
 <p align=center>
 <img width="50%" alt="c2db957d-c997-4e89-b0b4-5f477fd6cf1b" src="https://github.com/user-attachments/assets/32aaaef1-ccee-48ab-94f1-460486f1c09c" />
 <p align="center">
-*Figure 6. Exploded and generated view of the modular SG90 servo housing and character mounting structure.*
+*Figure 6. Exploded and generated view of the modular FS90 servo housing and character mounting structure.*
 </p>
 
 **Character Design & Laser-Cut Silhouettes**
@@ -633,7 +633,7 @@ Hand landmarks describe only the shape of the hand ([Features and classes](#feat
 
 ## 3.1 Unit and integration tests
 
-**Status of each part** (before the demo):
+**Status of each part**:
 
 | Part | State | Technical Status |
 |---|---|---|
@@ -737,7 +737,7 @@ These observations suggest that expanding the training dataset with a wider vari
 | Area | Current Limitations | Potential Improvements |
 |---|---|---|
 | **Mechanical Movement** | Limited travel range and potential vibration during movement. | Refine belt tension and carriage alignment for smoother, more stable movement. |
-| **Character Animation & Storytelling** | The current performance focuses on two characters dancing along a single shared guide. | Introduce additional tracks, background layers, and new characters to create richer movements, layered scenes, and more complex storylines. |
+| **Character Animation & Storytelling** | The current performance focuses on two characters dancing along shared rails. | Introduce additional tracks, background layers, and new characters to create richer movements, layered scenes, and more complex storylines. |
 | **Lighting & Projection** | The current lighting setup provides limited changes in atmosphere during the performance. | Combine spotlights and general lighting with dynamic transitions to highlight characters, shift the atmosphere, and create more dramatic effects. |
 | **Gesture Interaction** | Gesture recognition can be sensitive to environmental conditions. | Improve recognition reliability and introduce more varied gestures for richer audience participation. |
 | **Maintenance & Accessibility** | Internal components are less accessible after the enclosure is installed. | Introduce removable enclosure panels for easier maintenance and future upgrades. |
