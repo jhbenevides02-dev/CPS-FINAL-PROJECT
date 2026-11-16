@@ -853,7 +853,6 @@ The scripts find `dataset/`, `music/` and `hand_landmarker.task` relative to the
 
 ## 5.1 Citations
 
--
 - Plato, *The Republic*, Book VII, "Allegory of the Cave". [Wikipedia](https://en.wikipedia.org/wiki/Allegory_of_the_cave).
 - Wekinator. Fiebrink, R. *Wekinator: Software for real-time, interactive machine learning*. [wekinator.org](http://www.wekinator.org/). Accessed 16 November 2026.
   - Fiebrink, R., Trueman, D. and Cook, P. R. (2009). "A Meta-Instrument for Interactive, On-the-Fly Machine Learning." *Proceedings of the International Conference on New Interfaces for Musical Expression (NIME)*, Pittsburgh, PA, pp. 280–285. [DOI: 10.5281/zenodo.1177513](https://doi.org/10.5281/zenodo.1177513).
